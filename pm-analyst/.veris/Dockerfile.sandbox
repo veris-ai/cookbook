@@ -1,0 +1,18 @@
+ARG GVISOR_BASE=us-central1-docker.pkg.dev/veris-ai-prod/veris-sandbox/veris-gvisor:latest
+FROM ${GVISOR_BASE}
+
+# Copy dependency manifest
+COPY backend/pyproject.toml /agent/
+
+# Install dependencies
+WORKDIR /agent
+RUN uv sync --no-dev
+
+# Copy agent source code
+COPY backend/app /agent/app
+COPY backend/docs /agent/docs
+
+# Copy reference docs (PDF templates used by the agent)
+COPY .veris/veris.yaml /config/veris.yaml
+
+WORKDIR /app
