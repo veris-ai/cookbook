@@ -1,0 +1,16 @@
+# Extends veris-gvisor base with your agent code
+ARG GVISOR_BASE=us-central1-docker.pkg.dev/veris-ai-prod/veris-sandbox/veris-gvisor:latest
+FROM ${GVISOR_BASE}
+
+# Copy dependency manifests first (Docker layer caching)
+COPY pyproject.toml uv.lock README.md /agent/
+
+# Install dependencies
+WORKDIR /agent
+RUN uv sync --frozen --no-dev
+
+# Copy agent source code
+COPY app/ /agent/app/
+
+# Required by veris
+WORKDIR /app
