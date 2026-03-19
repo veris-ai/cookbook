@@ -1,0 +1,26 @@
+# Extends veris-gvisor base with your agent code
+ARG GVISOR_BASE=us-central1-docker.pkg.dev/veris-ai-prod/veris-sandbox/veris-gvisor:latest
+FROM ${GVISOR_BASE}
+
+# ============================================================
+# 1. AGENT CODE — Update paths to match your project structure
+# ============================================================
+# NOTE: Build context is project root, so paths are relative
+# to project root (even though this Dockerfile is in .veris/)
+
+COPY app /agent/app
+COPY agent_desc.yaml /agent/agent_desc.yaml
+COPY db/schema.sql /agent/db/schema.sql
+
+# ============================================================
+# 2. DEPENDENCIES — Uncomment ONE section below
+# ============================================================
+WORKDIR /agent
+
+# ── uv (default) ──────────────────────────────────────────
+COPY pyproject.toml /agent/
+COPY README.md /agent/
+# COPY uv.lock /agent/
+RUN uv sync --no-dev
+
+WORKDIR /app
