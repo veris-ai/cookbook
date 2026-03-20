@@ -1,5 +1,0 @@
-profiles:
-  default: {}
-  veris-internal:
-    environment_id: env_vj6fnuavgmeb4ab9cip7r
-    environment_name: procurement-agent-env
