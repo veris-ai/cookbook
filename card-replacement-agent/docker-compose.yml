@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: bcs
+      POSTGRES_PASSWORD: bcs
+      POSTGRES_DB: bcs
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bcs"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    ports:
+      - "8008:8008"
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://bcs:bcs@db:5432/bcs
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
