@@ -1,0 +1,15 @@
+version: "1.0"
+
+services: []
+
+persona:
+  channels:
+    - type: http
+      url: http://localhost:8080/chat
+
+agent:
+  code_path: /agent
+  entry_point: uv run --no-sync uvicorn agent.server:app --host 0.0.0.0 --port 8080
+  port: 8080
+  environment:
+    LLM_PROVIDER: openai

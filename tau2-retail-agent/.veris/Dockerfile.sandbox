@@ -1,0 +1,21 @@
+FROM us-central1-docker.pkg.dev/veris-ai-prod/veris-sandbox/veris-gvisor:latest
+
+COPY pyproject.toml /agent/
+COPY agent_desc.txt /agent/
+COPY agent /agent/agent
+COPY scripts /agent/scripts
+
+WORKDIR /agent
+RUN uv sync --no-dev
+
+# tau2-bench data files (db.json, policy.md, tasks.json) aren't included
+# in the pip package — download them from the repo
+RUN curl -sL https://github.com/sierra-research/tau2-bench/archive/refs/heads/main.tar.gz \
+    | tar xz --strip-components=1 -C /tmp "tau2-bench-main/data" && \
+    mv /tmp/data /agent/tau2-data
+
+ENV TAU2_DATA_DIR=/agent/tau2-data
+
+COPY .veris/veris.yaml /config/veris.yaml
+
+WORKDIR /app

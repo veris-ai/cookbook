@@ -1,0 +1,20 @@
+[project]
+name = "tau2-retail-agent"
+version = "0.1.0"
+description = "Enhanced retail customer service agent for tau2-bench"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.34.0",
+    "pydantic>=2.0.0",
+    "httpx>=0.27.0",
+    "litellm>=1.65.0",
+    "loguru>=0.7.3",
+    "python-dotenv>=1.0.0",
+    "tau2 @ git+https://github.com/sierra-research/tau2-bench.git@c5b2d22",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+]

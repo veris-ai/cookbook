@@ -1,0 +1,8 @@
+.env
+*.pyc
+__pycache__/
+.venv/
+runs/
+uv.lock
+report.html
+tau2-bench/
