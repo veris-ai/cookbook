@@ -132,17 +132,12 @@ veris env create
 
 ### 4. Configure environment variables
 
-Open `.veris/veris.yaml` and update the `agent.environment` section with your values:
+Set your Google API key as a secret (not in `veris.yaml`):
 
-```yaml
-agent:
-  environment:
-    ADO_ORG: <your-ado-org>
-    ADO_PROJECT: <your-ado-project>
-    MS_CLIENT_ID: <your-entra-client-id>
-    MS_CLIENT_SECRET: <your-entra-client-secret>
-    GOOGLE_API_KEY: <your-google-ai-key>
+```bash
+veris env vars set GOOGLE_API_KEY=sk-... --secret
 ```
+
 
 ### 5. Push and run
 

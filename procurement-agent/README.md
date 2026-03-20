@@ -64,20 +64,6 @@ veris env create
 
 ### 5. Configure environment variables
 
-Open `.veris/veris.yaml` and update the `agent.environment` section with your values:
-
-```yaml
-agent:
-  environment:
-    ORACLE_BASE_URL: https://oracle-fscm.oraclecloud.com/fscmRestApi/resources/11.13.18.05
-    ORACLE_TOKEN_URL: https://oracle-fscm.oraclecloud.com/oauth2/v1/token
-    ORACLE_CLIENT_ID: <your-oracle-client-id>
-    ORACLE_CLIENT_SECRET: <your-oracle-client-secret>
-    EMAIL_BACKEND: agentmail
-    EMAIL_INBOX_ID: <your-inbox-id>
-    AGENTMAIL_API_KEY: <your-agentmail-api-key>
-```
-
 Set your OpenAI API key as a secret (not in `veris.yaml`):
 
 ```bash
@@ -91,8 +77,6 @@ veris env push
 ```
 
 ### 7. Run simulations
-
-Generate test scenarios or use the pre-built ones in `scenarios/`:
 
 ```bash
 veris scenarios create --num 25
