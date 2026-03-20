@@ -1,0 +1,41 @@
+services:
+  - name: oracle/fscm
+    dns_aliases:
+      - oracle-fscm.oraclecloud.com
+
+
+actor:
+  channels:
+    - type: email
+      poll_interval: "10"
+
+    # Option A: AgentMail (agent uses AgentMail SDK)
+      dns: api.agentmail.to
+      agent_inbox: agent@agentmail.to
+
+    # Option B: Gmail API (agent uses Google Gmail SDK)
+      # dns: gmail.googleapis.com
+      # agent_inbox: "agent@gmail.com"
+
+  config:
+    max_turns: "10"
+    response_interval: "3"
+
+agent:
+  code_path: /agent
+  entry_point: app.main:app
+  port: 8008
+  environment:
+    ORACLE_BASE_URL: https://oracle-fscm.oraclecloud.com/fscmRestApi/resources/11.13.18.05
+    ORACLE_TOKEN_URL: https://oracle-fscm.oraclecloud.com/oauth2/v1/token
+    ORACLE_CLIENT_ID: mock-client-id
+    ORACLE_CLIENT_SECRET: mock-client-secret
+
+    EMAIL_BACKEND: agentmail
+    EMAIL_INBOX_ID: agent@agentmail.to
+    AGENTMAIL_API_KEY: mock-api-key
+
+    # Set EMAIL_WEBHOOK_URL if your agent exposes a webhook endpoint for incoming emails.
+    # Otherwise, the agent must poll for new messages using the email SDK.
+    # EMAIL_WEBHOOK_URL: "http://localhost:8008/webhooks/email"
+
