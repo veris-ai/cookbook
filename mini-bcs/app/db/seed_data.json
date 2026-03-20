@@ -1,0 +1,571 @@
+{
+  "users": [
+    {
+      "id": "u_alice_johnson",
+      "name": "Alice Johnson",
+      "email": "alice.johnson@example.com",
+      "phone": "+1-555-0101",
+      "address": "123 Market St, Springfield, IL",
+      "cards": [
+        "c_alice_debit",
+        "c_alice_credit",
+        "c_alice_virtual"
+      ]
+    },
+    {
+      "id": "u_bob_smith",
+      "name": "Bob Smith",
+      "email": "bob.smith@example.com",
+      "phone": "+1-555-0202",
+      "address": "456 Elm Ave, Metropolis, NY",
+      "cards": [
+        "c_bob_debit",
+        "c_bob_travel"
+      ]
+    },
+    {
+      "id": "u_charlie_davis",
+      "name": "Charlie Davis",
+      "email": "charlie.davis@example.com",
+      "phone": "+1-555-0303",
+      "address": "789 Pine Rd, Lakeside, MI",
+      "cards": [
+        "c_charlie_debit"
+      ]
+    },
+    {
+      "id": "u_dana_lee",
+      "name": "Dana Lee",
+      "email": "dana.lee@example.com",
+      "phone": "+1-555-0404",
+      "address": "101 Cedar Blvd, Riverdale, CA",
+      "cards": [
+        "c_dana_credit",
+        "c_dana_virtual"
+      ]
+    },
+    {
+      "id": "u_elaine_nguyen",
+      "name": "Elaine Nguyen",
+      "email": "elaine.nguyen@example.com",
+      "phone": "+1-555-0505",
+      "address": "202 Oak Ct, Aurora, CO",
+      "cards": [
+        "c_elaine_debit",
+        "c_elaine_rewards"
+      ]
+    },
+    {
+      "id": "u_farhan_khan",
+      "name": "Farhan Khan",
+      "email": "farhan.khan@example.com",
+      "phone": "+1-555-0606",
+      "address": "303 Maple Ln, Raleigh, NC",
+      "cards": [
+        "c_farhan_debit"
+      ]
+    },
+    {
+      "id": "u_gabriela_rodriguez",
+      "name": "Gabriela Rodriguez",
+      "email": "gabriela.rodriguez@example.com",
+      "phone": "+1-555-0707",
+      "address": "404 Walnut St, Phoenix, AZ",
+      "cards": [
+        "c_gabriela_credit",
+        "c_gabriela_virtual"
+      ]
+    },
+    {
+      "id": "u_harlan_moore",
+      "name": "Harlan Moore",
+      "email": "harlan.moore@example.com",
+      "phone": "+1-555-0808",
+      "address": "505 Birch Way, Madison, WI",
+      "cards": [
+        "c_harlan_debit"
+      ]
+    },
+    {
+      "id": "u_isabella_perez",
+      "name": "Isabella Perez",
+      "email": "isabella.perez@example.com",
+      "phone": "+1-555-0909",
+      "address": "606 Spruce Dr, Denver, CO",
+      "cards": [
+        "c_isabella_debit",
+        "c_isabella_cashback"
+      ]
+    },
+    {
+      "id": "u_jamila_adams",
+      "name": "Jamila Adams",
+      "email": "jamila.adams@example.com",
+      "phone": "+1-555-1010",
+      "address": "707 Cherry St, Atlanta, GA",
+      "cards": [
+        "c_jamila_credit"
+      ]
+    },
+    {
+      "id": "u_kevin_brown",
+      "name": "Kevin Brown",
+      "email": "kevin.brown@example.com",
+      "phone": "+1-555-1111",
+      "address": "808 Palm Ave, Tampa, FL",
+      "cards": [
+        "c_kevin_debit",
+        "c_kevin_student"
+      ]
+    },
+    {
+      "id": "u_linh_tran",
+      "name": "Linh Tran",
+      "email": "linh.tran@example.com",
+      "phone": "+1-555-1212",
+      "address": "909 Magnolia Pl, Portland, OR",
+      "cards": [
+        "c_linh_debit",
+        "c_linh_virtual"
+      ]
+    },
+    {
+      "id": "u_marcelo_silva",
+      "name": "Marcelo Silva",
+      "email": "marcelo.silva@example.com",
+      "phone": "+1-555-1313",
+      "address": "1110 Cedar Ridge, Austin, TX",
+      "cards": [
+        "c_marcelo_debit",
+        "c_marcelo_business"
+      ]
+    },
+    {
+      "id": "u_nadia_petrov",
+      "name": "Nadia Petrov",
+      "email": "nadia.petrov@example.com",
+      "phone": "+1-555-1414",
+      "address": "1211 Aspen Loop, Seattle, WA",
+      "cards": [
+        "c_nadia_travel"
+      ]
+    },
+    {
+      "id": "u_oliver_wu",
+      "name": "Oliver Wu",
+      "email": "oliver.wu@example.com",
+      "phone": "+1-555-1515",
+      "address": "1312 Hemlock Ter, Boston, MA",
+      "cards": [
+        "c_oliver_debit",
+        "c_oliver_secure"
+      ]
+    },
+    {
+      "id": "u_priya_sharma",
+      "name": "Priya Sharma",
+      "email": "priya.sharma@example.com",
+      "phone": "+1-555-1616",
+      "address": "1413 Juniper Ct, San Jose, CA",
+      "cards": [
+        "c_priya_credit",
+        "c_priya_travel",
+        "c_priya_virtual"
+      ]
+    },
+    {
+      "id": "u_quinn_martin",
+      "name": "Quinn Martin",
+      "email": "quinn.martin@example.com",
+      "phone": "+1-555-1717",
+      "address": "1514 Poplar Blvd, Nashville, TN",
+      "cards": [
+        "c_quinn_debit"
+      ]
+    },
+    {
+      "id": "u_ronan_foster",
+      "name": "Ronan Foster",
+      "email": "ronan.foster@example.com",
+      "phone": "+1-555-1818",
+      "address": "1615 Cypress Ln, Omaha, NE",
+      "cards": [
+        "c_ronan_debit",
+        "c_ronan_virtual"
+      ]
+    },
+    {
+      "id": "u_sanaa_ali",
+      "name": "Sanaa Ali",
+      "email": "sanaa.ali@example.com",
+      "phone": "+1-555-1919",
+      "address": "1716 Willow St, Richmond, VA",
+      "cards": [
+        "c_sanaa_debit",
+        "c_sanaa_rewards"
+      ]
+    },
+    {
+      "id": "u_tobias_clark",
+      "name": "Tobias Clark",
+      "email": "tobias.clark@example.com",
+      "phone": "+1-555-2020",
+      "address": "1817 Dogwood Dr, Boise, ID",
+      "cards": [
+        "c_tobias_debit"
+      ]
+    }
+  ],
+  "cards": [
+    {
+      "id": "c_alice_debit",
+      "user_id": "u_alice_johnson",
+      "name": "Alice Johnson - Everyday Debit",
+      "last4": "1111",
+      "type": "DEBIT",
+      "status": "active",
+      "created_at": "2025-01-01T09:00:00Z",
+      "updated_at": "2025-03-20T12:00:00Z"
+    },
+    {
+      "id": "c_alice_credit",
+      "user_id": "u_alice_johnson",
+      "name": "Alice Johnson - Rewards Credit",
+      "last4": "2222",
+      "type": "CREDIT",
+      "status": "frozen",
+      "created_at": "2025-01-15T09:00:00Z",
+      "updated_at": "2025-02-22T08:30:00Z"
+    },
+    {
+      "id": "c_alice_virtual",
+      "user_id": "u_alice_johnson",
+      "name": "Alice Johnson - Virtual Card",
+      "last4": "3123",
+      "type": "VIRTUAL",
+      "status": "active",
+      "created_at": "2025-03-10T17:15:00Z",
+      "updated_at": "2025-03-10T17:15:00Z"
+    },
+    {
+      "id": "c_bob_debit",
+      "user_id": "u_bob_smith",
+      "name": "Bob Smith - Everyday Debit",
+      "last4": "3333",
+      "type": "DEBIT",
+      "status": "active",
+      "created_at": "2025-02-10T08:45:00Z",
+      "updated_at": "2025-02-10T08:45:00Z"
+    },
+    {
+      "id": "c_bob_travel",
+      "user_id": "u_bob_smith",
+      "name": "Bob Smith - Travel Credit",
+      "last4": "4444",
+      "type": "CREDIT",
+      "status": "pending",
+      "created_at": "2025-03-28T12:30:00Z",
+      "updated_at": "2025-03-28T12:30:00Z"
+    },
+    {
+      "id": "c_charlie_debit",
+      "user_id": "u_charlie_davis",
+      "name": "Charlie Davis - Cash Debit",
+      "last4": "5555",
+      "type": "DEBIT",
+      "status": "active",
+      "created_at": "2024-12-22T10:05:00Z",
+      "updated_at": "2025-04-01T09:15:00Z"
+    },
+    {
+      "id": "c_dana_credit",
+      "user_id": "u_dana_lee",
+      "name": "Dana Lee - Platinum Credit",
+      "last4": "6666",
+      "type": "CREDIT",
+      "status": "active",
+      "created_at": "2024-11-30T16:00:00Z",
+      "updated_at": "2025-03-05T14:45:00Z"
+    },
+    {
+      "id": "c_dana_virtual",
+      "user_id": "u_dana_lee",
+      "name": "Dana Lee - Online Virtual",
+      "last4": "1077",
+      "type": "VIRTUAL",
+      "status": "active",
+      "created_at": "2025-02-14T18:20:00Z",
+      "updated_at": "2025-02-14T18:20:00Z"
+    },
+    {
+      "id": "c_elaine_debit",
+      "user_id": "u_elaine_nguyen",
+      "name": "Elaine Nguyen - Everyday Debit",
+      "last4": "7777",
+      "type": "DEBIT",
+      "status": "cancelled",
+      "created_at": "2024-10-19T07:30:00Z",
+      "updated_at": "2025-02-02T11:00:00Z"
+    },
+    {
+      "id": "c_elaine_rewards",
+      "user_id": "u_elaine_nguyen",
+      "name": "Elaine Nguyen - Rewards Credit",
+      "last4": "8888",
+      "type": "CREDIT",
+      "status": "active",
+      "created_at": "2025-01-08T09:55:00Z",
+      "updated_at": "2025-03-12T16:40:00Z"
+    },
+    {
+      "id": "c_farhan_debit",
+      "user_id": "u_farhan_khan",
+      "name": "Farhan Khan - Checking Debit",
+      "last4": "9142",
+      "type": "DEBIT",
+      "status": "active",
+      "created_at": "2024-09-27T13:10:00Z",
+      "updated_at": "2025-01-29T10:25:00Z"
+    },
+    {
+      "id": "c_gabriela_credit",
+      "user_id": "u_gabriela_rodriguez",
+      "name": "Gabriela Rodriguez - Signature Credit",
+      "last4": "9900",
+      "type": "CREDIT",
+      "status": "frozen",
+      "created_at": "2025-02-01T11:11:00Z",
+      "updated_at": "2025-03-25T19:50:00Z"
+    },
+    {
+      "id": "c_gabriela_virtual",
+      "user_id": "u_gabriela_rodriguez",
+      "name": "Gabriela Rodriguez - Virtual Commerce",
+      "last4": "1084",
+      "type": "VIRTUAL",
+      "status": "active",
+      "created_at": "2025-03-07T07:45:00Z",
+      "updated_at": "2025-03-07T07:45:00Z"
+    },
+    {
+      "id": "c_harlan_debit",
+      "user_id": "u_harlan_moore",
+      "name": "Harlan Moore - Essential Debit",
+      "last4": "2201",
+      "type": "DEBIT",
+      "status": "active",
+      "created_at": "2024-08-03T06:00:00Z",
+      "updated_at": "2025-02-18T09:42:00Z"
+    },
+    {
+      "id": "c_isabella_debit",
+      "user_id": "u_isabella_perez",
+      "name": "Isabella Perez - Premium Debit",
+      "last4": "3412",
+      "type": "DEBIT",
+      "status": "active",
+      "created_at": "2024-10-05T20:10:00Z",
+      "updated_at": "2025-03-30T07:20:00Z"
+    },
+    {
+      "id": "c_isabella_cashback",
+      "user_id": "u_isabella_perez",
+      "name": "Isabella Perez - Cashback Credit",
+      "last4": "4523",
+      "type": "CREDIT",
+      "status": "pending",
+      "created_at": "2025-03-15T18:05:00Z",
+      "updated_at": "2025-03-15T18:05:00Z"
+    },
+    {
+      "id": "c_jamila_credit",
+      "user_id": "u_jamila_adams",
+      "name": "Jamila Adams - Signature Credit",
+      "last4": "5634",
+      "type": "CREDIT",
+      "status": "active",
+      "created_at": "2024-12-12T09:00:00Z",
+      "updated_at": "2025-02-22T09:30:00Z"
+    },
+    {
+      "id": "c_kevin_debit",
+      "user_id": "u_kevin_brown",
+      "name": "Kevin Brown - Everyday Debit",
+      "last4": "6745",
+      "type": "DEBIT",
+      "status": "active",
+      "created_at": "2024-11-09T08:15:00Z",
+      "updated_at": "2025-03-02T11:05:00Z"
+    },
+    {
+      "id": "c_kevin_student",
+      "user_id": "u_kevin_brown",
+      "name": "Kevin Brown - Student Credit",
+      "last4": "7856",
+      "type": "CREDIT",
+      "status": "cancelled",
+      "created_at": "2024-12-24T13:55:00Z",
+      "updated_at": "2025-01-30T10:10:00Z"
+    },
+    {
+      "id": "c_linh_debit",
+      "user_id": "u_linh_tran",
+      "name": "Linh Tran - Global Debit",
+      "last4": "8967",
+      "type": "DEBIT",
+      "status": "frozen",
+      "created_at": "2025-01-02T22:15:00Z",
+      "updated_at": "2025-03-19T14:55:00Z"
+    },
+    {
+      "id": "c_linh_virtual",
+      "user_id": "u_linh_tran",
+      "name": "Linh Tran - Virtual Card",
+      "last4": "9078",
+      "type": "VIRTUAL",
+      "status": "active",
+      "created_at": "2025-03-02T08:40:00Z",
+      "updated_at": "2025-03-02T08:40:00Z"
+    },
+    {
+      "id": "c_marcelo_debit",
+      "user_id": "u_marcelo_silva",
+      "name": "Marcelo Silva - Business Debit",
+      "last4": "0189",
+      "type": "DEBIT",
+      "status": "active",
+      "created_at": "2024-09-15T10:20:00Z",
+      "updated_at": "2025-03-01T10:20:00Z"
+    },
+    {
+      "id": "c_marcelo_business",
+      "user_id": "u_marcelo_silva",
+      "name": "Marcelo Silva - Business Credit",
+      "last4": "1290",
+      "type": "CREDIT",
+      "status": "pending",
+      "created_at": "2025-04-01T11:50:00Z",
+      "updated_at": "2025-04-01T11:50:00Z"
+    },
+    {
+      "id": "c_nadia_travel",
+      "user_id": "u_nadia_petrov",
+      "name": "Nadia Petrov - Travel Credit",
+      "last4": "2301",
+      "type": "CREDIT",
+      "status": "active",
+      "created_at": "2025-01-25T07:35:00Z",
+      "updated_at": "2025-03-14T16:25:00Z"
+    },
+    {
+      "id": "c_oliver_debit",
+      "user_id": "u_oliver_wu",
+      "name": "Oliver Wu - Everyday Debit",
+      "last4": "3410",
+      "type": "DEBIT",
+      "status": "active",
+      "created_at": "2024-11-11T09:00:00Z",
+      "updated_at": "2025-02-01T09:45:00Z"
+    },
+    {
+      "id": "c_oliver_secure",
+      "user_id": "u_oliver_wu",
+      "name": "Oliver Wu - Secure Credit",
+      "last4": "4521",
+      "type": "CREDIT",
+      "status": "frozen",
+      "created_at": "2025-02-18T15:30:00Z",
+      "updated_at": "2025-03-18T20:00:00Z"
+    },
+    {
+      "id": "c_priya_credit",
+      "user_id": "u_priya_sharma",
+      "name": "Priya Sharma - Platinum Credit",
+      "last4": "5632",
+      "type": "CREDIT",
+      "status": "active",
+      "created_at": "2024-10-10T10:45:00Z",
+      "updated_at": "2025-03-11T11:10:00Z"
+    },
+    {
+      "id": "c_priya_travel",
+      "user_id": "u_priya_sharma",
+      "name": "Priya Sharma - Travel Rewards",
+      "last4": "6743",
+      "type": "CREDIT",
+      "status": "active",
+      "created_at": "2025-01-14T08:20:00Z",
+      "updated_at": "2025-03-26T13:35:00Z"
+    },
+    {
+      "id": "c_priya_virtual",
+      "user_id": "u_priya_sharma",
+      "name": "Priya Sharma - Virtual Card",
+      "last4": "7854",
+      "type": "VIRTUAL",
+      "status": "active",
+      "created_at": "2025-02-20T19:05:00Z",
+      "updated_at": "2025-02-20T19:05:00Z"
+    },
+    {
+      "id": "c_quinn_debit",
+      "user_id": "u_quinn_martin",
+      "name": "Quinn Martin - Everyday Debit",
+      "last4": "8965",
+      "type": "DEBIT",
+      "status": "active",
+      "created_at": "2024-07-19T07:00:00Z",
+      "updated_at": "2025-01-09T07:00:00Z"
+    },
+    {
+      "id": "c_ronan_debit",
+      "user_id": "u_ronan_foster",
+      "name": "Ronan Foster - Everyday Debit",
+      "last4": "9076",
+      "type": "DEBIT",
+      "status": "active",
+      "created_at": "2024-09-02T12:15:00Z",
+      "updated_at": "2025-02-14T12:15:00Z"
+    },
+    {
+      "id": "c_ronan_virtual",
+      "user_id": "u_ronan_foster",
+      "name": "Ronan Foster - Virtual Card",
+      "last4": "0187",
+      "type": "VIRTUAL",
+      "status": "active",
+      "created_at": "2025-03-12T21:45:00Z",
+      "updated_at": "2025-03-12T21:45:00Z"
+    },
+    {
+      "id": "c_sanaa_debit",
+      "user_id": "u_sanaa_ali",
+      "name": "Sanaa Ali - Everyday Debit",
+      "last4": "1298",
+      "type": "DEBIT",
+      "status": "frozen",
+      "created_at": "2024-12-28T06:25:00Z",
+      "updated_at": "2025-03-08T06:25:00Z"
+    },
+    {
+      "id": "c_sanaa_rewards",
+      "user_id": "u_sanaa_ali",
+      "name": "Sanaa Ali - Rewards Credit",
+      "last4": "2309",
+      "type": "CREDIT",
+      "status": "active",
+      "created_at": "2025-01-22T17:45:00Z",
+      "updated_at": "2025-03-22T09:05:00Z"
+    },
+    {
+      "id": "c_tobias_debit",
+      "user_id": "u_tobias_clark",
+      "name": "Tobias Clark - Everyday Debit",
+      "last4": "3418",
+      "type": "DEBIT",
+      "status": "active",
+      "created_at": "2024-08-28T08:30:00Z",
+      "updated_at": "2025-01-18T08:30:00Z"
+    }
+  ]
+}

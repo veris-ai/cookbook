@@ -1,0 +1,7 @@
+.env
+!.env.example
+.venv
+__pycache__/
+.veris/config.yaml
+scenarios.json
+upload_scenarios.py
