@@ -1,0 +1,3 @@
+gcp-sa-key.json
+.env*
+!.env.example

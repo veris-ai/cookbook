@@ -1,0 +1,16 @@
+.git
+.venv
+.env
+.DS_Store
+__pycache__
+*.py[oc]
+*.egg-info
+build/
+dist/
+wheels/
+docs/
+scenarios/
+scripts/
+.veris/config.yaml
+.veris/logs/
+BCA_Implementation_Plan.md
