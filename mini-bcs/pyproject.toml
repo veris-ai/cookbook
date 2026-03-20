@@ -1,0 +1,14 @@
+[project]
+name = "mini-bcs"
+version = "0.1.0"
+description = "Card Operations Agent - Single agent"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.116.2",
+    "openai-agents>=0.3.0",
+    "uvicorn>=0.30.0",
+    "python-dotenv>=1.1.1",
+    "psycopg2-binary>=2.9.9",
+    "fastapi-mcp>=0.4.0",
+]

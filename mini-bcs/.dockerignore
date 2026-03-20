@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+.venv
+.veris
+!.veris/veris.yaml
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist
+build
