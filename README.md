@@ -1,17 +1,18 @@
 <div align="center">
 
-# `[VERIS]` Cookbook
+<img src="./LM-Logo-Veris-Green.svg" alt="Veris" width="200">
+
+# Cookbook
 
 ### Build Reliable AI Agents With Simulated Environments
 
 [![Docs](https://img.shields.io/badge/docs-veris.ai-047404)](https://docs.veris.ai)
-[![License](https://img.shields.io/badge/license-MIT-FCBD07)](LICENSE)
 
 </div>
 
 ---
 
-A collection of reference agents demonstrating how to build, test, and deploy AI agents using the [Veris](https://veris.ai) simulation platform — or run them standalone.
+A collection of reference agents demonstrating how to build, test, and deploy AI agents using the [Veris](https://veris.ai/sandbox) simulation platform — or run them standalone.
 
 Each example is a complete, working agent with its own README, test suite, and Veris simulation scenarios. Use them as starting points for your own agents or as references for integrating with Veris.
 
