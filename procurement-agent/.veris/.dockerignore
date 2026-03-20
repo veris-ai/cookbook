@@ -1,0 +1,13 @@
+# Veris build context — excluded from `veris env push` uploads
+.git
+.venv
+__pycache__
+node_modules
+.env
+.env.*
+*.egg-info
+dist
+build
+.mypy_cache
+.pytest_cache
+.ruff_cache
