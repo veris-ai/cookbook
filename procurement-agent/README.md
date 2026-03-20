@@ -23,25 +23,81 @@ An autonomous **IT procurement agent** that manages the complete procurement lif
 - [Veris CLI](https://docs.veris.ai) (`uv tool install veris-cli`)
 - API key: [OpenAI](https://platform.openai.com/api-keys)
 
-## Quick Start
+## Quick Start (Local)
 
 ```bash
-# Install dependencies and generate lockfile
 uv sync
+cp .env.example .env
+# Edit .env and set OPENAI_API_KEY, EMAIL_INBOX_ID, AGENTMAIL_API_KEY
+uv run uvicorn app.main:app --host 0.0.0.0 --port 8008
+```
 
-# Authenticate with Veris
+## Deploy on Veris
+
+### 1. Install Veris CLI & login
+
+```bash
+uv tool install veris-cli
 veris login
+```
 
-# Create environment, build and push image
-veris env create
-veris env push
+### 2. Clone the repo
 
-# Generate scenarios and run simulations
-veris scenarios create
-veris run
+```bash
+git clone <repo-url>
+cd procurement-agent
+```
+
+### 3. Install dependencies
+
+```bash
+uv sync
 ```
 
 > **Note:** `veris env push` requires `uv.lock` to exist. The Dockerfile uses `uv sync --frozen`. Run `uv sync` or `uv lock` first if the lockfile is missing.
+
+### 4. Create a Veris environment
+
+```bash
+veris env create
+```
+
+### 5. Configure environment variables
+
+Open `.veris/veris.yaml` and update the `agent.environment` section with your values:
+
+```yaml
+agent:
+  environment:
+    ORACLE_BASE_URL: https://oracle-fscm.oraclecloud.com/fscmRestApi/resources/11.13.18.05
+    ORACLE_TOKEN_URL: https://oracle-fscm.oraclecloud.com/oauth2/v1/token
+    ORACLE_CLIENT_ID: <your-oracle-client-id>
+    ORACLE_CLIENT_SECRET: <your-oracle-client-secret>
+    EMAIL_BACKEND: agentmail
+    EMAIL_INBOX_ID: <your-inbox-id>
+    AGENTMAIL_API_KEY: <your-agentmail-api-key>
+```
+
+Set your OpenAI API key as a secret (not in `veris.yaml`):
+
+```bash
+veris env vars set OPENAI_API_KEY=sk-... --secret
+```
+
+### 6. Push and run
+
+```bash
+veris env push
+```
+
+### 7. Run simulations
+
+Generate test scenarios or use the pre-built ones in `scenarios/`:
+
+```bash
+veris scenarios create --num 25
+veris run
+```
 
 ## Veris Sandbox Configuration
 
