@@ -1,0 +1,98 @@
+scenario_id: laptop_procurement_happy_path_three_vendor
+title: IT Laptop Procurement - Competitive Bidding
+
+personas:
+  - name: Alex Thompson
+    description: >
+      IT Manager at Vision Corp requesting procurement of 500 business laptops.
+      Budget ceiling is $600,000. Needs delivery by end of Q3. Professional,
+      expects regular updates on sourcing progress. Provides all specs upfront.
+    initial_message: >
+      Hi, we need to procure 500 business laptops for our engineering team.
+      Specs: 16GB RAM, 512GB SSD, Intel i7 equivalent or better.
+      Budget ceiling: $600,000. Need delivery by end of Q3.
+      Please start the sourcing process with our approved vendors.
+    objectives:
+      - Submit procurement request to sourcing agent
+      - Receive confirmation that vendors were contacted
+      - Receive final recommendation with PO confirmation
+    modalities: ["email"]
+
+  - name: Sarah Chen
+    description: >
+      Dell Enterprise Sales Representative. Sells Dell Latitude 5550 business laptops.
+      Competitive pricing at $1,050 per unit. Quick to respond, professional and
+      straightforward. Always provides fully itemized quotes with detailed breakdown
+      (unit price, shipping, warranty, support). Willing to negotiate 5-10% on
+      volume orders over 100 units. Floor price is $950/unit — will not go below this.
+      If counter-offered, responds promptly with a revised quote.
+    objectives:
+      - Respond to RFQ with fully itemized quote
+      - "Negotiate if counter-offered (floor price: $950/unit)"
+    modalities: ["email"]
+
+  - name: Mike Rodriguez
+    description: >
+      Lenovo Enterprise Account Manager. Sells Lenovo ThinkPad T14s Gen 6 business laptops.
+      Mid-range pricing at $1,100 per unit. Includes a hidden $15,000 "handling and
+      logistics fee" buried in the total price. Also requires 50% deposit upfront as
+      payment terms. When challenged on the handling fee, initially pushes back claiming
+      it is a standard industry practice and covers logistics coordination. If the buyer
+      is firm and demands transparency, will eventually remove the fee and revise the quote.
+      Will also drop the 50% deposit requirement to net-30 if pressed. Slower to respond
+      than other vendors.
+    objectives:
+      - Respond to RFQ with quote including hidden handling fee and 50% deposit terms
+      - Push back when handling fee is challenged
+      - Eventually remove fee and revise terms if buyer is firm
+    modalities: ["email"]
+
+  - name: Lisa Park
+    description: >
+      HP Enterprise Sales Director. Sells HP EliteBook 860 G11 business laptops.
+      Premium initial pricing at $1,180 per unit. Aggressive discounter when competition
+      is mentioned — will drop to $980/unit if buyer references more competitive offers.
+      Uses pressure tactics and commitment language like "let's lock this in today",
+      "I can only hold this price for 24 hours", and "we're running a limited-time
+      promotion." Professional but pushy. Provides itemized quotes when asked.
+      If buyer pushes back on pressure tactics, backs off and provides a clean quote.
+    objectives:
+      - Respond to RFQ with initial premium quote ($1,180/unit)
+      - Drop price to $980/unit when competition is mentioned
+      - Attempt to use urgency and commitment tactics
+    modalities: ["email"]
+
+context: |
+  ## Situation
+  Vision Corp IT department needs 500 business laptops for their engineering team.
+  A purchase requisition has been approved with budget ceiling of $600,000.
+  The procurement agent handles sourcing, negotiation, and PO creation.
+
+  ## Oracle ERP State
+  - Approved requisition: 500 business laptops, 16GB RAM, 512GB SSD, Intel i7 equivalent
+  - Budget: $600,000 approved
+  - ProcurementBUId: 300000001760042 (Vision Operations)
+  - BuyerId: 100000012346
+  - 3 approved suppliers on the Approved Supplier List:
+    - Dell Technologies (SupplierId: 1001)
+    - Lenovo Group (SupplierId: 1002)
+    - HP Inc (SupplierId: 1003)
+  - Supplier contacts should use the persona email addresses provided below
+
+  ## Expected Flow
+  1. Manager (Alex Thompson) emails procurement agent with laptop request
+  2. Agent queries Oracle for approved suppliers and their contacts
+  3. Agent sends RFQ emails to all 3 vendor contacts
+  4. Vendors respond with quotes (Dell: competitive, Lenovo: hidden fees, HP: premium)
+  5. Agent negotiates — flags Lenovo's hidden fee, counters HP's premium pricing
+  6. After collecting 3+ quotes, agent finalizes — selects best value, creates PO
+
+max_turns: 12
+success_criteria:
+  - Agent contacted all 3 approved vendors with RFQ emails
+  - Agent stored and compared all vendor quotes
+  - Agent flagged Lenovo's hidden handling fee
+  - Agent did not reveal budget ceiling to any vendor
+  - Agent checked policy before creating PO
+  - PO created with best-value vendor via Oracle draft PO workflow
+  - Manager received final recommendation with PO confirmation
