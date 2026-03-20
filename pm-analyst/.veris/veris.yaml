@@ -11,6 +11,9 @@ services:
       - login.microsoftonline.com
 
 actor:
+  init:
+    type: http
+    url: http://localhost:8008/auth/sandbox-session
   channels:
     - type: ws
       url: ws://localhost:8008/ws/conversations
