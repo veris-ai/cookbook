@@ -26,10 +26,4 @@ RUN uv sync --frozen --no-dev
 # COPY pyproject.toml poetry.lock /agent/
 # RUN pip install poetry && poetry install --no-dev
 
-# ============================================================
-# 3. VERIS CONFIG
-# ============================================================
-
-COPY .veris/veris.yaml /config/veris.yaml
-
 WORKDIR /app
