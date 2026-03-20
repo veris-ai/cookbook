@@ -16,7 +16,7 @@ actor:
     url: http://localhost:8008/auth/sandbox-session
   channels:
     - type: ws
-      url: ws://localhost:8008/ws/conversations
+      url: ws://localhost:8008/ws/conversations?token={session_token}
 
 agent:
   code_path: /agent
