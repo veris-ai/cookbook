@@ -10,14 +10,10 @@ services:
     dns_aliases:
       - login.microsoftonline.com
 
-persona:
-  init:
-    type: http
-    request:
-      url: http://localhost:8008/auth/sandbox-session
-  modality:
-    type: ws
-    url: ws://localhost:8008/ws/conversations?token={session_token}
+actor:
+  channels:
+    - type: ws
+      url: ws://localhost:8008/ws/conversations
 
 agent:
   code_path: /agent

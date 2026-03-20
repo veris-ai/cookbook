@@ -102,3 +102,50 @@ To enable creating/managing work items in ADO:
 2. Set `ADO_ORG` and `ADO_PROJECT` in `backend/.env`
 3. Re-authenticate to consent to the new scope
 4. Ask the agent to create work items — it will push Epics, Features, and User Stories with proper hierarchy
+
+## Deploy on Veris
+
+### Prerequisites
+
+- A Microsoft Entra ID app registration with the required API permissions
+- An Azure DevOps organization and project
+
+### 1. Install Veris CLI & login
+
+```bash
+uv tool install veris-cli
+veris login
+```
+
+### 2. Clone the repo
+
+```bash
+git clone <repo-url>
+cd pm-analyst
+```
+
+### 3. Create a Veris environment
+
+```bash
+veris env create
+```
+
+### 4. Configure environment variables
+
+Open `.veris/veris.yaml` and update the `agent.environment` section with your values:
+
+```yaml
+agent:
+  environment:
+    ADO_ORG: <your-ado-org>
+    ADO_PROJECT: <your-ado-project>
+    MS_CLIENT_ID: <your-entra-client-id>
+    MS_CLIENT_SECRET: <your-entra-client-secret>
+    GOOGLE_API_KEY: <your-google-ai-key>
+```
+
+### 5. Push and run
+
+```bash
+veris env push
+```

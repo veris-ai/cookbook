@@ -12,7 +12,4 @@ RUN uv sync --no-dev
 COPY backend/app /agent/app
 COPY backend/docs /agent/docs
 
-# Copy reference docs (PDF templates used by the agent)
-COPY .veris/veris.yaml /config/veris.yaml
-
 WORKDIR /app
