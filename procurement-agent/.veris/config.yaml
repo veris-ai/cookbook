@@ -1,8 +1,5 @@
 profiles:
   default: {}
-  prod:
-    environment_id: env_d8f3u9x4vng4ryug14c0e
-    environment_name: procurement-agent
   veris-internal:
     environment_id: env_vj6fnuavgmeb4ab9cip7r
     environment_name: procurement-agent-env
