@@ -1,0 +1,46 @@
+name: Build Template Contexts
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  GCS_BUCKET: veris-sandbox-blob-storage-dev
+  GCS_PREFIX: templates
+
+jobs:
+  build-and-upload:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write  # For Workload Identity Federation
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ vars.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Build contexts and manifest
+        run: python .github/scripts/build_contexts.py
+
+      - name: Upload to GCS
+        run: |
+          gsutil -m cp -r dist/contexts/* gs://${{ env.GCS_BUCKET }}/${{ env.GCS_PREFIX }}/contexts/
+          gsutil cp dist/manifest.json gs://${{ env.GCS_BUCKET }}/${{ env.GCS_PREFIX }}/manifest.json
+          echo "Uploaded $(ls dist/contexts/*.tar.gz | wc -l) template contexts + manifest"
