@@ -30,7 +30,8 @@ SKIP_DIRS = {".github", "dist", ".git", "node_modules", "__pycache__"}
 SECRET_PATTERN = re.compile(r"\$\{(\w+)\}")
 PLACEHOLDER_PATTERN = re.compile(r"<your-[^>]+>")
 
-# Friendly display names for templates
+# ── Template metadata ──
+
 DISPLAY_NAMES: dict[str, str] = {
     "bca-agent": "Banker Connections Agent",
     "card-replacement-agent": "Card Replacement Agent",
@@ -39,13 +40,99 @@ DISPLAY_NAMES: dict[str, str] = {
     "procurement-agent": "Procurement Agent",
 }
 
-# Short UI descriptions (replaces README extraction)
 DESCRIPTIONS: dict[str, str] = {
-    "bca-agent": "Helps retail bankers resolve customer record update errors in real time using Hogan core banking.",
-    "card-replacement-agent": "Handles card freeze, replacement, and activation workflows with PostgreSQL-backed customer data.",
-    "mini-bcs": "Credit card support agent with multi-LLM routing and PostgreSQL customer database.",
-    "pm-analyst": "Converts meeting transcripts into Azure DevOps work items via Microsoft Graph integration.",
-    "procurement-agent": "IT procurement sourcing and negotiation agent with Oracle Fusion Cloud ERP integration.",
+    "bca-agent": (
+        "Helps retail bankers resolve customer record update errors on the spot, "
+        "eliminating 12-15 minute calls to back-office specialists. When a banker "
+        "encounters a phone number or ID document update failure in the Hogan core "
+        "banking system, this agent walks them through the error, identifies the root "
+        "cause from five known Clear CUID scenarios, retrieves the remediation procedure "
+        "from a Vertex AI RAG knowledge base, pulls the customer profile from Hogan, "
+        "and executes the fix with banker confirmation. For example, a banker sees "
+        "'CUID-PH-001' after trying to update a customer's phone — the agent looks up "
+        "the procedure, fetches the customer record, proposes clearing the conflicting "
+        "field, and patches Hogan once the banker approves."
+    ),
+    "card-replacement-agent": (
+        "A multi-agent banking assistant that handles the full card replacement lifecycle "
+        "— freezing compromised cards, ordering replacements, tracking delivery, and "
+        "activating new cards. Built with the OpenAI Agents SDK, it uses a triage agent "
+        "to route requests to specialized sub-agents: one for replacement (collects reason, "
+        "identifies the card by last four digits, freezes if stolen/lost, sets up a "
+        "14-business-day replacement), one for status updates and activation, and one for "
+        "out-of-scope redirects. All customer and card data lives in PostgreSQL. A typical "
+        "interaction: a customer reports a stolen card, the agent freezes it immediately, "
+        "initiates a replacement to the address on file, and confirms the expected delivery "
+        "window."
+    ),
+    "mini-bcs": (
+        "A streamlined credit card customer support agent that handles card replacement "
+        "and status inquiries end-to-end using a single unified agent (no sub-agent routing). "
+        "Supports multiple LLM providers including OpenAI, Azure OpenAI, DeepSeek, Grok, "
+        "and others — configurable via a single environment variable. The agent manages the "
+        "full workflow against a PostgreSQL customer database: collecting the reason for "
+        "replacement, identifying the right card, freezing stolen or lost cards, scheduling "
+        "replacements, confirming delivery details, and activating new cards on arrival. "
+        "For example, a customer calls to check on a replacement they requested last week "
+        "— the agent looks up the card status, reports it was mailed two days ago, and "
+        "offers to activate it once it arrives."
+    ),
+    "pm-analyst": (
+        "Turns meeting recordings and documents into structured project management artifacts "
+        "in Azure DevOps. The agent connects to Microsoft Graph to pull Teams meeting "
+        "transcripts or OneDrive files, produces a summary with key decisions, action items, "
+        "and open questions, then generates Epics, Features, and User Stories with proper "
+        "hierarchy and pushes them to ADO. Communicates over WebSocket for real-time "
+        "back-and-forth. A typical session: PM selects last Tuesday's sprint planning meeting, "
+        "the agent parses the transcript, surfaces three decisions and five action items, "
+        "asks one clarifying question about scope, then creates an Epic with two Features "
+        "and four User Stories in the team's ADO project."
+    ),
+    "procurement-agent": (
+        "An autonomous IT procurement agent that manages the full sourcing-to-PO lifecycle "
+        "via email, integrated with Oracle Fusion Cloud ERP. The agent operates in three "
+        "phases: first it reads a purchase requisition from Oracle, fetches approved suppliers "
+        "and their contacts, and sends personalized RFQ emails to each vendor. As quotes come "
+        "back, it extracts pricing, compares bids, negotiates counter-offers (without revealing "
+        "budget or competitor details), and flags hidden fees or missing itemization. Once enough "
+        "quotes are collected, it selects the best-value vendor, validates against procurement "
+        "policy (budget caps, minimum quote count, approved supplier list), creates a draft PO "
+        "in Oracle, submits it, and notifies the winning vendor. For example, a requisition for "
+        "50 laptops triggers RFQs to three approved suppliers — the agent negotiates one vendor "
+        "down 12%, rejects another for exceeding budget, and creates the PO with the winning bid."
+    ),
+}
+
+FRAMEWORKS: dict[str, str] = {
+    "bca-agent": "google-adk",
+    "card-replacement-agent": "openai-agents-sdk",
+    "mini-bcs": "openai-agents-sdk",
+    "pm-analyst": "google-adk",
+    "procurement-agent": "openai-agents-sdk",
+}
+
+LLM_PROVIDERS: dict[str, str] = {
+    "bca-agent": "gemini",
+    "card-replacement-agent": "openai",
+    "mini-bcs": "openai",
+    "pm-analyst": "gemini",
+    "procurement-agent": "openai",
+}
+
+ACTORS: dict[str, str] = {
+    "bca-agent": "single",
+    "card-replacement-agent": "single",
+    "mini-bcs": "single",
+    "pm-analyst": "single",
+    "procurement-agent": "multi",
+}
+
+ARCHITECTURES: dict[str, str] = {
+    "bca-agent": "multi-agent",
+    "card-replacement-agent": "multi-agent",
+    "mini-bcs": "single-agent",
+    "pm-analyst": "single-agent",
+    "procurement-agent": "single-agent",
 }
 
 
@@ -128,36 +215,6 @@ def extract_services(veris_yaml: dict) -> list[str]:
     return [s.get("name", "") for s in services if isinstance(s, dict)]
 
 
-def extract_description(template_dir: Path) -> str:
-    """Extract first paragraph of README as description."""
-    readme = template_dir / "README.md"
-    if not readme.exists():
-        return ""
-
-    lines = readme.read_text().splitlines()
-    desc_lines = []
-    in_content = False
-
-    for line in lines:
-        stripped = line.strip()
-        # Skip title lines
-        if stripped.startswith("#"):
-            if in_content:
-                break
-            in_content = True
-            continue
-        # Skip empty lines before content
-        if not stripped and not desc_lines:
-            continue
-        # Stop at empty line after content
-        if not stripped and desc_lines:
-            break
-        if in_content:
-            desc_lines.append(stripped)
-
-    return " ".join(desc_lines)[:200]
-
-
 def build_tar(template_dir: Path) -> Path:
     """Create tar.gz of the template directory."""
     template_id = template_dir.name
@@ -188,21 +245,23 @@ def main():
         tar_path = build_tar(template_dir)
         tar_size = tar_path.stat().st_size
 
-        image_uri = f"{ARTIFACT_REGISTRY}/cookbook-{template_id}:latest" if ARTIFACT_REGISTRY else ""
-
         entry = {
             "id": template_id,
             "name": DISPLAY_NAMES.get(template_id, template_id),
-            "description": DESCRIPTIONS.get(template_id, extract_description(template_dir)),
-            "image_uri": image_uri,
+            "description": DESCRIPTIONS.get(template_id, ""),
             "channel": extract_channel(veris_yaml),
             "services": extract_services(veris_yaml),
+            "framework": FRAMEWORKS.get(template_id),
+            "llm_provider": LLM_PROVIDERS.get(template_id),
+            "actors": ACTORS.get(template_id),
+            "architecture": ARCHITECTURES.get(template_id),
             "required_vars": extract_required_vars(veris_yaml, template_dir),
             "veris_yaml": veris_yaml,
         }
 
         manifest["templates"].append(entry)
         print(f"  channel={entry['channel']}, services={entry['services']}, "
+              f"framework={entry['framework']}, llm={entry['llm_provider']}, "
               f"required_vars={entry['required_vars']}, size={tar_size} bytes")
 
     manifest_path = DIST_DIR / "manifest.json"
