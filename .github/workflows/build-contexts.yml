@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       gvisor_base:
-        description: "Base image override (e.g. from sandbox prod push)"
+        description: "Base image override (from sandbox prod push)"
         required: false
 
 env:
@@ -44,6 +44,13 @@ jobs:
       - name: Configure Docker for Artifact Registry
         run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
 
+      - name: Read demo keys from GCP Secret Manager
+        run: |
+          echo "DEMO_OPENAI_API_KEY=$(gcloud secrets versions access latest \
+            --secret=VERIS_DEMO_OPENAI_API_KEY --project=${{ vars.GCP_PROJECT_ID }})" >> $GITHUB_ENV
+          echo "DEMO_AGENTMAIL_API_KEY=$(gcloud secrets versions access latest \
+            --secret=VERIS_DEMO_AGENTMAIL_API_KEY --project=${{ vars.GCP_PROJECT_ID }})" >> $GITHUB_ENV
+
       - name: Build and push cookbook images
         run: |
           BASE="${{ inputs.gvisor_base || format('{0}/veris-gvisor:latest', env.ARTIFACT_REGISTRY) }}"
@@ -54,7 +61,19 @@ jobs:
               ID="${dir%/}"
               TAG="${{ env.ARTIFACT_REGISTRY }}/cookbook-${ID}:latest"
               echo "Building $ID → $TAG"
-              docker build -f "$dir/.veris/Dockerfile.sandbox" --build-arg GVISOR_BASE="$BASE" -t "$TAG" "$dir"
+
+              # Stage 1: Build template image
+              docker build -f "$dir/.veris/Dockerfile.sandbox" \
+                --build-arg GVISOR_BASE="$BASE" \
+                -t "tmp-$ID" "$dir"
+
+              # Stage 2: Bake in demo keys as ENV vars
+              cat > /tmp/Dockerfile.keys <<DKEOF
+          FROM tmp-$ID
+          ENV OPENAI_API_KEY=${DEMO_OPENAI_API_KEY}
+          ENV AGENTMAIL_API_KEY=${DEMO_AGENTMAIL_API_KEY}
+          DKEOF
+              docker build -f /tmp/Dockerfile.keys -t "$TAG" /tmp/
               docker push "$TAG"
             fi
           done
