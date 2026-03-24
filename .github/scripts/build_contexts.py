@@ -20,6 +20,9 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DIST_DIR = REPO_ROOT / "dist"
 CONTEXTS_DIR = DIST_DIR / "contexts"
 
+# Artifact Registry for pre-built cookbook images
+ARTIFACT_REGISTRY = os.environ.get("ARTIFACT_REGISTRY", "")
+
 # Directories to skip
 SKIP_DIRS = {".github", "dist", ".git", "node_modules", "__pycache__"}
 
@@ -185,10 +188,13 @@ def main():
         tar_path = build_tar(template_dir)
         tar_size = tar_path.stat().st_size
 
+        image_uri = f"{ARTIFACT_REGISTRY}/cookbook-{template_id}:latest" if ARTIFACT_REGISTRY else ""
+
         entry = {
             "id": template_id,
             "name": DISPLAY_NAMES.get(template_id, template_id),
             "description": DESCRIPTIONS.get(template_id, extract_description(template_dir)),
+            "image_uri": image_uri,
             "channel": extract_channel(veris_yaml),
             "services": extract_services(veris_yaml),
             "required_vars": extract_required_vars(veris_yaml, template_dir),
