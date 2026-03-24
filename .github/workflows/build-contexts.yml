@@ -1,18 +1,13 @@
-name: Build Cookbook Templates
+name: Build Template Contexts
 
 on:
   push:
     branches: [main]
   workflow_dispatch:
-    inputs:
-      gvisor_base:
-        description: "Base image override (from sandbox prod push)"
-        required: false
 
 env:
   GCS_BUCKET: veris-sandbox-blob-storage-dev
   GCS_PREFIX: templates
-  ARTIFACT_REGISTRY: us-central1-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/veris-sandbox
 
 jobs:
   build-and-upload:
@@ -41,47 +36,8 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Configure Docker for Artifact Registry
-        run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
-
-      - name: Read demo keys from GCP Secret Manager
-        run: |
-          echo "DEMO_OPENAI_API_KEY=$(gcloud secrets versions access latest \
-            --secret=VERIS_DEMO_OPENAI_API_KEY --project=${{ vars.GCP_PROJECT_ID }})" >> $GITHUB_ENV
-          echo "DEMO_AGENTMAIL_API_KEY=$(gcloud secrets versions access latest \
-            --secret=VERIS_DEMO_AGENTMAIL_API_KEY --project=${{ vars.GCP_PROJECT_ID }})" >> $GITHUB_ENV
-
-      - name: Build and push cookbook images
-        run: |
-          BASE="${{ inputs.gvisor_base || format('{0}/veris-gvisor:latest', env.ARTIFACT_REGISTRY) }}"
-          echo "Using base image: $BASE"
-
-          for dir in */; do
-            if [ -f "$dir/.veris/Dockerfile.sandbox" ]; then
-              ID="${dir%/}"
-              TAG="${{ env.ARTIFACT_REGISTRY }}/cookbook-${ID}:latest"
-              echo "Building $ID → $TAG"
-
-              # Stage 1: Build template image
-              docker build -f "$dir/.veris/Dockerfile.sandbox" \
-                --build-arg GVISOR_BASE="$BASE" \
-                -t "tmp-$ID" "$dir"
-
-              # Stage 2: Bake in demo keys as ENV vars
-              cat > /tmp/Dockerfile.keys <<DKEOF
-          FROM tmp-$ID
-          ENV OPENAI_API_KEY=${DEMO_OPENAI_API_KEY}
-          ENV AGENTMAIL_API_KEY=${DEMO_AGENTMAIL_API_KEY}
-          DKEOF
-              docker build -f /tmp/Dockerfile.keys -t "$TAG" /tmp/
-              docker push "$TAG"
-            fi
-          done
-
       - name: Build contexts and manifest
         run: python .github/scripts/build_contexts.py
-        env:
-          ARTIFACT_REGISTRY: ${{ env.ARTIFACT_REGISTRY }}
 
       - name: Upload to GCS
         run: |
