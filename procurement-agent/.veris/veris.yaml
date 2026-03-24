@@ -26,6 +26,7 @@ agent:
   entry_point: app.main:app
   port: 8008
   environment:
+    OPENAI_API_KEY: ${OPENAI_API_KEY}
     ORACLE_BASE_URL: https://oracle-fscm.oraclecloud.com/fscmRestApi/resources/11.13.18.05
     ORACLE_TOKEN_URL: https://oracle-fscm.oraclecloud.com/oauth2/v1/token
     ORACLE_CLIENT_ID: mock-client-id

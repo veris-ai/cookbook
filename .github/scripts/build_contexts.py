@@ -27,6 +27,24 @@ SKIP_DIRS = {".github", "dist", ".git", "node_modules", "__pycache__"}
 SECRET_PATTERN = re.compile(r"\$\{(\w+)\}")
 PLACEHOLDER_PATTERN = re.compile(r"<your-[^>]+>")
 
+# Friendly display names for templates
+DISPLAY_NAMES: dict[str, str] = {
+    "bca-agent": "Banker Connections Agent",
+    "card-replacement-agent": "Card Replacement Agent",
+    "mini-bcs": "Bank Customer Service",
+    "pm-analyst": "PM Analyst",
+    "procurement-agent": "Procurement Agent",
+}
+
+# Short UI descriptions (replaces README extraction)
+DESCRIPTIONS: dict[str, str] = {
+    "bca-agent": "Helps retail bankers resolve customer record update errors in real time using Hogan core banking.",
+    "card-replacement-agent": "Handles card freeze, replacement, and activation workflows with PostgreSQL-backed customer data.",
+    "mini-bcs": "Credit card support agent with multi-LLM routing and PostgreSQL customer database.",
+    "pm-analyst": "Converts meeting transcripts into Azure DevOps work items via Microsoft Graph integration.",
+    "procurement-agent": "IT procurement sourcing and negotiation agent with Oracle Fusion Cloud ERP integration.",
+}
+
 
 def find_templates() -> list[Path]:
     """Find directories containing .veris/veris.yaml."""
@@ -169,8 +187,8 @@ def main():
 
         entry = {
             "id": template_id,
-            "name": template_id,
-            "description": extract_description(template_dir),
+            "name": DISPLAY_NAMES.get(template_id, template_id),
+            "description": DESCRIPTIONS.get(template_id, extract_description(template_dir)),
             "channel": extract_channel(veris_yaml),
             "services": extract_services(veris_yaml),
             "required_vars": extract_required_vars(veris_yaml, template_dir),
