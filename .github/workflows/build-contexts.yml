@@ -1,12 +1,9 @@
 name: Build Template Contexts
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 env:
-  GCS_BUCKET: veris-sandbox-blob-storage-dev
   GCS_PREFIX: templates
 
 jobs:
@@ -39,8 +36,15 @@ jobs:
       - name: Build contexts and manifest
         run: python .github/scripts/build_contexts.py
 
-      - name: Upload to GCS
+      - name: Upload to GCS (dev)
         run: |
-          gsutil -m cp -r dist/contexts/* gs://${{ env.GCS_BUCKET }}/${{ env.GCS_PREFIX }}/contexts/
-          gsutil cp dist/manifest.json gs://${{ env.GCS_BUCKET }}/${{ env.GCS_PREFIX }}/manifest.json
-          echo "Uploaded $(ls dist/contexts/*.tar.gz | wc -l) template contexts + manifest"
+          gsutil -m cp -r dist/contexts/* gs://veris-sandbox-blob-storage-dev/${{ env.GCS_PREFIX }}/contexts/
+          gsutil cp dist/manifest.json gs://veris-sandbox-blob-storage-dev/${{ env.GCS_PREFIX }}/manifest.json
+
+      - name: Upload to GCS (prod)
+        run: |
+          gsutil -m cp -r dist/contexts/* gs://veris-sandbox-blob-storage-prod/${{ env.GCS_PREFIX }}/contexts/
+          gsutil cp dist/manifest.json gs://veris-sandbox-blob-storage-prod/${{ env.GCS_PREFIX }}/manifest.json
+
+      - name: Summary
+        run: echo "Uploaded $(ls dist/contexts/*.tar.gz | wc -l) template contexts + manifest to dev and prod"
