@@ -1,0 +1,20 @@
+# Veris simulation configuration
+version: "1.0"
+
+services:
+  - name: epic/fhir
+    dns_aliases:
+      - fhir.epic.com
+
+persona:
+  channels:
+    - type: ws
+      url: ws://localhost:8088/ws
+
+agent:
+  code_path: /agent
+  entry_point: uv run --no-sync python src/main.py
+  port: 8088
+  environment:
+    FHIR_BASE_URL: "https://fhir.epic.com/fhir/R4"
+    FHIR_TOKEN: "sample-token"

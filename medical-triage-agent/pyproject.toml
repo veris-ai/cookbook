@@ -1,0 +1,20 @@
+[project]
+name = "medical-triage-agent"
+version = "0.1.0"
+description = "Triage agent that refers patients to the right specialist via conversation"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bedrock-agentcore>=1.0.3",
+    "boto3>=1.35.0",
+    "botocore[crt]>=1.42.72",
+    "fhirclient>=4.4.0",
+    "pydantic>=2.11.9",
+    "pydantic-ai>=0.4.0",
+    "python-dotenv>=1.1.1",
+]
+
+[dependency-groups]
+dev = [
+    "bedrock-agentcore-starter-toolkit>=0.3.3",
+]
