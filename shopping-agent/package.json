@@ -1,0 +1,23 @@
+{
+  "name": "shopping-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "@langchain/core": "^1.1",
+    "@langchain/google-genai": "^2.1.25",
+    "@langchain/langgraph": "^1.2",
+    "@langchain/langgraph-supervisor": "^1.0",
+    "@langchain/mcp-adapters": "^1.1",
+    "@langchain/openai": "^1.2",
+    "dotenv": "^16",
+    "express": "^4",
+    "pg": "^8",
+    "ws": "^8",
+    "zod": "^3"
+  }
+}

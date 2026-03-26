@@ -1,0 +1,21 @@
+services:
+  - name: mcp/stripe
+    dns_aliases:
+      - mcp.stripe.com
+  - name: postgres
+    config:
+      POSTGRES_PASSWORD: postgres
+      SCHEMA_PATH: /agent/schemas/schema.sql
+
+persona:
+  channels:
+    - type: ws
+      url: ws://localhost:8000
+
+agent:
+  code_path: /agent
+  entry_point: node src/index.js
+  port: 8000
+  environment:
+    DATABASE_URL: postgresql://postgres:postgres@localhost:5432/SIMULATION_ID
+    STRIPE_SECRET_KEY: sk_test_mock

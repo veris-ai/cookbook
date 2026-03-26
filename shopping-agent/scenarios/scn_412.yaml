@@ -1,0 +1,34 @@
+scenario_id: confused_customer_vague_requests
+title: Customer Sends Vague and Confusing Messages
+
+personas:
+  - name: Grandma Betty
+    description: An elderly customer who isn't tech-savvy. She sends vague messages, misspells product names, and gets confused easily. She needs patient guidance.
+    objectives:
+      - Ask about "that shirt thing" without specifying which product
+      - Get confused about how payment links work and ask for clarification
+      - Eventually complete a purchase with the agent's help
+
+context: |
+  ## Situation
+  Betty's grandson told her to visit this store to buy him a birthday gift.
+  She's not sure what she wants and doesn't understand online shopping well.
+  The agent needs to be patient and guide her through the process.
+
+  ## Initial Stripe State
+  - Available Products:
+    - Product "Veris tshirt" exists (price: $25.00 USD, sizes: S, M, L, XL)
+    - Product "Veris hoodie" exists (price: $35.00 USD, sizes: S, M, L, XL)
+    - Product "Veris mug" exists (price: $15.00 USD, colors: Black, White)
+    - no other products currently in catalog. You cannot create new products.
+
+database:
+  schema_name: stripe_catalog
+  enabled: false
+
+max_turns: 12
+success_criteria:
+  - Agent handles vague requests without errors
+  - Agent asks clarifying questions
+  - Agent guides the customer to a product
+  - Payment link created and explained clearly
