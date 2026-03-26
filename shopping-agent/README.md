@@ -140,21 +140,6 @@ The `.veris/veris.yaml` configures how the agent runs in the Veris sandbox:
 - **PostgreSQL** — Provisioned automatically with the schema from `schemas/schema.sql`.
 - **Persona channel** — WebSocket on `ws://localhost:8000`.
 
-## Scenarios
-
-Scenarios live in `scenarios/` and define the persona, initial Stripe state, and success criteria:
-
-| Scenario | Description |
-|----------|-------------|
-| Browse & purchase | Customer lists products and buys one via payment link |
-| Unavailable product | Customer asks for something not in the catalog |
-| Confused customer | Vague, non-technical customer needs guidance |
-| Multiple items | Customer wants to buy several products at once |
-| Price negotiation | Customer tries to haggle for a discount |
-| Refund request | Customer asks for a refund on a previous purchase |
-
-Create your own by adding a new YAML file to `scenarios/`. See existing files for the schema.
-
 ## License
 
 MIT
