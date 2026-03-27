@@ -4,7 +4,6 @@ services:
       - mcp.stripe.com
   - name: postgres
     config:
-      POSTGRES_PASSWORD: postgres
       SCHEMA_PATH: /agent/schemas/schema.sql
 
 persona:
