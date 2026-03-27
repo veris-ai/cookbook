@@ -1,0 +1,4 @@
+node_modules/
+.env
+.veris/logs/
+.veris/config.yaml

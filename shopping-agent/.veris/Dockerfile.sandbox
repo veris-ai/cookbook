@@ -1,0 +1,16 @@
+ARG GVISOR_BASE=us-central1-docker.pkg.dev/veris-ai-prod/veris-sandbox/veris-gvisor:latest
+FROM node:20-slim AS node
+FROM ${GVISOR_BASE}
+
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
+COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
+RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
+
+COPY package.json package-lock.json /agent/
+WORKDIR /agent
+RUN npm ci --omit=dev
+
+COPY . /agent/
+COPY schemas/ /agent/schemas/
+
+WORKDIR /app
