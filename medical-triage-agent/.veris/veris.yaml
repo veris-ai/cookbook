@@ -17,7 +17,7 @@ agent:
   environment:
     FHIR_BASE_URL: "https://fhir.epic.com/fhir/R4"
     FHIR_TOKEN: "sample-token"
-    AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
-    AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+    AWS_ACCESS_KEY_ID: mock-aws-key
+    AWS_SECRET_ACCESS_KEY: mock-aws-secret
     AWS_REGION: "us-east-1"
     BEDROCK_MODEL_ID: "us.amazon.nova-pro-v1:0"
