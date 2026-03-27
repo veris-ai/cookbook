@@ -19,3 +19,5 @@ agent:
   environment:
     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/SIMULATION_ID
     STRIPE_SECRET_KEY: sk_test_mock
+    OPENAI_API_KEY: mock-openai-key
+    GOOGLE_API_KEY: mock-google-key
