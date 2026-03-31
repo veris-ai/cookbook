@@ -2,7 +2,7 @@
 
 A multi-agent shopping assistant built with [LangGraph](https://langchain-ai.github.io/langgraph/) and [Stripe's MCP server](https://docs.stripe.com/mcp). Customers chat with the agent over WebSocket to browse products, manage their account, and check out via Stripe payment links.
 
-## Architecture
+## Agent Architecture
 
 ```
 Browser (WebSocket) <---> Express Server <---> Supervisor Agent (LangGraph)
