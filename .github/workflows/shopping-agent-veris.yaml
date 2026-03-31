@@ -1,6 +1,7 @@
 name: "Veris: Shopping Agent Regression"
 on:
   pull_request:
+    types: [opened]
     branches: [main]
     paths:
       - 'shopping-agent/**'
