@@ -18,7 +18,7 @@ jobs:
   simulate:
     runs-on: ubuntu-latest
     # Requires approval from maintainers — secrets not exposed to fork PRs
-    environment: veris-sim-ci
+    environment: veris-sandbox-ci
     defaults:
       run:
         working-directory: shopping-agent
