@@ -16,6 +16,7 @@ CREATE TABLE cards (
     type       TEXT NOT NULL CHECK (type   IN ('DEBIT', 'CREDIT', 'virtual')),
     status     TEXT NOT NULL DEFAULT 'active'
                              CHECK (status IN ('active', 'cancelled', 'frozen')),
+    replacement_status TEXT CHECK (replacement_status IN ('requested', 'mailed', 'delivered')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );

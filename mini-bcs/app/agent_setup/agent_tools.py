@@ -150,24 +150,17 @@ def request_card_replacement(ctx: RunContextWrapper[BCSRunContext], card_id: str
 def update_card_replacement_status(ctx: RunContextWrapper[BCSRunContext], card_id: str = Field(..., description="The card's ID"), new_status: CardReplacementStatus = Field(..., description="The card's new status")) -> str:
     """Update the delivery status of a card replacement request.
 
-    WARNING: THIS TOOL IS NOT FULLY IMPLEMENTED
-    The underlying api.update_card_replacement_status() method does NOT exist in BCSAPI.
-    The Card model does not have a replacement_status field (it's commented out).
-    Calling this tool will raise AttributeError.
-
-    Intended Input:
+    Input:
         card_id: The unique identifier of the replacement card
         new_status: The new delivery status (CardReplacementStatus.REQUESTED, MAILED, or DELIVERED)
 
-    Intended Output:
-        Would return confirmation or updated card information
+    Output:
+        Updated card information
 
-    Intended Status Values:
+    Status Values:
         - "requested": Replacement card has been ordered but not yet shipped
         - "mailed": Replacement card has been shipped and is in transit
         - "delivered": Replacement card has been delivered to the user's address
-
-    TODO: Implement this method in BCSAPI class and add replacement_status field to Card model.
     """
     card = api.update_card_replacement_status(card_id, new_status)
     return card
