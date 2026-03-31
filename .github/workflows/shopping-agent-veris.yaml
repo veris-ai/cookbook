@@ -1,0 +1,54 @@
+name: "Veris: Shopping Agent Regression"
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'shopping-agent/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  ENV_ID: "env_yigoee8flv81t20mn8h54"
+  SCENARIO_SET_ID: "scenset_kg36w6010mklxvvczc57n"
+  GRADER_ID: "grader_f19h0sied6809ynxrgv0w"
+
+jobs:
+  simulate:
+    runs-on: ubuntu-latest
+    # Requires approval from maintainers — secrets not exposed to fork PRs
+    environment: veris-sim-ci
+    defaults:
+      run:
+        working-directory: shopping-agent
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install veris-cli
+        run: pip install veris-cli>=2.13.0
+
+      - name: Build & push agent image
+        env:
+          VERIS_API_KEY: ${{ secrets.VERIS_API_KEY }}
+        run: |
+          veris login "$VERIS_API_KEY"
+          veris env push --tag ${{ github.sha }}
+
+      - name: Run simulation & evaluation
+        run: |
+          veris run \
+            --scenario-set-id ${{ env.SCENARIO_SET_ID }} \
+            --env-id ${{ env.ENV_ID }} \
+            --grader-id ${{ env.GRADER_ID }} \
+            --image-tag ${{ github.sha }} \
+            > veris-summary.md
+
+      - name: Comment on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          path: shopping-agent/veris-summary.md
