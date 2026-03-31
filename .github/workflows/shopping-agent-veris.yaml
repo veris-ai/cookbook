@@ -30,14 +30,14 @@ jobs:
           python-version: "3.11"
 
       - name: Install veris-cli
-        run: pip install veris-cli>=2.13.0
+        run: pip install veris-cli>=2.18.0
 
       - name: Build & push agent image
         env:
           VERIS_API_KEY: ${{ secrets.VERIS_API_KEY }}
         run: |
           veris login "$VERIS_API_KEY"
-          veris env push --tag ${{ github.sha }}
+          veris env push --env-id ${{ env.ENV_ID }} --tag ${{ github.sha }}
 
       - name: Run simulation & evaluation
         run: |
