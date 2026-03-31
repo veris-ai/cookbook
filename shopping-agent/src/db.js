@@ -113,7 +113,7 @@ const createOrder = tool(
   {
     name: "create_order",
     description:
-      "Record a new order in the database after a purchase is made.",
+      "Record a new order in the database immediately after a Stripe payment link has been created and given to the customer. Do NOT wait for payment confirmation — call this tool as soon as the payment link URL is available. Required fields: customer_email, product_name, amount (in dollars).",
     schema: z.object({
       customer_email: z.string().describe("The customer's email address"),
       product_name: z.string().describe("Name of the product purchased"),
@@ -121,7 +121,7 @@ const createOrder = tool(
       status: z
         .string()
         .optional()
-        .describe("Order status (default: pending)"),
+        .describe("Order status — use 'pending' when recording at payment-link creation time (default: 'pending')"),
     }),
   }
 );
