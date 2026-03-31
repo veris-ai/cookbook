@@ -30,7 +30,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install veris-cli
-        run: pip install veris-cli>=2.19.0
+        run: pip install veris-cli>=2.20.0
 
       - name: Build & push agent image
         env:
