@@ -13,6 +13,7 @@ CREATE TABLE cards (
     last4      TEXT NOT NULL,
     type       TEXT NOT NULL,
     status     TEXT NOT NULL DEFAULT 'active',
+    replacement_status TEXT,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );

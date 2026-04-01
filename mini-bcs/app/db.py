@@ -44,6 +44,7 @@ class Card(BaseModel):
     last4: str
     type: CardType
     status: CardStatus
+    replacement_status: Optional[CardReplacementStatus] = None
     created_at: str
     updated_at: str
 
@@ -178,6 +179,21 @@ class Database:
             result["updated_at"] = _ts(result["updated_at"])
             return result
 
+    def update_card_replacement_status(self, card_id: str, new_status: str) -> Optional[Dict]:
+        now = self.now_iso()
+        with _conn() as conn, conn.cursor() as cur:
+            cur.execute(
+                "UPDATE cards SET replacement_status = %s, updated_at = %s WHERE id = %s RETURNING *",
+                (new_status, now, card_id),
+            )
+            row = cur.fetchone()
+            if not row:
+                return None
+            card = dict(row)
+            card["created_at"] = _ts(card["created_at"])
+            card["updated_at"] = _ts(card["updated_at"])
+            return card
+
     def add_card_to_user(self, user_id: str, card_id: str) -> None:
         # Cards are linked via user_id FK — no action needed
         pass
@@ -238,6 +254,15 @@ class BCSAPI(BaseModel):
         if current.get("status") == CardStatus.CANCELLED and new_status != CardStatus.CANCELLED:
             raise ValueError("cannot change status of a cancelled card")
         updated = self.db.update_card_status(card_id, new_status)
+        if updated is None:
+            raise ValueError("card not found")
+        return Card(**updated)
+
+    def update_card_replacement_status(self, card_id: str, new_status: CardReplacementStatus) -> Card:
+        current = self.db.get_card_by_id(card_id)
+        if not current:
+            raise ValueError("card not found")
+        updated = self.db.update_card_replacement_status(card_id, new_status)
         if updated is None:
             raise ValueError("card not found")
         return Card(**updated)
