@@ -1,0 +1,47 @@
+name: "Veris: BCA Agent Nightly"
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+env:
+  ENV_ID: "env_0kb1xkrj5bbyyeb97tq0u"
+  SCENARIO_SET_ID: "scenset_07xur5ou62ij1xq9vzwvw"
+  GRADER_ID: "grader_jms5z1n45szu17g5lgfth"
+
+jobs:
+  simulate:
+    runs-on: ubuntu-latest
+    environment: veris-sandbox-ci
+    defaults:
+      run:
+        working-directory: bca-agent
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install veris-cli
+        run: pip install veris-cli>=2.20.0
+
+      - name: Build & push agent image
+        env:
+          VERIS_API_KEY: ${{ secrets.VERIS_API_KEY }}
+        run: |
+          IMAGE_TAG="nightly-$(date -u +%Y%m%d)"
+          echo "IMAGE_TAG=$IMAGE_TAG" >> "$GITHUB_ENV"
+          veris login "$VERIS_API_KEY"
+          veris env push --env-id ${{ env.ENV_ID }} --tag "$IMAGE_TAG"
+
+      - name: Run simulation & evaluation
+        run: |
+          veris run \
+            --scenario-set-id ${{ env.SCENARIO_SET_ID }} \
+            --env-id ${{ env.ENV_ID }} \
+            --grader-id ${{ env.GRADER_ID }} \
+            --image-tag "$IMAGE_TAG"
