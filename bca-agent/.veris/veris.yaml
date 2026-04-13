@@ -1,34 +1,36 @@
 version: "1.0"
 
-services:
-  - name: hogan
+bca-agent-env:
+  services:
+    - name: hogan
 
-actor:
-  init:
-    type: http
-    method: POST
-    url: http://localhost:8080/api/v1/conversations
-    body:
-      banker_id: "B001"
-      branch_id: "BR01"
-      customer_ecn: "ECN123"
-  channels:
-    - type: http
+  actor:
+    init:
+      type: http
       method: POST
-      url: http://localhost:8080/api/v1/conversations/{conversation_id}/messages
-      request:
-        message_field: content
-      response:
-        message_field: content
+      url: http://localhost:8080/api/v1/conversations
+      body:
+        banker_id: "B001"
+        branch_id: "BR01"
+        customer_ecn: "ECN123"
+    channels:
+      - type: http
+        method: POST
+        url: http://localhost:8080/api/v1/conversations/{conversation_id}/messages
+        request:
+          message_field: content
+        response:
+          message_field: content
 
-agent:
-  code_path: /agent
-  entry_point: uv run --no-sync uvicorn app.main:app --port 8080
-  port: 8080
-  environment:
-    HOGAN_API_BASE_URL: https://api.hogan.dxc.com
-    ADK_MODEL: gemini-2.5-flash
-    GCP_PROJECT: <your-gcp-project-id>
-    GCP_LOCATION: global
-    RAG_CORPUS_ID: <your-rag-corpus-id>
-    RAG_LOCATION: europe-west4
+  agent:
+    name: Banker Connections Agent
+    code_path: /agent
+    entry_point: uv run --no-sync uvicorn app.main:app --port 8080
+    port: 8080
+    environment:
+      HOGAN_API_BASE_URL: https://api.hogan.dxc.com
+      ADK_MODEL: gemini-2.5-flash
+      GCP_PROJECT: <your-gcp-project-id>
+      GCP_LOCATION: global
+      RAG_CORPUS_ID: <your-rag-corpus-id>
+      RAG_LOCATION: europe-west4
