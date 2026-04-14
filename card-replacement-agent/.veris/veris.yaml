@@ -1,33 +1,34 @@
 # Veris simulation configuration
 version: "1.0"
 
-services:
-  - name: postgres
-    config:
-      SCHEMA_PATH: /agent/db/schema.sql
+card-replacement-agent-env:
+  services:
+    - name: postgres
+      config:
+        SCHEMA_PATH: /agent/db/schema.sql
+        POSTGRES_PASSWORD: postgres
+
+  actor:
+    channels:
+      - type: http
+        url: http://localhost:8008/chat
+        method: POST
+        headers:
+          Content-Type: application/json
+        request:
+          message_field: message
+          session_field: session_id
+        response:
+          type: json
+          message_field: response
+          session_field: session_id
+
+  agent:
+    name: Card Replacement Agent
+    code_path: /agent
+    entry_point: uv run --no-sync uvicorn app.main:app --host 0.0.0.0 --port 8008
+    port: 8008
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/SIMULATION_ID
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
       POSTGRES_PASSWORD: postgres
-
-actor:
-  channels:
-    - type: http
-      url: http://localhost:8008/chat
-      method: POST
-      headers:
-        Content-Type: application/json
-      request:
-        message_field: message
-        session_field: session_id
-      response:
-        type: json
-        message_field: response
-        session_field: session_id
-
-
-agent:
-  code_path: /agent
-  entry_point: uv run --no-sync uvicorn app.main:app --host 0.0.0.0 --port 8008
-  port: 8008
-  environment:
-    DATABASE_URL: postgresql://postgres:postgres@localhost:5432/SIMULATION_ID
-    OPENAI_API_KEY: ${OPENAI_API_KEY}
-    POSTGRES_PASSWORD: postgres
