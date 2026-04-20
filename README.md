@@ -22,6 +22,7 @@ Each example is a complete, working agent with its own README, test suite, and V
 |-------|-------------|-----------|--------------|
 | **[Banker Connections Agent](./bca-agent)** | Resolves customer record update errors for retail bankers in real time | Google ADK | Vertex AI, Hogan API |
 | **[Card Replacement Agent](./card-replacement-agent)** | Handles card freeze, replacement, delivery tracking, and activation workflows | OpenAI Agents SDK | PostgreSQL |
+| **[Mini BCS](./mini-bcs)** | Credit card support agent for common cardholder requests | OpenAI Agents SDK | PostgreSQL |
 | **[PM Analyst](./pm-analyst)** | Converts meeting transcripts into structured Epics, Features, and User Stories | Google ADK | Azure DevOps, Microsoft Teams |
 | **[Procurement Agent](./procurement-agent)** | Autonomous IT procurement sourcing, negotiation, and PO finalization | OpenAI Agents SDK | Oracle Fusion Cloud ERP, AgentMail |
 
@@ -81,6 +82,7 @@ For the full walkthrough, see the [Veris documentation](https://docs.veris.ai).
 cookbook/
   bca-agent/               Banker Connections Agent (Google ADK)
   card-replacement-agent/   Card Replacement Agent (OpenAI Agents SDK)
+  mini-bcs/                 Mini BCS (OpenAI Agents SDK)
   pm-analyst/               PM Analyst (Google ADK)
   procurement-agent/        Procurement Agent (OpenAI Agents SDK)
 ```
