@@ -6,7 +6,7 @@ services:
     config:
       SCHEMA_PATH: /agent/schemas/schema.sql
 
-persona:
+actor:
   channels:
     - type: ws
       url: ws://localhost:8000
@@ -16,7 +16,7 @@ agent:
   entry_point: node src/index.js
   port: 8000
   environment:
-    DATABASE_URL: postgresql://postgres:postgres@localhost:5432/SIMULATION_ID
+    DATABASE_URL: postgresql://postgres:postgres@localhost:5432/veris
     STRIPE_SECRET_KEY: sk_test_mock
     OPENAI_API_KEY: mock-openai-key
     GOOGLE_API_KEY: mock-google-key

@@ -1,5 +1,5 @@
-ARG GVISOR_BASE=us-central1-docker.pkg.dev/veris-ai-prod/veris-sandbox/veris-gvisor:latest
-FROM ${GVISOR_BASE}
+ARG VERIS_BASE
+FROM ${VERIS_BASE}
 
 COPY src /agent/src
 
