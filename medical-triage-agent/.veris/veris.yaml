@@ -5,7 +5,7 @@ services:
     dns_aliases:
       - fhir.epic.com
 
-persona:
+actor:
   channels:
     - type: ws
       url: ws://localhost:8088/ws

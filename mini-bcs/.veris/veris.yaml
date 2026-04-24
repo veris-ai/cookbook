@@ -7,24 +7,24 @@ services:
       SCHEMA_PATH: /agent/db/schema.sql
       POSTGRES_PASSWORD: postgres
 
-persona:
-  modality:
-    type: http
-    url: http://localhost:8008/chat
-    method: POST
-    headers:
-      Content-Type: application/json
-    request:
-      message_field: message
-      session_field: session_id
-    response:
-      type: json
-      message_field: response
-      session_field: session_id
+actor:
+  channels:
+    - type: http
+      url: http://localhost:8008/chat
+      method: POST
+      headers:
+        Content-Type: application/json
+      request:
+        message_field: message
+        session_field: session_id
+      response:
+        type: json
+        message_field: response
+        session_field: session_id
 
 agent:
   code_path: /agent
   entry_point: uv run --no-sync uvicorn app.main:app --host 0.0.0.0 --port 8008
   environment:
-    DATABASE_URL: postgresql://postgres:postgres@localhost:5432/SIMULATION_ID
+    DATABASE_URL: postgresql://postgres:postgres@localhost:5432/veris
     OPENAI_API_KEY: ${OPENAI_API_KEY}

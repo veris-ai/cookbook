@@ -29,6 +29,6 @@ card-replacement-agent-env:
     entry_point: uv run --no-sync uvicorn app.main:app --host 0.0.0.0 --port 8008
     port: 8008
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/SIMULATION_ID
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/veris
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       POSTGRES_PASSWORD: postgres
