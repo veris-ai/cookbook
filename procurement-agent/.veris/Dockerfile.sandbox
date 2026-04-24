@@ -1,6 +1,6 @@
 # Extends veris-gvisor base with your agent code
-ARG GVISOR_BASE=us-central1-docker.pkg.dev/veris-ai-prod/veris-sandbox/veris-gvisor:latest
-FROM ${GVISOR_BASE}
+ARG VERIS_BASE
+FROM ${VERIS_BASE}
 
 # ============================================================
 # 1. AGENT CODE — Update paths to match your project structure
