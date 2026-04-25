@@ -1,23 +1,24 @@
 version: "1.0"
 
-services:
-  - name: epic/fhir
-    dns_aliases:
-      - fhir.epic.com
+medical-triage-agent-env:
+  services:
+    - name: epic/fhir
+      dns_aliases:
+        - fhir.epic.com
 
-actor:
-  channels:
-    - type: ws
-      url: ws://localhost:8088/ws
+  actor:
+    channels:
+      - type: ws
+        url: ws://localhost:8088/ws
 
-agent:
-  code_path: /agent
-  entry_point: uv run --no-sync python src/main.py
-  port: 8088
-  environment:
-    FHIR_BASE_URL: "https://fhir.epic.com/fhir/R4"
-    FHIR_TOKEN: "sample-token"
-    AWS_ACCESS_KEY_ID: mock-aws-key
-    AWS_SECRET_ACCESS_KEY: mock-aws-secret
-    AWS_REGION: "us-east-1"
-    BEDROCK_MODEL_ID: "us.amazon.nova-pro-v1:0"
+  agent:
+    code_path: /agent
+    entry_point: uv run --no-sync python src/main.py
+    port: 8088
+    environment:
+      FHIR_BASE_URL: "https://fhir.epic.com/fhir/R4"
+      FHIR_TOKEN: "sample-token"
+      AWS_ACCESS_KEY_ID: mock-aws-key
+      AWS_SECRET_ACCESS_KEY: mock-aws-secret
+      AWS_REGION: "us-east-1"
+      BEDROCK_MODEL_ID: "us.amazon.nova-pro-v1:0"
