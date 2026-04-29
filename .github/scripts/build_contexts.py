@@ -268,8 +268,8 @@ def extract_channel(veris_yaml: dict, template_id: str) -> str:
     """Return the primary channel type. Fails loudly if no actor.channels.
 
     The legacy `persona.modality` fallback was removed when sandbox dropped
-    its back-compat shims (sandbox#1239) — keeping it here would re-create
-    the silent-drop bug that motivated this script.
+    its back-compat shims — keeping it here would re-create the silent-drop
+    bug that motivated this script.
     """
     channels = veris_yaml.get("actor", {}).get("channels")
     if not channels or not isinstance(channels, list):
