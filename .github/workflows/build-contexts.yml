@@ -1,0 +1,56 @@
+name: Build Template Contexts
+
+# This workflow regenerates the cookbook templates manifest from source.
+# It runs on manual trigger only and produces the manifest + tar contexts as
+# CI artifacts — it does NOT upload to GCS yet, because cookbook source
+# currently diverges from the deployed manifest in a few places (DATABASE_URL
+# placeholders, secret-key interpolation). Once that drift is closed, this
+# workflow can be flipped to upload directly + auto-trigger on push to main.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install pyyaml
+
+      - name: Build dev manifest + contexts
+        run: python .github/scripts/build_contexts.py --env dev
+
+      - name: Build prod manifest
+        run: python .github/scripts/build_contexts.py --env prod
+
+      - name: Upload manifests + contexts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cookbook-templates
+          path: |
+            dist/manifest-dev.json
+            dist/manifest-prod.json
+            dist/contexts/*.tar.gz
+          retention-days: 30
+
+      - name: Summary
+        run: |
+          echo "## Build summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- $(jq '.templates | length' dist/manifest-dev.json) templates in dev manifest" >> $GITHUB_STEP_SUMMARY
+          echo "- $(jq '.templates | length' dist/manifest-prod.json) templates in prod manifest" >> $GITHUB_STEP_SUMMARY
+          echo "- $(ls dist/contexts/*.tar.gz | wc -l) tar contexts built" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Download the artifact above, diff against the deployed manifest, then upload manually with:" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "gcloud storage cp dist/manifest-dev.json  gs://veris-sandbox-blob-storage-dev/templates/manifest.json  --project=veris-ai-dev" >> $GITHUB_STEP_SUMMARY
+          echo "gcloud storage cp dist/manifest-prod.json gs://veris-sandbox-blob-storage-prod/templates/manifest.json --project=veris-ai-prod" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
