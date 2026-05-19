@@ -212,4 +212,6 @@ __marimo__/
 .veris/*
 !.veris/Dockerfile.sandbox
 !.veris/veris.yaml
+# Holmes toolset config — committed alongside the agent
+!**/.holmes/config.yaml
 

@@ -1,0 +1,18 @@
+[project]
+name = "holmes-gpt-agent"
+version = "0.1.0"
+description = "HolmesGPT wrapped as an SRE agent that investigates and resolves PagerDuty incidents"
+readme = "README.md"
+requires-python = ">=3.12,<4.0"
+dependencies = [
+    "anyio>=4.0.0",
+    "fastapi>=0.121.1",
+    "holmesgpt==0.30.0",
+    "pydantic>=2.7",
+    "python-dotenv==1.0.1",
+    "uvicorn>=0.40.0",
+    "websockets>=11,<16",
+]
+
+[tool.uv]
+prerelease = "allow"
