@@ -1,0 +1,21 @@
+# Extends veris-gvisor base with HolmesGPT + the FastAPI wrapper
+ARG VERIS_BASE
+FROM ${VERIS_BASE}
+
+# ============================================================
+# 1. AGENT CODE
+# ============================================================
+COPY app /agent/app
+COPY .holmes /agent/.holmes
+
+# ============================================================
+# 2. DEPENDENCIES (uv)
+# ============================================================
+WORKDIR /agent
+
+COPY pyproject.toml /agent/
+COPY README.md /agent/
+# COPY uv.lock /agent/
+RUN uv sync --no-dev
+
+WORKDIR /app

@@ -1,0 +1,45 @@
+# Veris simulation configuration
+version: "1.0"
+
+holmes-gpt-agent-env:
+  services:
+    - name: pagerduty
+      dns_aliases:
+        - api.pagerduty.com
+    - name: datadog
+      dns_aliases:
+        - api.datadoghq.com
+
+  actor:
+    channels:
+      - type: ws
+        url: ws://localhost:8008/ws/chat
+        # HolmesGPT runs a single investigation per turn (fetch + LLM call +
+        # write-back). Bump nudge_after so the persona doesn't fire impatient
+        # follow-ups mid-investigation.
+        nudge_after: 90
+        visible_types: ["message", "error"]
+    config:
+      # Exported as env vars to the actor service; the actor reads MAX_TURNS
+      # (uppercase) per sandbox/actors/app/main.py.
+      MAX_TURNS: "2"
+
+  agent:
+    name: HolmesGPT
+    code_path: /agent
+    entry_point: uv run --no-sync uvicorn app.main:app --host 0.0.0.0 --port 8008
+    port: 8008
+    environment:
+      PAGERDUTY_API_TOKEN: sample-pd-token
+      PAGERDUTY_USER_EMAIL: sre-bot@holmesgpt.local
+      # Datadog (toolset — the LLM calls fetch_datadog_logs / query_datadog_metrics).
+      # DNS-aliased to the pagerduty-style "datadog" mock service above.
+      DATADOG_API_KEY: sample-dd-api-key
+      DATADOG_APP_KEY: sample-dd-app-key
+      DATADOG_API_URL: https://api.datadoghq.com
+      # Points HolmesGPT at .holmes/config.yaml (which enables datadog/* and
+      # leaves every other built-in toolset off).
+      HOLMES_CONFIGPATH_DIR: /agent/.holmes
+      # HolmesGPT picks up OPENAI_API_KEY / ANTHROPIC_API_KEY for its LLM.
+      # Set them via `veris env vars set ... --secret`.
+      MODEL: openai/gpt-5.4-mini
