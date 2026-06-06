@@ -1,0 +1,36 @@
+version: "1.0"
+
+# The Veris slack mock intercepts api.slack.com / slack.com.
+
+brandpulse-env:
+  services:
+    - name: slack
+      dns_aliases:
+        - slack.com
+        - api.slack.com
+
+  # Veris spawns the openclaw CLI once per actor turn — the same invocation
+  # pattern production uses (cron → `openclaw agent --deliver`). `--local`
+  # runs the agent embedded (no gateway boot), `--deliver --reply-channel
+  # slack --reply-to C_SANDBOX` routes the reply through the slack channel
+  # so the Veris mock captures it.
+  actor:
+    config:
+      MAX_TURNS: "1"
+    channels:
+      - type: cli
+        command: ["openclaw", "agent", "--local", "--agent", "brandpulse",
+                  "--deliver", "--reply-channel", "slack", "--reply-to", "C_SANDBOX"]
+        message_arg: "--message"
+        timeout_seconds: 2400
+
+  # `agent.port` and `agent.entry_point` are intentionally omitted: under a
+  # CLI channel the container skips agent startup; each actor turn invokes
+  # the CLI directly.
+  agent:
+    name: BrandPulse
+    code_path: /agent
+    environment:
+      HOME: /root
+      OPENCLAW_TELEMETRY_DISABLED: "1"
+      OPENCLAW_CONFIG_PATH: /root/.openclaw/openclaw.json
