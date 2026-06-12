@@ -9,8 +9,8 @@ permissions:
 
 env:
   ENV_ID: "env_8ksm4mqyfkn6x0z5uv6ok"
-  SCENARIO_SET_ID: "scenset_8ay1mbqhn6nzsfq4fhooe"
-  GRADER_ID: "grader_8tgpmkaplmlynva7ivfdv"
+  SCENARIO_SET_ID: "scenset_4jwdgfibkp5fsq4pratra"
+  GRADER_ID: "grader_0eqcgqbakneedkxd7udss"
 
 jobs:
   simulate:
