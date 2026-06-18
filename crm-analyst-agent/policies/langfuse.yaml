@@ -1,0 +1,16 @@
+preset:
+  name: langfuse
+  description: OTLP trace export to Langfuse Cloud US (gateway node exporter)
+network_policies:
+  langfuse:
+    name: langfuse
+    endpoints:
+      - host: us.cloud.langfuse.com
+        port: 443
+        protocol: rest
+        enforcement: enforce
+        rules:
+          - allow: { method: POST, path: "/api/public/otel/**" }
+    binaries:
+      - path: /usr/local/bin/node
+      - path: /usr/bin/node

@@ -1,0 +1,18 @@
+preset:
+  name: posthog
+  description: PostHog HogQL query API for the analyst skill (exec python3)
+network_policies:
+  posthog:
+    name: posthog
+    endpoints:
+      - host: us.posthog.com
+        port: 443
+        protocol: rest
+        enforcement: enforce
+        rules:
+          - allow: { method: POST, path: "/api/projects/**" }
+          - allow: { method: GET,  path: "/api/projects/**" }
+    binaries:
+      - path: "/usr/bin/python3*"
+      - path: /usr/local/bin/node
+      - path: /usr/bin/node
