@@ -1,0 +1,2 @@
+# Never commit the real build secrets (only the .example template is committed)
+crm-analyst-secrets.env
