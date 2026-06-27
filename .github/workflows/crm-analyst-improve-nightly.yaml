@@ -1,4 +1,10 @@
-name: "Veris: crm-analyst Trace-Gen Nightly"
+name: "Veris: crm-analyst Improvement Loop (Nightly)"
+
+# Self-closing nightly improvement loop:
+#   rebuild prod env from repo HEAD  ->  generate scenarios from fresh prod traces
+#   ->  run + grade  ->  report  ->  ingest agent-fixes into a DRAFT PR.
+# Merging the PR is the human gate; the NEXT nightly rebuilds prod from the merged
+# HEAD and re-measures on fresh prod-grounded scenarios — no separate verify job.
 
 on:
   schedule:
@@ -15,21 +21,19 @@ on:
         required: false
 
 permissions:
-  contents: read
-  id-token: write            # required for GCP Workload Identity Federation
+  contents: write            # push the agent-fix branch
+  pull-requests: write       # open the draft PR
+  id-token: write            # GCP Workload Identity Federation
 
 env:
-  # --- Per-agent (hardcoded so the repo can host one *-trace-gen-nightly.yaml per
-  # agent; GitHub repo Variables are repo-global). Not secrets — the real creds
-  # live in GCP Secret Manager, pulled below by these names. ---
+  # --- Per-agent (hardcoded; GitHub repo Variables are repo-global). Not secrets —
+  # the real creds live in GCP Secret Manager, pulled below by these names. ---
   VERIS_ENV_ID: "env_5e5n3vezipnngaqvygtki"
   LANGFUSE_HOST: "https://us.cloud.langfuse.com"
   SECRET_LANGFUSE_PUBLIC_KEY: "crm-analyst-langfuse-public-key"   # per-agent Langfuse project
   SECRET_LANGFUSE_SECRET_KEY: "crm-analyst-langfuse-secret-key"
   # Shared across ALL cookbook nightlies: a dedicated is_admin *automation* user's
-  # key (trace sources are admin-gated — see backend scenario_sources.py). This is
-  # the same auth model the onboard/training/grading pods use (system veris-api-key
-  # bearer), but a separate bot identity so its blast radius is isolated to CI.
+  # key (trace sources are admin-gated — see backend scenario_sources.py).
   SECRET_VERIS_ADMIN_API_KEY: "veris-cookbook-nightly-admin-key"
   # --- Tunables (overridable via workflow_dispatch) ---
   LOOKBACK_DAYS: ${{ github.event.inputs.lookback_days || '3' }}
@@ -42,12 +46,9 @@ env:
     automated liveness or heartbeat pings.
 
 jobs:
-  trace-gen-sim:
+  improve:
     runs-on: ubuntu-latest
     environment: veris-sandbox-ci
-    defaults:
-      run:
-        working-directory: crm-analyst-agent/trace-gen
     steps:
       - uses: actions/checkout@v4
 
@@ -56,11 +57,9 @@ jobs:
           python-version: "3.11"
 
       - name: Install veris-cli
-        # The --from-langfuse flag (PR #171) ships in veris-cli 2.30.0+. veris-cli
-        # is a PRIVATE repo, so install from public PyPI (not git) — same as the
-        # sibling cookbook nightlies. Requires the 2.30.0 release to be published
-        # first via veris-cli's release.yml (semantic-release bumps 2.29.0→2.30.0).
-        run: pip install "veris-cli>=2.30.0,<3"
+        # reports get --format json + env config pull / push --no-snapshot land in
+        # veris-cli 2.32.0+ (PRs #176/#177). PRIVATE repo → install from public PyPI.
+        run: pip install "veris-cli>=2.32.0,<3"
 
       - name: Authenticate to GCP (Workload Identity Federation)
         uses: google-github-actions/auth@v2
@@ -88,12 +87,27 @@ jobs:
           LANGFUSE_SECRET_KEY:$SECRET_LANGFUSE_SECRET_KEY
           EOF
 
-      - name: Generate scenario set from production traces
+      - name: Veris login
+        run: veris login "$VERIS_API_KEY" >/dev/null
+
+      - name: Rebuild prod env from repo HEAD
+        working-directory: crm-analyst-agent
+        # Make tonight's sims run the agent as it exists in the repo right now — so a
+        # previously-merged agent-fix PR actually takes effect. config pull materializes
+        # .veris/ (Dockerfile.sandbox + veris.yaml); env push --no-snapshot does a
+        # server-side Cloud Build from the on-disk agent source (no local docker).
+        # NOTE: requires the cookbook agent dir to be env-push-able (user-state baseline,
+        # plan task B0). Validate via workflow_dispatch before trusting the cron.
         run: |
           set -euo pipefail
-          veris login "$VERIS_API_KEY" >/dev/null
-          chmod +x build_langfuse_curl.sh
+          veris env config pull --env-id "$VERIS_ENV_ID"
+          veris env push --no-snapshot --env-id "$VERIS_ENV_ID"
 
+      - name: Generate scenario set from production traces
+        working-directory: crm-analyst-agent/trace-gen
+        run: |
+          set -euo pipefail
+          chmod +x build_langfuse_curl.sh
           OUT="$(./build_langfuse_curl.sh | veris scenarios create \
                    --env-id "$VERIS_ENV_ID" \
                    --from-langfuse - \
@@ -101,23 +115,22 @@ jobs:
                    --title "crm-analyst-trace-nightly-${LOOKBACK_DAYS}d-$(date -u +%Y%m%d)" \
                    --prompt "$FOCUS_PROMPT" 2>&1)"
           echo "$OUT"
-
           SET_ID="$(echo "$OUT" | grep -oE 'scenset_[a-z0-9]+' | head -1)"
           [ -n "$SET_ID" ] || { echo "::error::No scenario set id in output — generation launch failed."; exit 1; }
           echo "SET_ID=$SET_ID" >> "$GITHUB_ENV"
           echo "::notice::Generating scenario set $SET_ID"
 
       - name: Wait for generation to finish
+        working-directory: crm-analyst-agent/trace-gen
         run: veris scenarios status "$SET_ID" --watch
 
       - name: Run simulation + evaluation
+        working-directory: crm-analyst-agent/trace-gen
         run: |
           set -euo pipefail
-          # The grader is generated shortly AFTER the set reports `ready`, so the
-          # first `veris run` can transiently hit "No grader found". That check
-          # runs *before* any sim run is created (veris-cli run.py:86-101), so
-          # retrying is safe — no duplicate sims. Retry only on that transient;
-          # any other failure fails the job loudly.
+          # grader is generated shortly AFTER the set reports `ready`, so the first
+          # `veris run` can transiently hit "No grader found" (before any sim is
+          # created — retry is safe). Any other failure fails the job loudly.
           attempts=0
           until veris run \
                   --scenario-set-id "$SET_ID" \
@@ -125,22 +138,64 @@ jobs:
                   --simulation-timeout 900 \
                   > veris-summary.md 2> run.log; do
             if grep -q "No grader found" run.log && [ "$attempts" -lt 12 ]; then
-              attempts=$((attempts + 1))
-              echo "::notice::grader not ready yet (attempt $attempts/12) — waiting 15s"
-              sleep 15
+              attempts=$((attempts + 1)); echo "::notice::grader not ready (attempt $attempts/12)"; sleep 15
             else
-              cat run.log >&2
-              echo "::error::veris run failed"
-              exit 1
+              cat run.log >&2; echo "::error::veris run failed"; exit 1
             fi
           done
-          cat run.log >&2 || true
           cat veris-summary.md
+          RUN_ID="$(grep -oE 'run_[a-z0-9]+' veris-summary.md | head -1)"
+          [ -n "$RUN_ID" ] || { echo "::error::no run id in summary"; exit 1; }
+          echo "RUN_ID=$RUN_ID" >> "$GITHUB_ENV"
+
+      - name: Generate report + fetch agent-fixes
+        working-directory: crm-analyst-agent/trace-gen
+        run: |
+          set -euo pipefail
+          RPT="$(veris reports create "$RUN_ID" 2>&1 | grep -oE 'rpt_[a-z0-9]+' | head -1)"
+          [ -n "$RPT" ] || { echo "::error::report create failed"; exit 1; }
+          echo "REPORT_ID=$RPT" >> "$GITHUB_ENV"
+          echo "::notice::report $RPT — polling for agent-fixes"
+          # /agent-fixes 409s until the report is `completed`; poll the JSON export.
+          for _ in $(seq 1 60); do
+            if veris reports get "$RPT" --format json -o fixes.json 2>/dev/null && [ -s fixes.json ]; then
+              echo "::notice::agent-fixes ready"; exit 0
+            fi
+            sleep 15
+          done
+          echo "::error::report $RPT did not complete in time"; exit 1
+
+      - name: Ingest agent-fixes → draft PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # ingest exits non-zero when there's nothing agent-fixable to apply.
+          if ! python crm-analyst-agent/improve/ingest_report.py \
+                 --fixes crm-analyst-agent/trace-gen/fixes.json \
+                 --agent-dir crm-analyst-agent \
+                 --repo-root . \
+                 --pr-body /tmp/pr_body.md; then
+            echo "::notice::No agent-fixable suggestions tonight — loop is clean."
+            exit 0
+          fi
+          BR="auto/crm-analyst-fixes-$(date -u +%Y%m%dT%H%M%S)"
+          git config user.name "veris-cookbook-bot"
+          git config user.email "veris-cookbook-bot@users.noreply.github.com"
+          git checkout -b "$BR"
+          git add -A
+          git commit -m "fix(crm-analyst): ingest agent-fixes from report ${REPORT_ID}"
+          git push -u origin "$BR"
+          gh pr create --draft --base main --head "$BR" \
+            --title "fix(crm-analyst): nightly agent-fixes from ${REPORT_ID}" \
+            --body-file /tmp/pr_body.md
 
       - name: Upload run summary
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: veris-summary
-          path: crm-analyst-agent/trace-gen/veris-summary.md
+          path: |
+            crm-analyst-agent/trace-gen/veris-summary.md
+            crm-analyst-agent/trace-gen/fixes.json
           if-no-files-found: ignore
