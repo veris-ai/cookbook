@@ -8,12 +8,14 @@ name: "Veris: crm-analyst Improvement Loop (Nightly)"
 
 on:
   schedule:
-    - cron: '0 7 * * *'      # 07:00 UTC, after the 06:00 cookbook nightlies
+    # Every 3rd day-of-month at 00:00 UTC. day-of-month */3 resets each month, so
+    # the 31st->1st gap is occasionally <3 days — fine, the cadence needn't be exact.
+    - cron: '0 0 */3 * *'
   workflow_dispatch:
     inputs:
       lookback_days:
         description: "Days of production traces to ground on"
-        default: "3"
+        default: "5"
         required: false
       num_scenarios:
         description: "Number of scenarios to generate"
@@ -36,7 +38,7 @@ env:
   # key (trace sources are admin-gated — see backend scenario_sources.py).
   SECRET_VERIS_ADMIN_API_KEY: "veris-cookbook-nightly-admin-key"
   # --- Tunables (overridable via workflow_dispatch) ---
-  LOOKBACK_DAYS: ${{ github.event.inputs.lookback_days || '3' }}
+  LOOKBACK_DAYS: ${{ github.event.inputs.lookback_days || '5' }}
   NUM_SCENARIOS: ${{ github.event.inputs.num_scenarios || '30' }}
   TRACE_NAME_FILTER: "openclaw.run"
   FOCUS_PROMPT: >-
