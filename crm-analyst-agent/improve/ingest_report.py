@@ -18,7 +18,11 @@ Each fix's `diff` is a git diff whose paths are relative to the agent root, so w
 defensively. Fixes that don't apply cleanly are reported in the PR body, not
 forced — a drifted baseline is a signal for a human, not something to fuzz over.
 
-Exit 0 if >=1 fix applied (caller opens a draft PR); exit 1 if none applied.
+Exit codes (so the caller can tell "clean" from "drifted"):
+  0 — >=1 fix applied; caller opens a draft PR.
+  2 — agent-fixable fixes were found but ALL failed to apply (baseline drift);
+      nothing to PR, but the caller should surface the PR body, not call it clean.
+  1 — nothing agent-fixable at all (a genuinely clean run).
 """
 
 from __future__ import annotations
@@ -117,7 +121,11 @@ def main() -> int:
     Path(args.pr_body).write_text("\n".join(body) + "\n")
 
     print(f"applied={len(applied)} failed={len(failed)} skipped={len(skipped)}", file=sys.stderr)
-    return 0 if applied else 1
+    if applied:
+        return 0
+    if failed:
+        return 2  # agent-fixable fixes found but none applied — baseline drift, surface it
+    return 1  # nothing agent-fixable
 
 
 if __name__ == "__main__":

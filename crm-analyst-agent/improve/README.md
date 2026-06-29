@@ -41,7 +41,10 @@ Only **agent-fixable** routes are applied — `skill`, `system_prompt`, `tool_sc
 findings are parked. Each `diff` is a git diff whose paths are relative to the agent
 root, so it is applied with `git apply --directory=crm-analyst-agent -p1 --recount`.
 Fixes that don't apply cleanly (baseline drift) are **listed for manual fixing**, not
-force-patched. Exit 0 if ≥1 fix applied; exit 1 if none (the workflow then skips the PR).
+force-patched. Exit codes let the caller tell a clean run from a drifted one: **0** if
+≥1 fix applied (open a draft PR), **2** if agent-fixable fixes were found but all failed
+to apply (baseline drift — the workflow surfaces the PR body as an artifact instead of
+calling it clean), **1** if there was nothing agent-fixable (a genuinely clean run).
 
 ```bash
 veris reports get rpt_xxx --format json -o fixes.json

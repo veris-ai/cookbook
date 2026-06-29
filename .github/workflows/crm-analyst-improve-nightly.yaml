@@ -172,25 +172,40 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          # ingest exits non-zero when there's nothing agent-fixable to apply.
-          if ! python crm-analyst-agent/improve/ingest_report.py \
-                 --fixes crm-analyst-agent/trace-gen/fixes.json \
-                 --agent-dir crm-analyst-agent \
-                 --repo-root . \
-                 --pr-body /tmp/pr_body.md; then
+          # Exit codes: 0 = >=1 fix applied (open PR); 2 = fixes found but all failed
+          # to apply (baseline drift — surface, don't call it clean); 1 = nothing fixable.
+          PR_BODY=crm-analyst-agent/trace-gen/pr_body.md
+          rc=0
+          python crm-analyst-agent/improve/ingest_report.py \
+            --fixes crm-analyst-agent/trace-gen/fixes.json \
+            --agent-dir crm-analyst-agent \
+            --repo-root . \
+            --pr-body "$PR_BODY" || rc=$?
+          if [ "$rc" -eq 1 ]; then
             echo "::notice::No agent-fixable suggestions tonight — loop is clean."
             exit 0
           fi
+          if [ "$rc" -eq 2 ]; then
+            echo "::warning::Agent-fixable suggestions were found but all failed to apply (baseline drift). See the pr_body in the run-summary artifact and apply by hand."
+            exit 0
+          fi
+          if [ "$rc" -ne 0 ]; then
+            echo "::error::ingest_report.py failed (rc=$rc)"; exit 1
+          fi
+          # rc == 0: at least one fix applied → open a draft PR. Stage ONLY agent
+          # source — exclude the trace-gen run artifacts (fixes.json, summaries,
+          # pr_body) and the env config materialized by `env config pull` (.veris).
           BR="auto/crm-analyst-fixes-$(date -u +%Y%m%dT%H%M%S)"
           git config user.name "veris-cookbook-bot"
           git config user.email "veris-cookbook-bot@users.noreply.github.com"
           git checkout -b "$BR"
-          git add -A
+          git add -- crm-analyst-agent ':(exclude)crm-analyst-agent/trace-gen' ':(exclude)crm-analyst-agent/.veris'
+          git diff --cached --quiet && { echo "::error::ingest applied fixes but nothing staged"; exit 1; }
           git commit -m "fix(crm-analyst): ingest agent-fixes from report ${REPORT_ID}"
           git push -u origin "$BR"
           gh pr create --draft --base main --head "$BR" \
             --title "fix(crm-analyst): nightly agent-fixes from ${REPORT_ID}" \
-            --body-file /tmp/pr_body.md
+            --body-file "$PR_BODY"
 
       - name: Upload run summary
         if: always()
@@ -200,4 +215,5 @@ jobs:
           path: |
             crm-analyst-agent/trace-gen/veris-summary.md
             crm-analyst-agent/trace-gen/fixes.json
+            crm-analyst-agent/trace-gen/pr_body.md
           if-no-files-found: ignore

@@ -79,8 +79,8 @@ def test_applies_skill_fix_and_skips_non_agent_fixable(tmp_path):
     assert "applied=1" in r.stderr and "skipped=1" in r.stderr
 
 
-def test_exits_nonzero_when_nothing_applies(tmp_path):
-    # a payload with only a non-agent-fixable finding → nothing applied → exit 1
+def test_exits_1_when_nothing_agent_fixable(tmp_path):
+    # only a non-agent-fixable finding → nothing applied, nothing failed → exit 1 (clean)
     payload = {"report_id": "rpt_x", "fixes": [
         {"route": "capability", "diff": "", "target_path": None, "title": "x"}
     ]}
@@ -94,3 +94,34 @@ def test_exits_nonzero_when_nothing_applies(tmp_path):
         capture_output=True, text=True,
     )
     assert r.returncode == 1, r.stderr
+
+
+def test_exits_2_when_agent_fixable_but_all_fail(tmp_path):
+    # an agent-fixable fix whose diff cannot apply (target file absent) → exit 2,
+    # and the PR body still records it under the baseline-drift section.
+    payload = {"report_id": "rpt_y", "fixes": [{
+        "route": "skill",
+        "target_path": "skills/missing/SKILL.md",
+        "title": "drifted fix",
+        "diff": (
+            "diff --git a/skills/missing/SKILL.md b/skills/missing/SKILL.md\n"
+            "--- a/skills/missing/SKILL.md\n"
+            "+++ b/skills/missing/SKILL.md\n"
+            "@@ -1,1 +1,2 @@\n"
+            " a line that does not exist in any file\n"
+            "+inserted\n"
+        ),
+    }]}
+    fixes = tmp_path / "fixes.json"
+    fixes.write_text(json.dumps(payload))
+    repo = tmp_path
+    _git(repo, "init", "-q")
+    pr_body = tmp_path / "pr.md"
+    r = subprocess.run(
+        [sys.executable, str(_SCRIPT), "--fixes", str(fixes), "--repo-root", str(repo),
+         "--agent-dir", "crm-analyst-agent", "--pr-body", str(pr_body)],
+        capture_output=True, text=True,
+    )
+    assert r.returncode == 2, r.stderr
+    assert "applied=0 failed=1" in r.stderr
+    assert "Could not auto-apply" in pr_body.read_text()
