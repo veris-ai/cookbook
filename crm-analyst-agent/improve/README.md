@@ -55,8 +55,9 @@ Tests: `pytest improve/test_ingest_report.py`.
 
 ## What the loop needs
 
-- **Env**: `VERIS_ENV_ID` — your crm-analyst env id, set as a repo/environment
-  Variable (kept out of this file).
+- **Env**: a GitHub Actions Variable `CRM_ANALYST_ENV_ID` holding your crm-analyst
+  env id (per-agent name so it won't collide with other agents' nightlies; the
+  workflow maps it to `VERIS_ENV_ID` internally).
 - **GCP WIF**: repo Variables `GCP_PROJECT_ID`, `GCP_WORKLOAD_IDENTITY_PROVIDER`,
   `GCP_SERVICE_ACCOUNT`; the SA needs Secret Manager access + scenario/report perms.
 - **Secrets (GCP Secret Manager)**: an `is_admin` automation API key (trace sources

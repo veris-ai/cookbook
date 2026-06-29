@@ -28,9 +28,10 @@ permissions:
   id-token: write            # GCP Workload Identity Federation
 
 env:
-  # The agent's Veris env id — set as a repo/environment Variable so this public
-  # file carries no account-specific ids.
-  VERIS_ENV_ID: ${{ vars.VERIS_ENV_ID }}
+  # The agent's Veris env id — sourced from a per-agent GitHub Actions Variable
+  # (repo Variables are repo-global, so each agent uses its own name) and kept out
+  # of this public file.
+  VERIS_ENV_ID: ${{ vars.CRM_ANALYST_ENV_ID }}
   LANGFUSE_HOST: "https://us.cloud.langfuse.com"
   # GCP Secret Manager secret *names* (not values), pulled below — map to your own.
   SECRET_LANGFUSE_PUBLIC_KEY: "crm-analyst-langfuse-public-key"
