@@ -28,14 +28,14 @@ permissions:
   id-token: write            # GCP Workload Identity Federation
 
 env:
-  # --- Per-agent (hardcoded; GitHub repo Variables are repo-global). Not secrets —
-  # the real creds live in GCP Secret Manager, pulled below by these names. ---
-  VERIS_ENV_ID: "env_5e5n3vezipnngaqvygtki"
+  # The agent's Veris env id — set as a repo/environment Variable so this public
+  # file carries no account-specific ids.
+  VERIS_ENV_ID: ${{ vars.VERIS_ENV_ID }}
   LANGFUSE_HOST: "https://us.cloud.langfuse.com"
-  SECRET_LANGFUSE_PUBLIC_KEY: "crm-analyst-langfuse-public-key"   # per-agent Langfuse project
+  # GCP Secret Manager secret *names* (not values), pulled below — map to your own.
+  SECRET_LANGFUSE_PUBLIC_KEY: "crm-analyst-langfuse-public-key"
   SECRET_LANGFUSE_SECRET_KEY: "crm-analyst-langfuse-secret-key"
-  # Shared across ALL cookbook nightlies: a dedicated is_admin *automation* user's
-  # key (trace sources are admin-gated — see backend scenario_sources.py).
+  # A dedicated is_admin *automation* user's key — trace sources are admin-gated.
   SECRET_VERIS_ADMIN_API_KEY: "veris-cookbook-nightly-admin-key"
   # --- Tunables (overridable via workflow_dispatch) ---
   LOOKBACK_DAYS: ${{ github.event.inputs.lookback_days || '5' }}
@@ -59,8 +59,8 @@ jobs:
           python-version: "3.11"
 
       - name: Install veris-cli
-        # reports get --format json + env config pull / push --no-snapshot land in
-        # veris-cli 2.32.0+ (PRs #176/#177). PRIVATE repo → install from public PyPI.
+        # reports get --format json + env config pull / push --no-snapshot need
+        # veris-cli 2.32.0+.
         run: pip install "veris-cli>=2.32.0,<3"
 
       - name: Authenticate to GCP (Workload Identity Federation)
@@ -98,8 +98,8 @@ jobs:
         # previously-merged agent-fix PR actually takes effect. config pull materializes
         # .veris/ (Dockerfile.sandbox + veris.yaml); env push --no-snapshot does a
         # server-side Cloud Build from the on-disk agent source (no local docker).
-        # NOTE: requires the cookbook agent dir to be env-push-able (user-state baseline,
-        # plan task B0). Validate via workflow_dispatch before trusting the cron.
+        # NOTE: requires the agent dir to be env-push-able (a user-state baseline).
+        # Validate via workflow_dispatch before trusting the cron.
         run: |
           set -euo pipefail
           veris env config pull --env-id "$VERIS_ENV_ID"

@@ -53,23 +53,21 @@ python improve/ingest_report.py --fixes fixes.json --agent-dir crm-analyst-agent
 
 Tests: `pytest improve/test_ingest_report.py`.
 
-## Required infra (already wired for prod, except where noted)
+## What the loop needs
 
-- **Env**: `VERIS_ENV_ID=env_5e5n3vezipnngaqvygtki` (prod crm-analyst).
+- **Env**: `VERIS_ENV_ID` — your crm-analyst env id, set as a repo/environment
+  Variable (kept out of this file).
 - **GCP WIF**: repo Variables `GCP_PROJECT_ID`, `GCP_WORKLOAD_IDENTITY_PROVIDER`,
   `GCP_SERVICE_ACCOUNT`; the SA needs Secret Manager access + scenario/report perms.
-- **Secrets (GCP Secret Manager)**: `veris-cookbook-nightly-admin-key` (is_admin
-  automation key — trace sources are admin-gated), `crm-analyst-langfuse-{public,secret}-key`.
+- **Secrets (GCP Secret Manager)**: an `is_admin` automation API key (trace sources
+  are admin-gated) and your Langfuse `{public,secret}` keys. The workflow looks them
+  up by the names in its `env:` block — map those to your own secrets.
 - **Repo setting**: *Actions → General → Allow GitHub Actions to create and approve
   pull requests* (the draft-PR step uses the default `GITHUB_TOKEN`).
 
-## Prerequisites to validate before trusting the cron
+## Before enabling the schedule
 
-1. **Token fix in prod** — prod `env_5e5n3` must run the gateway with `--token`
-   (veris-sandbox recipe `3.2.0`, PR #1955) or the agent hits `token_mismatch` and
-   the report grades empty. Rebuilt automatically by the loop's `env push` once the
-   recipe is live.
-2. **B0 baseline** — the repo's `crm-analyst-agent/` must be the source the env is
-   built from, so the report's diffs `git apply` on a byte-identical baseline. The
+1. **Matching baseline** — the env must be built from this repo's `crm-analyst-agent/`,
+   so the report's diffs `git apply` on a byte-identical baseline. The
    `env push --no-snapshot` step needs an env-push-able layout (`user-state/`).
-3. Dry-run once via **`workflow_dispatch`** before enabling the schedule.
+2. **Dry-run** once via **`workflow_dispatch`** before turning on the cron.
