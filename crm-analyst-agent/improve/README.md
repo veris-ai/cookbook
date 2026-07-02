@@ -1,0 +1,74 @@
+# crm-analyst improvement loop
+
+A self-closing nightly loop that turns Veris simulation **reports** into agent
+improvements, gated by a human-reviewed draft PR.
+
+```
+ nightly  ──►  rebuild prod env from repo HEAD
+          ──►  generate scenarios from fresh prod traces (Langfuse, openclaw.run)
+          ──►  run + grade  ──►  report  ──►  ingest agent-fixes  ──►  DRAFT PR
+                                                                         │
+                                              you review + merge ◄───────┘
+          ──►  NEXT nightly rebuilds from the merged HEAD on fresh scenarios …
+```
+
+There is **no separate verify job / pinned regression set**: each night re-grounds
+on the latest production traces and rebuilds the agent from repo HEAD, so the next
+run *is* the verification. Improvement is tracked as the pass-rate trend over nights.
+
+## Pieces
+
+| File | Role |
+|---|---|
+| [`ingest_report.py`](ingest_report.py) | Apply a report's agent-fixes to the agent source, emit a PR body. |
+| [`../../.github/workflows/crm-analyst-improve-nightly.yaml`](../../.github/workflows/crm-analyst-improve-nightly.yaml) | The nightly loop (cron + `workflow_dispatch`). |
+| [`fixtures/agent_fixes_example.json`](fixtures/agent_fixes_example.json) | A real `/agent-fixes` payload (test + reference). |
+
+## `ingest_report.py`
+
+Input is the JSON from `veris reports get <rpt_id> --format json`:
+
+```json
+{"report_id": "...", "status": "completed",
+ "fixes": [{"route": "skill", "confidence": "medium",
+            "target_path": "skills/.../SKILL.md",
+            "diff": "diff --git a/skills/... b/skills/...\n@@ ...",
+            "title": "...", "description": "...", "simulations_affected": [...]}]}
+```
+
+Only **agent-fixable** routes are applied — `skill`, `system_prompt`, `tool_schema`
+(the endpoint already filters; the script re-checks). `bad_scenario` / `capability`
+findings are parked. Each `diff` is a git diff whose paths are relative to the agent
+root, so it is applied with `git apply --directory=crm-analyst-agent -p1 --recount`.
+Fixes that don't apply cleanly (baseline drift) are **listed for manual fixing**, not
+force-patched. Exit codes let the caller tell a clean run from a drifted one: **0** if
+≥1 fix applied (open a draft PR), **2** if agent-fixable fixes were found but all failed
+to apply (baseline drift — the workflow surfaces the PR body as an artifact instead of
+calling it clean), **1** if there was nothing agent-fixable (a genuinely clean run).
+
+```bash
+veris reports get rpt_xxx --format json -o fixes.json
+python improve/ingest_report.py --fixes fixes.json --agent-dir crm-analyst-agent
+```
+
+Tests: `pytest improve/test_ingest_report.py`.
+
+## What the loop needs
+
+- **Env**: a GitHub Actions Variable `CRM_ANALYST_ENV_ID` holding your crm-analyst
+  env id (per-agent name so it won't collide with other agents' nightlies; the
+  workflow maps it to `VERIS_ENV_ID` internally).
+- **GCP WIF**: repo Variables `GCP_PROJECT_ID`, `GCP_WORKLOAD_IDENTITY_PROVIDER`,
+  `GCP_SERVICE_ACCOUNT`; the SA needs Secret Manager access + scenario/report perms.
+- **Secrets (GCP Secret Manager)**: an `is_admin` automation API key (trace sources
+  are admin-gated) and your Langfuse `{public,secret}` keys. The workflow looks them
+  up by the names in its `env:` block — map those to your own secrets.
+- **Repo setting**: *Actions → General → Allow GitHub Actions to create and approve
+  pull requests* (the draft-PR step uses the default `GITHUB_TOKEN`).
+
+## Before enabling the schedule
+
+1. **Matching baseline** — the env must be built from this repo's `crm-analyst-agent/`,
+   so the report's diffs `git apply` on a byte-identical baseline. The
+   `env push --no-snapshot` step needs an env-push-able layout (`user-state/`).
+2. **Dry-run** once via **`workflow_dispatch`** before turning on the cron.
