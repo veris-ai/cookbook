@@ -16,7 +16,7 @@ itself (the SOUL workspace + two skills), the egress policy presets, and a night
 | Runtime | OpenClaw inside OpenShell (docker driver) |
 | Model | any **OpenAI-compatible** endpoint — default `gpt-5.5`; also works with Baseten Model APIs (e.g. `moonshotai/Kimi-K2.7-Code`) |
 | Channel | Slack (native, Socket Mode), `contextVisibility: allowlist` |
-| Analytics | PostHog HogQL query API, read-only, via the `exec` tool |
+| Analytics | PostHog HogQL query API, read-only, via the `exec` tool; internal-team activity (`INTERNAL_EMAIL_DOMAIN`, default `veris.ai`) excluded by default |
 | Tracing | OpenClaw `diagnostics-otel` plugin → OTLP → Langfuse Cloud, with content capture |
 | Skills | `crm-analyst-query` (PostHog), `nemo-sales-crm-approval` (email send, approval-gated) |
 
