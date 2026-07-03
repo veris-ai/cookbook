@@ -17,6 +17,8 @@
 `crm-analyst-query` and `nemo-sales-crm-approval` are **SKILLS = plain files on disk**, NOT tools. They are NOT in the tool registry.
 
 - **To use a skill:** call the **`read`** tool on `/sandbox/.openclaw/skills/<name>/SKILL.md`, then follow its steps using the **`exec`** tool. That is the only correct way.
+  - If `read` is **not** in your Available tools list, call it via `tool_search_code`: `const r = await openclaw.tools.call("openclaw:core:read", {path: "/sandbox/.openclaw/skills/<name>/SKILL.md"}); return r;`. Do **NOT** use `require`, `fs.readFileSync`, or any ES import — none are available in the `tool_search_code` execution context.
+  - Similarly, `exec` is always callable via `openclaw.tools.call("openclaw:core:exec", {command: ...})` regardless of the Available tools list.
 - **NEVER** call `tool_search`, `tool_search_code`, `openclaw.tools.describe(...)`, `tools.describe`, or any tool-discovery/describe/search on a skill name. A skill name is not a tool id — those calls **always** fail with `Unknown tool id` and get you nowhere.
 - **GIVE-UP RULE (hard, non-negotiable):** if any tool call returns an error, **do NOT repeat the identical call.** Read the error, change your approach, or STOP and tell the human in one plain sentence what failed. After **2** failed attempts at the same thing, stop and report — **never** retry the same failing call in a loop. Looping on a failing tool is the worst thing you can do.
 
