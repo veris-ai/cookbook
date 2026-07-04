@@ -1,16 +1,22 @@
-name: "Veris: crm-analyst Improvement Loop (Nightly)"
+name: "Veris: crm-analyst Improvement Loop (Reference)"
 
+# REFERENCE COPY — the production loop runs from a private mirror.
+#
 # Self-closing nightly improvement loop:
-#   rebuild prod env from repo HEAD  ->  generate scenarios from fresh prod traces
+#   rebuild prod env  ->  generate scenarios from fresh prod traces
 #   ->  run + grade  ->  report  ->  ingest agent-fixes into a DRAFT PR.
 # Merging the PR is the human gate; the NEXT nightly rebuilds prod from the merged
 # HEAD and re-measures on fresh prod-grounded scenarios — no separate verify job.
+#
+# Why no cron here: the loop's outputs — report text, sim transcripts, fix
+# diffs, run logs, artifacts — quote production data, and a public repo makes
+# every one of those a public surface. We run this exact loop against our
+# production agent from a private repo (where the auto-fix PRs also land) and
+# cherry-pick sanitized improvements back into this showcase copy. The private
+# variant's rebuild step also sources the env's runtime user-state from GCS
+# (it carries credentials that can never live in a git repo, public or not).
 
 on:
-  schedule:
-    # Every 3rd day-of-month at 00:00 UTC. day-of-month */3 resets each month, so
-    # the 31st->1st gap is occasionally <3 days — fine, the cadence needn't be exact.
-    - cron: '0 0 */3 * *'
   workflow_dispatch:
     inputs:
       lookback_days:

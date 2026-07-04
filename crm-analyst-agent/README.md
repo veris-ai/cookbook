@@ -107,6 +107,11 @@ Action that grounds a fresh Veris scenario set on the last N days of **productio
 a simulation + evaluation against it — closing a trace → generate → simulate → grade loop. See
 [`trace-gen/README.md`](trace-gen/README.md).
 
+The workflow YAML in this repo is a **reference copy** (`workflow_dispatch` only). We run the real
+loop against our production agent from a private mirror, because its outputs — reports, sim
+transcripts, fix diffs, logs — quote production data; sanitized improvements are cherry-picked back
+into this copy.
+
 ## Hard-won gotchas (why the harness/policies look the way they do)
 
 - **State-restore redacts secrets in `state_dirs`.** On a rebuild/recreate, OpenShell replaces
