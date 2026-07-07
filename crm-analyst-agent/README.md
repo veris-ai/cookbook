@@ -16,7 +16,7 @@ itself (the SOUL workspace + two skills), the egress policy presets, and a night
 | Runtime | OpenClaw inside OpenShell (docker driver) |
 | Model | any **OpenAI-compatible** endpoint — default `gpt-5.5`; also works with Baseten Model APIs (e.g. `moonshotai/Kimi-K2.7-Code`) |
 | Channel | Slack (native, Socket Mode), `contextVisibility: allowlist` |
-| Analytics | PostHog HogQL query API, read-only, via the `exec` tool |
+| Analytics | PostHog HogQL query API, read-only, via the `exec` tool; internal-team activity (`INTERNAL_EMAIL_DOMAIN`, default `veris.ai`) excluded by default |
 | Tracing | OpenClaw `diagnostics-otel` plugin → OTLP → Langfuse Cloud, with content capture |
 | Skills | `crm-analyst-query` (PostHog), `nemo-sales-crm-approval` (email send, approval-gated) |
 
@@ -106,6 +106,11 @@ Once the agent is live and emitting Langfuse traces, [`trace-gen/`](trace-gen/) 
 Action that grounds a fresh Veris scenario set on the last N days of **production** traces, then runs
 a simulation + evaluation against it — closing a trace → generate → simulate → grade loop. See
 [`trace-gen/README.md`](trace-gen/README.md).
+
+The workflow YAML in this repo is a **reference copy** (`workflow_dispatch` only). We run the real
+loop against our production agent from a private mirror, because its outputs — reports, sim
+transcripts, fix diffs, logs — quote production data; sanitized improvements are cherry-picked back
+into this copy.
 
 ## Hard-won gotchas (why the harness/policies look the way they do)
 

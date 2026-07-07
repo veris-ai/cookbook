@@ -82,6 +82,7 @@ dex sh -c 'cat > /sandbox/.secrets/posthog.env && chmod 600 /sandbox/.secrets/po
 POSTHOG_API_KEY=${POSTHOG_API_KEY}
 POSTHOG_API_HOST=${POSTHOG_API_HOST}
 POSTHOG_PROJECT_ID=${POSTHOG_PROJECT_ID}
+INTERNAL_EMAIL_DOMAIN=${INTERNAL_EMAIL_DOMAIN:-veris.ai}
 EOF
 
 # --- 4. Langfuse OTLP header + captureContent + GenAI semconv + timeout -> openclaw.json ---

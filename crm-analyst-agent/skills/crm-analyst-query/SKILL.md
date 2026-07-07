@@ -46,6 +46,7 @@ LEFT JOIN persons p ON e.person_pk = p.id
 WHERE e.event = '$pageview'
   AND e.properties.$referring_domain ILIKE '%chatgpt%'
   AND e.timestamp > now() - INTERVAL 720 HOUR
+  AND (p.properties.email IS NULL OR p.properties.email NOT ILIKE '%@{{INTERNAL_DOMAIN}}')
 GROUP BY e.distinct_id, email, referrer, utm_source
 ORDER BY views DESC LIMIT 50
 ```
@@ -96,6 +97,7 @@ arguments:
     host = (_sec.get("POSTHOG_API_HOST") or "https://us.posthog.com").rstrip("/")
     pid = _sec.get("POSTHOG_PROJECT_ID", "")
     key = _sec.get("POSTHOG_API_KEY", "")
+    hogql = hogql.replace("{{INTERNAL_DOMAIN}}", _sec.get("INTERNAL_EMAIL_DOMAIN") or "veris.ai")
     if not key or not pid:
         print(json.dumps({"error": "POSTHOG_API_KEY / POSTHOG_PROJECT_ID missing"})); sys.exit(1)
     req = urllib.request.Request(
@@ -120,6 +122,7 @@ arguments:
 - Property access: `properties.$referring_domain`, `properties.utm_source`, `properties.$pathname`, etc. — works on `events` and on a joined `persons` alias (`p.properties.email`).
 - Time filter: `timestamp > now() - INTERVAL N HOUR` (bare `INTERVAL N HOUR`; never a quoted interval).
 - Join people via `events.person_pk = persons.id` (or `person_distinct_ids`).
+- **Internal-user filter (default):** the internal team's own activity is noise, not signal. Any query that joins `persons` / surfaces an email must exclude them: `AND (p.properties.email IS NULL OR p.properties.email NOT ILIKE '%@{{INTERNAL_DOMAIN}}')`. Write `{{INTERNAL_DOMAIN}}` literally — the Step 2 runner substitutes it from `INTERNAL_EMAIL_DOMAIN` in the secret file (default `veris.ai`). Drop the filter only when the human explicitly asks for internal activity ("including internal", "our own team's usage").
 - Always include a `LIMIT` (≤ 200).
 - Do NOT use: CTEs (`WITH … AS`), `countIf` / `arrayJoin`, `toDate()` / `toStartOfDay()` (use `substring(timestamp,1,10)` for day buckets), or event names you haven't confirmed exist.
 - On an error response (`http_status` / `error`), read it, fix the query, retry — **at most 3 times**, then report the failure honestly. **Never invent numbers.**
