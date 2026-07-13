@@ -11,8 +11,18 @@ let compiledGraph = null;
 async function getGraph() {
   if (compiledGraph) return compiledGraph;
 
-  const openaiModel = new ChatOpenAI({ model: "gpt-5-mini" });
-  const geminiModel = new ChatGoogleGenerativeAI({ model: "gemini-2.5-flash" });
+  const supervisorModel = new ChatOpenAI({
+    model: "gpt-5-mini",
+    configuration: { defaultHeaders: { "X-Veris-Agent-Id": "supervisor_agent" } },
+  });
+  const catalogModel = new ChatOpenAI({
+    model: "gpt-5-mini",
+    configuration: { defaultHeaders: { "X-Veris-Agent-Id": "catalog_agent" } },
+  });
+  const accountModel = new ChatGoogleGenerativeAI({
+    model: "gemini-2.5-flash",
+    customHeaders: { "X-Veris-Agent-Id": "account_agent" },
+  });
 
   const stripeTools = await getStripeTools();
 
@@ -25,7 +35,7 @@ async function getGraph() {
   // Handles: product search, pricing, payment links, charges, refunds.
   // ---------------------------------------------------------------------------
   const catalogAgent = createReactAgent({
-    llm: openaiModel,
+    llm: catalogModel,
     tools: stripeTools,
     name: "catalog_agent",
     prompt: `You are the catalog & payments agent. You own the Stripe system.
@@ -47,7 +57,7 @@ RESTRICTIONS — strictly enforced:
   // Handles: customer lookup, order history, profile updates, order recording.
   // ---------------------------------------------------------------------------
   const accountAgent = createReactAgent({
-    llm: geminiModel,
+    llm: accountModel,
     tools: dbTools,
     name: "account_agent",
     prompt: `You are the account & orders agent. You own the customer database.
@@ -67,7 +77,7 @@ You cannot access the product catalog or process payments — that's the catalog
   // ---------------------------------------------------------------------------
   const workflow = createSupervisor({
     agents: [catalogAgent, accountAgent],
-    llm: openaiModel,
+    llm: supervisorModel,
     prompt: `You are the supervisor of an online store assistant. You coordinate two specialist agents:
 
 - catalog_agent: product catalog, pricing, payment links, charges, refunds (Stripe)
