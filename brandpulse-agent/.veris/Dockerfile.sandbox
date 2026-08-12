@@ -1,0 +1,28 @@
+# Single-stage image: Veris gVisor base + globally installed openclaw CLI.
+#
+# `openclaw@2026.4.15-beta.1` matches the version in package.json and is
+# published on npm, so we install that exact beta to get the same code
+# the checkout would ship.
+ARG GVISOR_BASE
+FROM ${GVISOR_BASE}
+
+# openclaw CLI requires Node.js >= 22.14; the gVisor base ships Node 20.
+# Overlay a Node 22 binary into /usr/local so it takes precedence on PATH.
+ARG NODE_VERSION=22.14.0
+RUN curl -fsSL https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz \
+    | tar -xJ -C /usr/local --strip-components=1 --no-same-owner \
+ && node --version \
+ && npm --version
+
+RUN npm install -g openclaw@2026.4.15-beta.1
+
+# BrandPulse agent definition, loaded by openclaw at gateway startup.
+RUN mkdir -p /root/.openclaw
+COPY .veris/openclaw.json /root/.openclaw/openclaw.json
+
+# Veris's entrypoint `cd`s into agent.code_path before launching the
+# agent process. openclaw gateway doesn't use this directory; it just
+# needs to exist.
+RUN mkdir -p /agent
+
+WORKDIR /app

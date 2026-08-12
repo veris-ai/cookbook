@@ -1,0 +1,9 @@
+# Veris build context — excluded from `veris env push` uploads.
+#
+# The runtime image only needs files from `.veris/` (the Dockerfile,
+# openclaw.json, and the Python wrapper). Everything else in the
+# openclaw repo is irrelevant to the sandbox, so exclude-by-default
+# and allowlist `.veris/` to keep the upload tiny.
+*
+!.veris
+!.veris/**

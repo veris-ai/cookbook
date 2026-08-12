@@ -21,6 +21,7 @@ Each example is a complete, working agent with its own README, test suite, and V
 | Agent | Description | Framework | Integrations |
 |-------|-------------|-----------|--------------|
 | **[Banker Connections Agent](./bca-agent)** | Resolves customer record update errors for retail bankers in real time | Google ADK | Vertex AI, Hogan API |
+| **[BrandPulse Agent](./brandpulse-agent)** | Scheduled brand monitoring — searches the web and posts a daily, citation-grounded Slack digest | OpenClaw | Slack, Firecrawl |
 | **[Card Replacement Agent](./card-replacement-agent)** | Handles card freeze, replacement, delivery tracking, and activation workflows | OpenAI Agents SDK | PostgreSQL |
 | **[HolmesGPT Agent](./holmes-gpt-agent)** | Investigates a PagerDuty incident — pivoting into Datadog logs/metrics — and writes the root-cause analysis back as a note | HolmesGPT (CNCF) | PagerDuty, Datadog |
 | **[PM Analyst](./pm-analyst)** | Converts meeting transcripts into structured Epics, Features, and User Stories | Google ADK | Azure DevOps, Microsoft Teams |
