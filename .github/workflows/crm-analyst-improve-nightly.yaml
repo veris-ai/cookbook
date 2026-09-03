@@ -59,10 +59,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install veris-cli
+      - name: Install veris-sim-cli
         # reports get --format json + env config pull / push --no-snapshot need
-        # veris-cli 2.32.0+.
-        run: pip install "veris-cli>=2.32.0,<3"
+        # veris-sim-cli 2.34.1+.
+        run: pip install "veris-sim-cli>=2.34.1,<3"
 
       - name: Authenticate to GCP (Workload Identity Federation)
         uses: google-github-actions/auth@v2

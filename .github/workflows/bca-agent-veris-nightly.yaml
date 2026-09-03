@@ -26,8 +26,8 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install veris-cli
-        run: pip install veris-cli>=2.22.2
+      - name: Install veris-sim-cli
+        run: pip install veris-sim-cli>=2.34.1
 
       - name: Build & push agent image
         env:
