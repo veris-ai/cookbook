@@ -112,10 +112,10 @@ docker compose up --build
 - **`actor.config.MAX_TURNS: "2"`** — one actor message, one agent reply, then end
 - **`HOLMES_CONFIGPATH_DIR: /agent/.holmes`** — points HolmesGPT at the toolset config
 
-Install the [Veris CLI](https://github.com/veris-ai/veris-cli) and log in:
+Install the [Veris Sim CLI](https://docs.veris.ai/reference/cli/installation) and log in:
 
 ```bash
-uv tool install veris-cli
+uv tool install veris-sim-cli
 veris login
 ```
 
