@@ -13,8 +13,8 @@ Workflow: [`.github/workflows/crm-analyst-trace-gen-nightly.yaml`](../../.github
    Langfuse query:
    `/api/public/traces?fromTimestamp=<FROM>&toTimestamp=<TO>&name=openclaw.run&limit=100`
    and prints it as a `curl … -u 'pk:sk'` command.
-2. That curl is piped into `veris scenarios create --from-langfuse -` (veris-cli
-   ≥ 2.30.0). The CLI parses the curl client-side into a `trace_blob` and posts a
+2. That curl is piped into `veris scenarios create --from-langfuse -` (veris-sim-cli
+   ≥ 2.34.1). The CLI parses the curl client-side into a `trace_blob` and posts a
    `kind=trace` scenario source — **keys never touch disk**.
 3. The backend fetches the traces, distills intent, and generates the set.
 4. `veris scenarios status --watch` blocks until ready; `veris run` simulates +

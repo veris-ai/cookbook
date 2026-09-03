@@ -110,10 +110,10 @@ To enable creating/managing work items in ADO:
 - A Microsoft Entra ID app registration with the required API permissions
 - An Azure DevOps organization and project
 
-### 1. Install Veris CLI & login
+### 1. Install Veris Sim CLI & login
 
 ```bash
-uv tool install veris-cli
+uv tool install veris-sim-cli
 veris login
 ```
 

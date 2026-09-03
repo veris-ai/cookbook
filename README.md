@@ -41,10 +41,10 @@ Each agent can run independently — just follow the README in its directory. Yo
 
 [Veris](https://docs.veris.ai) provides sandboxed environments with simulated users and services so you can test your agent end-to-end before deploying to production.
 
-**1. Install the Veris CLI**
+**1. Install the Veris Sim CLI**
 
 ```bash
-uv tool install veris-cli
+uv tool install veris-sim-cli
 veris login
 ```
 
@@ -110,7 +110,7 @@ To add a new cookbook example:
 ## Resources
 
 - [Veris Documentation](https://docs.veris.ai) — Full platform docs, quickstart, and API reference
-- [Veris CLI](https://docs.veris.ai) — CLI installation and commands
+- [Veris Sim CLI](https://docs.veris.ai/reference/cli/installation) — CLI installation and commands
 - [OpenAI Agents SDK](https://github.com/openai/openai-agents-python) — Agent framework used by card-replacement and procurement agents
 - [Google ADK](https://google.github.io/adk-docs/) — Agent framework used by BCA and PM Analyst
 

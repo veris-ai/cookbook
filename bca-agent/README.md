@@ -72,10 +72,10 @@ curl -X POST http://localhost:8000/api/v1/conversations/{id}/confirm \
 - A GCP service account key (JSON) with Vertex AI permissions
 - A **Vertex AI RAG corpus** set up with the procedure document
 
-### 1. Install Veris CLI & login
+### 1. Install Veris Sim CLI & login
 
 ```bash
-uv tool install veris-cli
+uv tool install veris-sim-cli
 veris login
 ```
 

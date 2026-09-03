@@ -88,10 +88,10 @@ The Catalog Agent gets all its tools from Stripe's MCP server. The Account Agent
 
 ## Deploy on Veris
 
-### 1. Install Veris CLI & login
+### 1. Install Veris Sim CLI & login
 
 ```bash
-uv tool install veris-cli
+uv tool install veris-sim-cli
 veris login
 ```
 

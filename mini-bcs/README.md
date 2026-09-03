@@ -60,10 +60,10 @@ Mini BCS supports multiple LLM providers via the `LLM_PROVIDER` environment vari
 
 
 # Veris Setup
-a. Install Veris CLI and login:
+a. Install Veris Sim CLI and login:
 
 ```bash
-uv tool install veris-cli
+uv tool install veris-sim-cli
 veris login # If personal
 veris login --org <your org-id> # if part of an org
 ```
