@@ -130,49 +130,9 @@ docker build -t medical-triage-agent .
 docker run -p 8088:8088 --env-file .env medical-triage-agent
 ```
 
-## Running in Veris
+### Veris simulations (retired)
 
-[Veris](https://docs.veris.ai) runs automated test scenarios against the agent in a sandboxed environment. It provides a mock Epic FHIR service so the agent can be tested end-to-end without a real Epic instance.
-
-```mermaid
-graph TB
-    subgraph "Veris Sandbox"
-        PERSONA["Simulated Caller<br/>(persona)"]
-        MOCK["Mock Epic FHIR<br/>Service"]
-        subgraph "Agent Container"
-            AC["AgentCore Runtime"]
-            AG["Triage Agent"]
-        end
-    end
-
-    PERSONA <-->|"WebSocket /ws"| AC
-    AC <--> AG
-    AG -->|"fhirclient SDK"| MOCK
-```
-
-### Setup
-
-```bash
-veris login
-veris init
-```
-
-Set AWS credentials for Bedrock:
-```bash
-veris env vars set AWS_ACCESS_KEY_ID=AKIA... --secret
-veris env vars set AWS_SECRET_ACCESS_KEY=... --secret
-veris env vars set AWS_REGION=us-east-1
-```
-
-Push and run:
-```bash
-veris env push
-```
-
-The `.veris/veris.yaml` configures:
-- **`epic-fhir` mock service** with DNS alias `fhir.epic.com` — intercepts all FHIR API calls
-- **WebSocket channel** at `ws://localhost:8088/ws` for persona conversations
-- **Agent entry point** — `uv run python src/main.py` (port 8088)
+These examples used to run on the Veris simulation platform. That platform retires on **2026-10-31** (writes close **2026-10-05**). The example agents live on as public benches at [benchmark.veris.ai](https://benchmark.veris.ai); service mocking for your own code is now [Veris Twins](https://studio.veris.ai). Dates and export steps: https://docs.veris.ai/deprecation
 
 ## Project structure
 
