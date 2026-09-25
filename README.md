@@ -37,44 +37,9 @@ Each agent can run independently — just follow the README in its directory. Yo
 3. Set environment variables (API keys, etc.)
 4. Start the server (`uvicorn` or `docker compose up`)
 
-### Run with Veris
+### Veris simulations (retired)
 
-[Veris](https://docs.veris.ai) provides sandboxed environments with simulated users and services so you can test your agent end-to-end before deploying to production.
-
-**1. Install the Veris CLI**
-
-```bash
-uv tool install veris-cli
-veris login
-```
-
-**2. Create an environment**
-
-```bash
-cd <agent-directory>
-veris env create
-```
-
-**3. Configure and push**
-
-Update `.veris/veris.yaml` with your environment variables, then:
-
-```bash
-veris env push
-```
-
-**4. Run simulations**
-
-Generate test scenarios and run them:
-
-```bash
-veris scenarios create --num 25
-veris run
-```
-
-Each agent includes pre-built scenarios in its `scenarios/` directory that you can also run directly.
-
-For the full walkthrough, see the [Veris documentation](https://docs.veris.ai).
+These examples used to run on the Veris simulation platform. That platform retires on **2026-10-31** (writes close **2026-10-05**). The example agents live on as public benches at [benchmark.veris.ai](https://benchmark.veris.ai); service mocking for your own code is now [Veris Twins](https://studio.veris.ai). Dates and export steps: https://docs.veris.ai/deprecation
 
 ## Project Structure
 
