@@ -103,47 +103,9 @@ docker compose up --build
 
 (Without DNS aliasing, PagerDuty/Datadog hit the real APIs. Under Veris, the `.veris/veris.yaml` mock-service config intercepts both.)
 
-## Running Veris simulations
+### Veris simulations (retired)
 
-`.veris/veris.yaml` configures the sandbox:
-- **`pagerduty` mock service** with DNS alias `api.pagerduty.com` — intercepts PagerDuty REST calls
-- **`datadog` mock service** with DNS alias `api.datadoghq.com` — intercepts `/api/v2/logs/events/search`, `/api/v1/query`, `/api/v1/series`, etc.
-- **WebSocket actor channel** at `ws://localhost:8008/ws/chat` with `nudge_after: 90`
-- **`actor.config.MAX_TURNS: "2"`** — one actor message, one agent reply, then end
-- **`HOLMES_CONFIGPATH_DIR: /agent/.holmes`** — points HolmesGPT at the toolset config
-
-Install the [Veris CLI](https://github.com/veris-ai/veris-cli) and log in:
-
-```bash
-uv tool install veris-cli
-veris login
-```
-
-Create an environment and set your LLM API key:
-
-```bash
-veris env create --name holmes-gpt-agent
-veris env vars set ANTHROPIC_API_KEY=sk-ant-... --secret
-# or: veris env vars set OPENAI_API_KEY=sk-... --secret
-```
-
-Build and push the sandbox image:
-
-```bash
-veris env push
-```
-
-Generate test scenarios:
-
-```bash
-veris scenarios create --num 25
-```
-
-Run the simulations:
-
-```bash
-veris run
-```
+These examples used to run on the Veris simulation platform. That platform retires on **2026-10-31** (writes close **2026-10-05**). The example agents live on as public benches at [benchmark.veris.ai](https://benchmark.veris.ai); service mocking for your own code is now [Veris Twins](https://studio.veris.ai). Dates and export steps: https://docs.veris.ai/deprecation
 
 ## Project structure
 
