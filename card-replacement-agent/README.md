@@ -96,7 +96,8 @@ Veris-side failure, or still running after 3 hours).
 is mostly the models drifting — the agent's (the openai-agents default), the simulated customer's,
 and the judge's. With 25 attempts a night the interval is about ±18 points: read trends, not single
 nights. Four tasks (the replacement-status inquiries) fail until
-[the replacement-status bug](https://github.com/veris-ai/cookbook/issues/ISSUE_B) is fixed; that fix will
+the agent can read a card's replacement status (its `Card` model has no such field, and
+`update_card_replacement_status` calls a method `BCSAPI` does not define); that fix will
 show as a step up.
 
 ### How it works
