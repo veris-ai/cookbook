@@ -9,8 +9,6 @@ on:
   schedule:
     - cron: '0 6 * * *'
   workflow_dispatch: {}
-  push:
-    branches: [sun/bench-nightly-ci]   # TEMPORARY: dev proof before merge
 
 permissions:
   contents: write   # push bench-results

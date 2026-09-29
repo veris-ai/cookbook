@@ -124,7 +124,9 @@ show as a step up.
 2. Bench: `BENCH_API=… BENCH_API_KEY=vbk_… OPENAI_API_KEY=… uv run bench/setup.py --name "card-replacement nightly" --env-id <env> --snapshot-id <snapshot>` prints the bench id.
 3. GitHub environment (`bench-dev` or `bench-prod`): variables `BENCH_API`, `BENCH_CONSOLE`,
    `CARD_REPLACEMENT_BENCH_ID`; secret `BENCH_API_KEY` (a workspace key from the bench console).
-4. After the first push, make the `card-replacement-agent` package public so the cluster can pull it.
+4. The image lands in GHCR as `card-replacement-agent`. A package pushed from a public repo is public,
+   which bench needs: it pulls without credentials. From a private repo, save a registry login in the
+   bench console instead.
 
 ### Use it for your own agent
 
