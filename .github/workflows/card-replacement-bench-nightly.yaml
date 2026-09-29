@@ -9,6 +9,8 @@ on:
   schedule:
     - cron: '0 6 * * *'
   workflow_dispatch: {}
+  push:
+    branches: [sun/bench-nightly-ci]   # TEMPORARY: dev proof before merge
 
 permissions:
   contents: write   # push bench-results
@@ -57,7 +59,7 @@ jobs:
         run: |
           uv run .github/bench/nightly.py \
             --bench "${{ vars.CARD_REPLACEMENT_BENCH_ID }}" \
-            --trial nightly \
+            --trial smoke-1 \
             --label "$LABEL" \
             --candidate card-replacement-agent/bench/candidate.json \
             --image "$IMAGE@${{ steps.build.outputs.digest }}" \
