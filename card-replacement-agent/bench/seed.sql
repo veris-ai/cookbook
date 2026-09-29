@@ -1,5 +1,5 @@
 -- One world for all 25 card-replacement bench tasks, converted once from the classic
--- scenario set scenset_jbgzr3z5ogn3zb6y4tluv. Load: veris sandbox data add bench/twin-data.json
+-- scenario set scenset_jbgzr3z5ogn3zb6y4tluv. Loaded by: veris env create ... --data bench/twin-data.json
 
 CREATE TABLE users (
     id      TEXT PRIMARY KEY,
@@ -35,31 +35,31 @@ ALTER TABLE cards ADD COLUMN replacement_status TEXT
     CHECK (replacement_status IN ('requested', 'mailed', 'delivered'));
 
 INSERT INTO users (id, name, email, phone, address) VALUES
-('user_desta01', 'Desta Woldemariam', 'desta.woldemariam@gmail.com', '+254-712-345678', '14 Ngong Road, Apt 3B, Nairobi, Kenya'),
-('usr_30921', 'Chidinma Okafor', 'chidinma.okafor@techmail.ng', '+234-812-555-0934', '14B Admiralty Way, Lekki Phase 1, Lagos 106104, Nigeria'),
-('usr_4821', 'Tariq Al-Mansouri', 'tariq.almansouri@glexpresslogistics.com', '+1-313-555-0247', '1847 Oakwood Blvd, Dearborn, MI 48124'),
-('usr_8374', 'Marcos Delgado', 'marcos.delgado@gmail.com', '+1-713-555-0482', '4210 Westheimer Rd, Apt 12, Houston, TX 77027'),
-('user_pjiyeon_8201', 'Park Jiyeon', 'park.jiyeon@freelanceux.com', '+1-512-555-0347', '1842 Shoal Creek Blvd, Apt 4B, Austin, TX 78701'),
-('usr_4821_t05', 'Marcus Whitfield', 'marcus.whitfield@gmail.com', '+1-704-555-0347', '1482 Oakdale Road, Charlotte, NC 28203'),
-('usr_khargrove_41', 'Kevin Hargrove', 'kevin.hargrove@gmail.com', '+1-813-555-0274', '4821 Bayshore Blvd, Tampa, FL 33611'),
-('user_mkovac', 'Miroslav Kovac', 'miroslav.kovac@gmail.com', '+1-216-555-0738', '1847 Broadview Rd, Cleveland, OH 44109'),
-('U-30921', 'Park Jiyeon', 'jiyeon.park@email.com', '+1-555-0347', '1842 Maple Glen Dr, Schaumburg, IL 60193'),
-('usr_8374_t09', 'Priya Venkatesh', 'priya.venkatesh@gmail.com', '+1-713-555-0482', '4210 Willow Brook Ln, Houston, TX 77045'),
-('usr_8374_t10', 'Marguerite Delacroix', 'm.delacroix@logiqueexpress.ca', '+1-514-555-0193', '1085 Boulevard René-Lévesque, Apt 12C, Montreal, QC H2L 4S5'),
-('usr_hw_8842', 'Heinrich Wallner', 'h.wallner@gmx.at', '+43-662-555-0178', 'Rainerstraße 14, 5020 Salzburg, Austria'),
-('USR-8841', 'Friedrich Ackermann', 'friedrich.ackermann@bauplan-consult.de', '+49-711-555-0347', 'Königstraße 42, 70173 Stuttgart, Germany'),
-('usr_4821_t13', 'Bjorn Lindqvist', 'bjorn.lindqvist@gmail.com', '+1-206-555-0347', '1742 Alki Ave SW, Apt 6B, Seattle, WA 98116'),
-('usr_8371', 'Nguyen Thanh Hoa', 'hoa.nguyen@fintechstart.vn', '+84-909-456-712', 'Apt 1204, The Sun Avenue, 28 Mai Chi Tho, An Phu Ward, Thu Duc City, Ho Chi Minh City, Vietnam'),
-('usr_4821_t15', 'Priya Chakraborty', 'priya.chakraborty@gmail.com', '+1-612-555-0347', '1042 Hennepin Ave, Apt 7B, Minneapolis, MN 55403'),
-('usr_4821_t16', 'Nadia Al-Rashidi', 'nadia.alrashidi@logiforward.com', '+1-713-555-0247', '4510 Westheimer Rd, Apt 12B, Houston, TX 77027'),
-('usr_chidinma_01', 'Chidinma Okafor', 'chidinma.okafor@gmail.com', '+234-802-555-0147', '14 Adeniyi Jones Avenue, Ikeja, Lagos, Nigeria'),
-('usr_4821_t18', 'Marguerite Delacroix', 'marguerite.delacroix@delacroixcatering.com', '+1-617-555-0398', '247 Newbury Street, Apt 3B, Boston, MA 02116'),
-('user_amina01', 'Amina Wanjiku', 'amina.wanjiku@gmail.com', '+254-712-345678', '14 Ngong Road, Nairobi, Kenya'),
-('usr_4821_t20', 'Miroslav Kowalski', 'm.kowalski@gmail.com', '+1-216-555-0347', '1742 Edgewater Dr, Cleveland, OH 44107'),
-('usr_thanh_2491', 'Thanh Nguyen', 'thanh.nguyen@email.com', '+1-713-555-0198', '4720 Westheimer Rd, Houston, TX 77027'),
-('usr_4821_t22', 'Marcus Jennings', 'marcus.jennings@gmail.com', '+1-704-555-0173', '1847 Oakdale Road, Charlotte, NC 28205'),
-('usr_4821_t23', 'Marcela Rios Gutierrez', 'marcela.rios@logitrack.com', '+1-713-555-0247', '4510 Westheimer Rd, Apt 12B, Houston, TX 77027'),
-('user_8472', 'Sigrid Halvorsen', 'sigrid.halvorsen@gmail.com', '+1-612-555-0193', '2847 Lyndale Ave S, Apt 4B, Minneapolis, MN 55408');
+('user_desta01', 'Desta Woldemariam', 'desta.woldemariam@example.com', '+254-712-345678', '14 Ngong Road, Apt 3B, Nairobi, Kenya'),
+('usr_30921', 'Chidinma Okafor', 'chidinma.okafor@example.com', '+234-812-555-0934', '14B Admiralty Way, Lekki Phase 1, Lagos 106104, Nigeria'),
+('usr_4821', 'Tariq Al-Mansouri', 'tariq.almansouri@example.com', '+1-313-555-0247', '1847 Oakwood Blvd, Dearborn, MI 48124'),
+('usr_8374', 'Marcos Delgado', 'marcos.delgado@example.com', '+1-713-555-0482', '4210 Westheimer Rd, Apt 12, Houston, TX 77027'),
+('user_pjiyeon_8201', 'Park Jiyeon', 'park.jiyeon@example.com', '+1-512-555-0347', '1842 Shoal Creek Blvd, Apt 4B, Austin, TX 78701'),
+('usr_4821_t05', 'Marcus Whitfield', 'marcus.whitfield@example.com', '+1-704-555-0347', '1482 Oakdale Road, Charlotte, NC 28203'),
+('usr_khargrove_41', 'Kevin Hargrove', 'kevin.hargrove@example.com', '+1-813-555-0274', '4821 Bayshore Blvd, Tampa, FL 33611'),
+('user_mkovac', 'Miroslav Kovac', 'miroslav.kovac@example.com', '+1-216-555-0738', '1847 Broadview Rd, Cleveland, OH 44109'),
+('U-30921', 'Park Jiyeon', 'jiyeon.park@example.com', '+1-555-0347', '1842 Maple Glen Dr, Schaumburg, IL 60193'),
+('usr_8374_t09', 'Priya Venkatesh', 'priya.venkatesh@example.com', '+1-713-555-0482', '4210 Willow Brook Ln, Houston, TX 77045'),
+('usr_8374_t10', 'Marguerite Delacroix', 'm.delacroix@example.com', '+1-514-555-0193', '1085 Boulevard René-Lévesque, Apt 12C, Montreal, QC H2L 4S5'),
+('usr_hw_8842', 'Heinrich Wallner', 'h.wallner@example.com', '+43-662-555-0178', 'Rainerstraße 14, 5020 Salzburg, Austria'),
+('USR-8841', 'Friedrich Ackermann', 'friedrich.ackermann@example.com', '+49-711-555-0347', 'Königstraße 42, 70173 Stuttgart, Germany'),
+('usr_4821_t13', 'Bjorn Lindqvist', 'bjorn.lindqvist@example.com', '+1-206-555-0347', '1742 Alki Ave SW, Apt 6B, Seattle, WA 98116'),
+('usr_8371', 'Nguyen Thanh Hoa', 'hoa.nguyen@example.com', '+84-909-456-712', 'Apt 1204, The Sun Avenue, 28 Mai Chi Tho, An Phu Ward, Thu Duc City, Ho Chi Minh City, Vietnam'),
+('usr_4821_t15', 'Priya Chakraborty', 'priya.chakraborty@example.com', '+1-612-555-0347', '1042 Hennepin Ave, Apt 7B, Minneapolis, MN 55403'),
+('usr_4821_t16', 'Nadia Al-Rashidi', 'nadia.alrashidi@example.com', '+1-713-555-0247', '4510 Westheimer Rd, Apt 12B, Houston, TX 77027'),
+('usr_chidinma_01', 'Chidinma Okafor', 'chidinma.okafor.t17@example.com', '+234-802-555-0147', '14 Adeniyi Jones Avenue, Ikeja, Lagos, Nigeria'),
+('usr_4821_t18', 'Marguerite Delacroix', 'marguerite.delacroix@example.com', '+1-617-555-0398', '247 Newbury Street, Apt 3B, Boston, MA 02116'),
+('user_amina01', 'Amina Wanjiku', 'amina.wanjiku@example.com', '+254-712-345678', '14 Ngong Road, Nairobi, Kenya'),
+('usr_4821_t20', 'Miroslav Kowalski', 'm.kowalski@example.com', '+1-216-555-0347', '1742 Edgewater Dr, Cleveland, OH 44107'),
+('usr_thanh_2491', 'Thanh Nguyen', 'thanh.nguyen@example.com', '+1-713-555-0198', '4720 Westheimer Rd, Houston, TX 77027'),
+('usr_4821_t22', 'Marcus Jennings', 'marcus.jennings@example.com', '+1-704-555-0173', '1847 Oakdale Road, Charlotte, NC 28205'),
+('usr_4821_t23', 'Marcela Rios Gutierrez', 'marcela.rios@example.com', '+1-713-555-0247', '4510 Westheimer Rd, Apt 12B, Houston, TX 77027'),
+('user_8472', 'Sigrid Halvorsen', 'sigrid.halvorsen@example.com', '+1-612-555-0193', '2847 Lyndale Ave S, Apt 4B, Minneapolis, MN 55408');
 
 INSERT INTO cards (id, user_id, name, last4, type, status, replacement_status, created_at, updated_at) VALUES
 ('card_8f3a21', 'user_desta01', 'Desta Woldemariam', '7291', 'DEBIT', 'active', NULL, '2024-09-29T10:00:00Z', '2026-08-30T10:00:00Z'),
