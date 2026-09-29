@@ -1,0 +1,13 @@
+{
+  "channel_config": {
+    "init": null,
+    "channel": {
+      "type": "http",
+      "url": null,
+      "method": "POST",
+      "request": {"message_field": "message", "session_field": "session_id"},
+      "response": {"type": "json", "message_field": "response", "session_field": "session_id"}
+    }
+  },
+  "image": {"port": 8008, "path": "/chat", "health_path": "/health"}
+}
