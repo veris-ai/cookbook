@@ -81,3 +81,50 @@ Run the simulations:
 ```bash
 veris run
 ```
+
+## Nightly benchmark
+
+![Nightly pass rate](https://raw.githubusercontent.com/veris-ai/cookbook/bench-results/card-replacement/chart.svg)
+
+Every night [`card-replacement-bench-nightly.yaml`](../.github/workflows/card-replacement-bench-nightly.yaml)
+builds this agent from `main`, adds it as a new candidate to one long-lived Veris bench trial, waits
+for its 25 tasks to finish, and redraws this chart from the whole trial. Each dot is one night's pass
+rate; the bar is its 95% interval. A hollow dot is a night where some attempts did not count (a
+Veris-side failure, or still running after 3 hours).
+
+**What it measures.** The agent's code only changes when this repo does, so night-to-night movement
+is mostly the models drifting — the agent's (the openai-agents default), the simulated customer's,
+and the judge's. With 25 attempts a night the interval is about ±18 points: read trends, not single
+nights. Four tasks (the replacement-status inquiries) fail until
+[the replacement-status bug](https://github.com/veris-ai/cookbook/issues/ISSUE_B) is fixed; that fix will
+show as a step up.
+
+### How it works
+
+- [`.github/bench/nightly.py`](../.github/bench/nightly.py) is generic: register the image as a candidate,
+  find or create the trial named by `--trial`, poll until its attempts finish, exclude Veris-side
+  failures, write `results.json` and `chart.svg`.
+- [`bench/candidate.json`](bench/candidate.json) is the only agent-specific input: how bench talks to
+  this agent (HTTP `POST /chat` on port 8008, health check `/health`).
+- The trial must stay unchanged while it runs: editing the bench's world, judge or tasks makes it
+  outdated and the job stops with a message. To start a new series on purpose, change `--trial` in the
+  workflow.
+
+### One-time setup (per environment)
+
+1. Twin world (from this folder, `veris` CLI logged in to the matching plane):
+   ```bash
+   veris env create card-replacement-bench --services postgres
+   veris up card-replacement-bench
+   veris sandbox data add bench/twin-data.json
+   veris snapshot create --name card-replacement-v1 --delete-source
+   ```
+2. Bench: `BENCH_API=… BENCH_API_KEY=vbk_… OPENAI_API_KEY=… uv run bench/setup.py --name "card-replacement nightly" --env-id <env> --snapshot-id <snapshot>` prints the bench id.
+3. GitHub environment (`bench-dev` or `bench-prod`): variables `BENCH_API`, `BENCH_CONSOLE`,
+   `CARD_REPLACEMENT_BENCH_ID`; secret `BENCH_API_KEY` (a workspace key from the bench console).
+4. After the first push, make the `card-replacement-agent` package public so the cluster can pull it.
+
+### Use it for your own agent
+
+Author a bench in the console, write a `candidate.json` for your agent, copy the workflow (change
+`IMAGE`, `LABEL`, the build `context`, `--candidate`, the bench variable), and set the four values above.
