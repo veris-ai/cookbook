@@ -10,9 +10,17 @@ trial's rollups, write results.json and chart.svg, set the exit code).
 """
 from __future__ import annotations
 
+import html
+import re
+import time
+from typing import Callable
+
 import httpx
 
 PAGE = 200
+POLL_S = 60
+WAIT_LIMIT_S = 3 * 60 * 60
+IN_FLIGHT = {"pending", "running"}
 
 
 def fail(message: str) -> SystemExit:
@@ -73,3 +81,103 @@ def register(client: httpx.Client, bench: str, trial_name: str, template: dict, 
     created = client.post(f"/benches/{bench}/trials", json={
         "name": trial_name, "kind": "full", "candidate_ids": [candidate], **create}).json()
     return candidate, created["id"]
+
+
+def wait(client: httpx.Client, trial: str, candidate: str,
+         clock: Callable[[], float] = time.monotonic,
+         sleep: Callable[[float], None] = time.sleep) -> tuple[list[dict], bool]:
+    """Poll the candidate's attempts until none is in flight. Returns (attempts, finished).
+
+    Polling is what moves the trial: bench-api has no scheduler, and these reads time
+    out dead attempts and top up the dispatch queue.
+    """
+    deadline = clock() + WAIT_LIMIT_S
+    while True:
+        attempts = every(client, f"/trials/{trial}/attempts", candidate_id=candidate)
+        if attempts and not any(a["status"] in IN_FLIGHT for a in attempts):
+            return attempts, True
+        if clock() >= deadline:
+            return attempts, False
+        sleep(POLL_S)
+
+
+def exclude_platform_failures(client: httpx.Client, trial: str, attempts: list[dict]) -> list[str]:
+    """Leave Veris-side failures out of the pass rate; the run still ends red for them."""
+    ids = [a["id"] for a in attempts if a["status"] == "failed" and a["failure_class"] == "platform"]
+    if ids:
+        client.put(f"/trials/{trial}/exclusions", json={"attempt_ids": ids, "reason": "platform failure"})
+    return ids
+
+
+def rows(results: dict, trial: dict, label: str) -> list[dict]:
+    """One row per nightly candidate in the trial, in the order they joined it."""
+    pattern = re.compile(rf"{re.escape(label)} (\d{{4}}-\d{{2}}-\d{{2}}) \(([0-9a-f]+)\)")
+    expected = len(trial["task_ids"]) * trial["repeats"]
+    out = []
+    for r in results["rollups"]:
+        match = pattern.fullmatch(r["name"])
+        if not match:
+            continue
+        out.append({
+            "date": match[1], "sha": match[2], "candidate_id": r["candidate_id"],
+            "pass_rate": r["pass_rate"] if r["n"] else None,
+            "ci_low": r["ci_low"], "ci_high": r["ci_high"],
+            "n": r["n"], "passes": r["passes"], "expected": expected,
+        })
+    return sorted(out, key=lambda row: trial["candidate_ids"].index(row["candidate_id"]))
+
+
+WIDTH, HEIGHT = 760, 320
+LEFT, RIGHT, TOP, BOTTOM = 48, 24, 60, 40
+STYLE = """
+.grid{stroke:#d0d7de} .axis,.sub{fill:#57606a;font:12px sans-serif} .title{fill:#1f2328;font:600 14px sans-serif}
+.band{stroke:#1a7f64;stroke-width:3;opacity:.35} .line{fill:none;stroke:#1a7f64;stroke-width:1.5}
+.dot{fill:#1a7f64} .hollow{fill:#ffffff;stroke:#1a7f64;stroke-width:2}
+@media (prefers-color-scheme: dark){
+  .grid{stroke:#30363d} .axis,.sub{fill:#8b949e} .title{fill:#e6edf3}
+  .band,.line{stroke:#3fb68b} .dot{fill:#3fb68b} .hollow{fill:#0d1117;stroke:#3fb68b}
+}"""
+
+
+def render_svg(rows: list[dict], title: str, updated: str) -> str:
+    """Pass rate per night with its 95% interval; hollow where some attempts did not count."""
+    plot_w, plot_h = WIDTH - LEFT - RIGHT, HEIGHT - TOP - BOTTOM
+    step = plot_w / max(len(rows), 1)
+
+    def x(i: int) -> float:
+        return LEFT + step * (i + 0.5)
+
+    def y(value: float) -> float:
+        return TOP + plot_h * (1 - value / 100)
+
+    out = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {WIDTH} {HEIGHT}" '
+        f'width="{WIDTH}" height="{HEIGHT}" role="img" aria-label="{html.escape(title)}">',
+        f"<style>{STYLE}</style>",
+        f'<text class="title" x="{LEFT}" y="24">{html.escape(title)}</text>',
+        f'<text class="sub" x="{LEFT}" y="42">updated {html.escape(updated)}</text>',
+    ]
+    for value in (0, 50, 100):
+        out.append(f'<line class="grid" x1="{LEFT}" x2="{WIDTH - RIGHT}" y1="{y(value):.1f}" y2="{y(value):.1f}"/>')
+        out.append(f'<text class="axis" x="{LEFT - 8}" y="{y(value) + 4:.1f}" text-anchor="end">{value}</text>')
+    judged = [(i, r) for i, r in enumerate(rows) if r["pass_rate"] is not None]
+    if len(judged) > 1:
+        points = " ".join(f"{x(i):.1f},{y(r['pass_rate']):.1f}" for i, r in judged)
+        out.append(f'<polyline class="line" points="{points}"/>')
+    for i, r in judged:
+        hollow = r["n"] < r["expected"]
+        tip = f"{r['date']} ({r['sha']}): {r['passes']}/{r['n']} passed, {r['pass_rate']:.0f}%"
+        out.append(f'<line class="band" x1="{x(i):.1f}" x2="{x(i):.1f}" '
+                   f'y1="{y(r["ci_low"]):.1f}" y2="{y(r["ci_high"]):.1f}"/>')
+        out.append(f'<circle class="{"hollow" if hollow else "dot"}" cx="{x(i):.1f}" '
+                   f'cy="{y(r["pass_rate"]):.1f}" r="4.5"><title>{html.escape(tip)}</title></circle>')
+        if hollow:
+            out.append(f'<text class="axis" x="{x(i) + 7:.1f}" y="{y(r["pass_rate"]) - 7:.1f}">'
+                       f'{r["n"]}/{r["expected"]}</text>')
+    label_every = max(1, -(-len(rows) // 10))
+    for i, r in enumerate(rows):
+        if i % label_every == 0 or i == len(rows) - 1:
+            out.append(f'<text class="axis" x="{x(i):.1f}" y="{HEIGHT - 16}" '
+                       f'text-anchor="middle">{r["date"][5:]}</text>')
+    out.append("</svg>")
+    return "\n".join(out) + "\n"

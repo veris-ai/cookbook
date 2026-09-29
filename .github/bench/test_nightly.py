@@ -141,3 +141,101 @@ def test_two_trials_with_the_name_refuse():
     with bench.client() as client, pytest.raises(SystemExit, match="2 trials are named 'nightly'"):
         nightly.register(client, "b", "nightly", TEMPLATE, "n", IMAGE, CREATE)
     assert bench.candidates == []
+
+
+def test_wait_polls_until_nothing_is_in_flight():
+    bench = FakeBench(running_polls=2)
+    bench.add_candidate({"name": "n"})
+    sleeps = []
+    with bench.client() as client:
+        attempts, finished = nightly.wait(client, "trl_1", "cand_1", clock=lambda: 0.0, sleep=sleeps.append)
+    assert finished and len(attempts) == 3
+    assert sleeps == [nightly.POLL_S, nightly.POLL_S]
+
+
+def test_wait_gives_up_after_the_limit():
+    bench = FakeBench(running_polls=10**6)
+    bench.add_candidate({"name": "n"})
+    ticks = iter([0.0, nightly.WAIT_LIMIT_S + 1])
+    with bench.client() as client:
+        attempts, finished = nightly.wait(client, "trl_1", "cand_1", clock=lambda: next(ticks), sleep=lambda s: None)
+    assert not finished
+    assert {a["status"] for a in attempts} == {"running"}
+
+
+def test_only_platform_failures_are_excluded():
+    attempts = [
+        {"id": "a1", "status": "failed", "failure_class": "platform"},
+        {"id": "a2", "status": "failed", "failure_class": "candidate"},
+        {"id": "a3", "status": "failed", "failure_class": "unknown"},
+        {"id": "a4", "status": "completed", "failure_class": None},
+    ]
+    bench = FakeBench()
+    with bench.client() as client:
+        assert nightly.exclude_platform_failures(client, "trl_1", attempts) == ["a1"]
+    assert bench.posted("PUT", "/trials/trl_1/exclusions") == [{"attempt_ids": ["a1"], "reason": "platform failure"}]
+
+
+def test_no_exclusion_call_without_platform_failures():
+    bench = FakeBench()
+    with bench.client() as client:
+        assert nightly.exclude_platform_failures(
+            client, "trl_1", [{"id": "a", "status": "completed", "failure_class": None}]) == []
+    assert bench.calls == []
+
+
+def rollup(cid, name, n=25, passes=18, pass_rate=72.0):
+    return {"candidate_id": cid, "name": name, "n": n, "passes": passes, "pending": 0,
+            "pass_rate": pass_rate, "ci_low": 52.4, "ci_high": 85.7}
+
+
+def test_rows_keep_nightly_candidates_in_roster_order():
+    trial = make_trial(candidate_ids=["c3", "c1", "smoke", "c2"], task_ids=[f"t{i}" for i in range(25)])
+    results = {"rollups": [
+        rollup("c1", "card-replacement 2026-09-30 (abc1234)"),
+        rollup("c2", "card-replacement 2026-10-01 (def5678)"),
+        rollup("smoke", "hand-made smoke test"),
+        rollup("c3", "card-replacement 2026-09-30 (0f0f0f0)"),
+    ]}
+    data = nightly.rows(results, trial, "card-replacement")
+    assert [r["candidate_id"] for r in data] == ["c3", "c1", "c2"]
+    assert data[1] == {"date": "2026-09-30", "sha": "abc1234", "candidate_id": "c1", "pass_rate": 72.0,
+                       "ci_low": 52.4, "ci_high": 85.7, "n": 25, "passes": 18, "expected": 25}
+
+
+def test_rows_treat_zero_judged_attempts_as_missing():
+    trial = make_trial(candidate_ids=["c1"])
+    results = {"rollups": [rollup("c1", "cr 2026-09-30 (abc1234)", n=0, passes=0, pass_rate=0.0)]}
+    assert nightly.rows(results, trial, "cr")[0]["pass_rate"] is None
+
+
+def test_rows_match_labels_with_regex_characters_literally():
+    trial = make_trial(candidate_ids=["c1", "c2"])
+    results = {"rollups": [rollup("c1", "a.b 2026-09-30 (abc1234)"), rollup("c2", "axb 2026-09-30 (abc1234)")]}
+    assert [r["candidate_id"] for r in nightly.rows(results, trial, "a.b")] == ["c1"]
+
+
+def row(pass_rate=72.0, n=25, expected=25):
+    return {"date": "2026-09-30", "sha": "abc1234", "candidate_id": "c", "pass_rate": pass_rate,
+            "ci_low": 52.4, "ci_high": 85.7, "n": n, "passes": 18, "expected": expected}
+
+
+SVG = {"s": "http://www.w3.org/2000/svg"}
+
+
+def test_svg_draws_a_point_per_judged_night():
+    svg = nightly.render_svg([row(), row(n=23, pass_rate=78.3), row(pass_rate=None, n=0)], "t", "now")
+    root = ET.fromstring(svg)
+    assert [c.get("class") for c in root.findall(".//s:circle", SVG)] == ["dot", "hollow"]
+    assert "23/25" in svg
+    assert len(root.findall(".//s:polyline", SVG)) == 1
+
+
+def test_svg_with_no_rows_is_still_valid():
+    ET.fromstring(nightly.render_svg([], "t", "now"))
+
+
+def test_svg_escapes_the_title():
+    svg = nightly.render_svg([row()], "R&D <agent>", "now")
+    ET.fromstring(svg)
+    assert "R&amp;D &lt;agent&gt;" in svg
