@@ -59,7 +59,7 @@ jobs:
         run: |
           uv run .github/bench/nightly.py \
             --bench "${{ vars.CARD_REPLACEMENT_BENCH_ID }}" \
-            --trial smoke-1 \
+            --trial nightly \
             --label "$LABEL" \
             --candidate card-replacement-agent/bench/candidate.json \
             --image "$IMAGE@${{ steps.build.outputs.digest }}" \
