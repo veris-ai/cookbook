@@ -239,3 +239,62 @@ def test_svg_escapes_the_title():
     svg = nightly.render_svg([row()], "R&D <agent>", "now")
     ET.fromstring(svg)
     assert "R&amp;D &lt;agent&gt;" in svg
+
+
+NOW = datetime(2026, 9, 30, 6, 5, tzinfo=timezone.utc)
+
+
+@pytest.fixture
+def env(monkeypatch, tmp_path):
+    monkeypatch.setenv("BENCH_API", "https://bench.test")
+    monkeypatch.setenv("BENCH_API_KEY", "vbk_test")
+    monkeypatch.setenv("BENCH_CONSOLE", "https://console.test")
+    monkeypatch.setenv("GITHUB_STEP_SUMMARY", str(tmp_path / "summary.md"))
+    (tmp_path / "candidate.json").write_text(json.dumps(TEMPLATE))
+    return tmp_path
+
+
+def run(bench, tmp, *extra, clock=lambda: 0.0):
+    argv = ["--bench", "b", "--trial", "nightly", "--label", "cr",
+            "--candidate", str(tmp / "candidate.json"), "--image", IMAGE,
+            "--sha", "abc1234", "--out", str(tmp / "out"), *extra]
+    return nightly.main(argv, transport=httpx.MockTransport(bench.handle),
+                        clock=clock, sleep=lambda s: None, now=NOW)
+
+
+def test_green_night_writes_results_chart_and_summary(env):
+    assert run(FakeBench(), env) == 0
+    data = json.loads((env / "out" / "results.json").read_text())
+    assert [(r["date"], r["sha"], r["expected"]) for r in data] == [("2026-09-30", "abc1234", 3)]
+    ET.fromstring((env / "out" / "chart.svg").read_text())
+    text = (env / "summary.md").read_text()
+    assert "67%" in text
+    assert "https://console.test/benchmarks/b?trial=trl_1" in text
+
+
+def test_a_failed_attempt_turns_the_night_red_but_still_charts(env):
+    bench = FakeBench(failure_class="platform")
+    assert run(bench, env) == 1
+    assert bench.posted("PUT", "/trials/trl_1/exclusions") == [
+        {"attempt_ids": ["att_cand_1_0"], "reason": "platform failure"}]
+    assert (env / "out" / "chart.svg").exists()
+    assert "1 attempt(s) failed (1 platform" in (env / "summary.md").read_text()
+
+
+def test_a_timed_out_night_still_charts_and_goes_red(env):
+    ticks = iter([0.0, nightly.WAIT_LIMIT_S + 1])
+    assert run(FakeBench(running_polls=10**6), env, clock=lambda: next(ticks)) == 1
+    assert (env / "out" / "results.json").exists() and (env / "out" / "chart.svg").exists()
+    assert "Still running after 3 h" in (env / "summary.md").read_text()
+
+
+def test_image_must_be_pinned_by_digest(env):
+    with pytest.raises(SystemExit, match="pinned by digest"):
+        run(FakeBench(), env, "--image", "ghcr.io/veris-ai/card-replacement-agent:20260930")
+
+
+def test_personas_all_casts_every_archetype(env):
+    bench = FakeBench()
+    run(bench, env, "--personas", "all", "--repeats", "3")
+    [created] = bench.posted("POST", "/benches/b/trials")
+    assert "persona_ids" not in created and created["repeats"] == 3

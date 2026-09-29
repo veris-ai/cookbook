@@ -10,9 +10,14 @@ trial's rollups, write results.json and chart.svg, set the exit code).
 """
 from __future__ import annotations
 
+import argparse
 import html
+import json
+import os
 import re
 import time
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Callable
 
 import httpx
@@ -181,3 +186,78 @@ def render_svg(rows: list[dict], title: str, updated: str) -> str:
                        f'text-anchor="middle">{r["date"][5:]}</text>')
     out.append("</svg>")
     return "\n".join(out) + "\n"
+
+
+def summary(row: dict | None, trial_url: str, failed: list[dict], excluded: list[str], finished: bool) -> str:
+    lines = ["## Nightly bench run", ""]
+    if row and row["pass_rate"] is not None:
+        lines.append(f"**Tonight:** {row['pass_rate']:.0f}% ({row['passes']}/{row['n']} passed; "
+                     f"95% interval {row['ci_low']:.0f}–{row['ci_high']:.0f})")
+    else:
+        lines.append("**Tonight:** no judged attempts")
+    if not finished:
+        lines.append(f"- Still running after {WAIT_LIMIT_S // 3600} h; the next run's chart picks up the rest.")
+    if failed:
+        lines.append(f"- {len(failed)} attempt(s) failed ({len(excluded)} platform, excluded from the pass rate).")
+    lines.append(f"- [Trial on bench]({trial_url})")
+    return "\n".join(lines) + "\n"
+
+
+def parse(argv: list[str] | None) -> argparse.Namespace:
+    p = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    p.add_argument("--bench", required=True, help="bench id")
+    p.add_argument("--trial", required=True, help="trial name; created on the first run")
+    p.add_argument("--label", required=True, help="candidate name prefix and results folder")
+    p.add_argument("--candidate", required=True, type=Path, help="candidate template JSON")
+    p.add_argument("--image", required=True, help="image ref pinned by digest")
+    p.add_argument("--sha", required=True, help="short git sha of the build")
+    p.add_argument("--out", required=True, type=Path, help="directory for results.json and chart.svg")
+    p.add_argument("--repeats", type=int, default=1, help="used only when the trial is created")
+    p.add_argument("--parallel", type=int, default=8, help="used only when the trial is created")
+    p.add_argument("--personas", choices=["none", "all"], default="none",
+                   help="used only when the trial is created: none runs the bare tasks")
+    return p.parse_args(argv)
+
+
+def main(argv: list[str] | None = None, transport: httpx.BaseTransport | None = None,
+         clock: Callable[[], float] = time.monotonic, sleep: Callable[[float], None] = time.sleep,
+         now: datetime | None = None) -> int:
+    args = parse(argv)
+    if "@sha256:" not in args.image:
+        raise fail(f"--image must be pinned by digest, got {args.image!r}")
+    api, key, console = os.environ["BENCH_API"], os.environ["BENCH_API_KEY"], os.environ["BENCH_CONSOLE"]
+    now = now or datetime.now(timezone.utc)
+    template = json.loads(args.candidate.read_text())
+    create = {"repeats": args.repeats, "parallel": args.parallel}
+    if args.personas == "none":
+        create["persona_ids"] = []
+
+    with connect(api, key, transport) as client:
+        name = candidate_name(args.label, now.date().isoformat(), args.sha)
+        candidate, trial_id = register(client, args.bench, args.trial, template, name, args.image, create)
+        attempts, finished = wait(client, trial_id, candidate, clock, sleep)
+        excluded = exclude_platform_failures(client, trial_id, attempts)
+        trial = client.get(f"/trials/{trial_id}").json()
+        results = client.get(f"/trials/{trial_id}/results").json()
+
+    data = rows(results, trial, args.label)
+    args.out.mkdir(parents=True, exist_ok=True)
+    (args.out / "results.json").write_text(json.dumps(data, indent=2) + "\n")
+    repeats = trial["repeats"]
+    title = (f"{args.label} · {len(trial['task_ids'])} tasks × {repeats} repeat{'s' if repeats != 1 else ''}"
+             " · bars = 95% interval")
+    (args.out / "chart.svg").write_text(render_svg(data, title, now.strftime("%Y-%m-%d %H:%M UTC")))
+
+    failed = [a for a in attempts if a["status"] == "failed"]
+    tonight = next((r for r in data if r["candidate_id"] == candidate), None)
+    text = summary(tonight, f"{console.rstrip('/')}/benchmarks/{args.bench}?trial={trial_id}",
+                   failed, excluded, finished)
+    print(text)
+    if path := os.environ.get("GITHUB_STEP_SUMMARY"):
+        with open(path, "a") as f:
+            f.write(text)
+    return 0 if finished and not failed else 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
