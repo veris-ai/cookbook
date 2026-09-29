@@ -1,13 +1,13 @@
 [
   {
     "date": "2026-09-29",
-    "sha": "8946d29",
-    "candidate_id": "cand_en535eucuqpb1aspwv2fp",
-    "pass_rate": 48.0,
-    "ci_low": 30.03128583305077,
-    "ci_high": 66.50148317799079,
+    "sha": "f368ff1",
+    "candidate_id": "cand_myru8hszrdlus7zds902t",
+    "pass_rate": 36.0,
+    "ci_low": 20.247880678156655,
+    "ci_high": 55.4815023991343,
     "n": 25,
-    "passes": 12,
+    "passes": 9,
     "expected": 25
   }
 ]
