@@ -116,11 +116,11 @@ show as a step up.
 
 1. Twin world (from this folder, `veris` CLI logged in to the matching plane):
    ```bash
-   veris env create card-replacement-bench --services postgres
-   veris up card-replacement-bench
-   veris sandbox data add bench/twin-data.json
+   veris env create card-replacement-bench --services postgres --data bench/twin-data.json
+   veris up card-replacement-bench          # boots the Postgres twin and loads bench/seed.sql
    veris snapshot create --name card-replacement-v1 --delete-source
    ```
+   `--data` records the seed on the environment, so every `veris up` loads it.
 2. Bench: `BENCH_API=… BENCH_API_KEY=vbk_… OPENAI_API_KEY=… uv run bench/setup.py --name "card-replacement nightly" --env-id <env> --snapshot-id <snapshot>` prints the bench id.
 3. GitHub environment (`bench-dev` or `bench-prod`): variables `BENCH_API`, `BENCH_CONSOLE`,
    `CARD_REPLACEMENT_BENCH_ID`; secret `BENCH_API_KEY` (a workspace key from the bench console).
