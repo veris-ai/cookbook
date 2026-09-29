@@ -36,6 +36,8 @@ def main() -> None:
         bench = call("POST", "/benches", {
             "name": args.name,
             "description": "Nightly CI example: veris-ai/cookbook card-replacement-agent"})["id"]
+        # A new bench has no exam, and a trial needs one; tasks created after it join it in order.
+        call("POST", f"/benches/{bench}/exams", {"name": "card-replacement"})
         call("POST", f"/benches/{bench}/worlds", {
             "name": "card-replacement postgres",
             "services": [{"binding_id": "postgres", "service": "postgres",

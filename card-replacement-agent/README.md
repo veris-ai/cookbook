@@ -106,9 +106,10 @@ show as a step up.
   failures, write `results.json` and `chart.svg`.
 - [`bench/candidate.json`](bench/candidate.json) is the only agent-specific input: how bench talks to
   this agent (HTTP `POST /chat` on port 8008, health check `/health`).
-- The trial must stay unchanged while it runs: editing the bench's world, judge or tasks makes it
-  outdated and the job stops with a message. To start a new series on purpose, change `--trial` in the
-  workflow.
+- The trial must stay unchanged while it runs. Editing the bench's world or judge, removing a task,
+  or editing a task or archetype stops the job with a message. To start a new series on purpose,
+  change `--trial` in the workflow.
+- Never delete a candidate that is in the trial: bench then refuses every later addition to it.
 
 ### One-time setup (per environment)
 
