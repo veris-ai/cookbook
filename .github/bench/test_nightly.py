@@ -15,10 +15,14 @@ IMAGE = "ghcr.io/veris-ai/card-replacement-agent@sha256:" + "a" * 64
 CREATE = {"repeats": 1, "parallel": 8, "persona_ids": []}
 
 
+TRIAL_DEFAULTS = {"task_ids": ["tsk_1", "tsk_2", "tsk_3"], "repeats": 1, "persona_ids": [], "casting": "every",
+                  "edited_task_ids": [], "stale_persona_ids": []}
+
+
 def make_trial(name="nightly", outdated=False, **extra):
     return {"id": extra.pop("id", "trl_existing"), "name": name, "outdated": outdated,
             "outdated_reasons": ["world"] if outdated else [], "candidate_ids": ["cand_old"],
-            "task_ids": ["tsk_1", "tsk_2", "tsk_3"], "repeats": 1, **extra}
+            **TRIAL_DEFAULTS, **extra}
 
 
 class FakeBench:
@@ -48,7 +52,7 @@ class FakeBench:
         if route == ("POST", "benches", "trials"):
             trial = {"id": f"trl_{len(self.trials) + 1}", "name": body["name"], "outdated": False,
                      "outdated_reasons": [], "candidate_ids": list(body["candidate_ids"]),
-                     "task_ids": ["tsk_1", "tsk_2", "tsk_3"], "repeats": body["repeats"]}
+                     **TRIAL_DEFAULTS, "repeats": body["repeats"]}
             self.trials.append(trial)
             return httpx.Response(201, json=trial)
         if route == ("POST", "trials", "candidates"):
@@ -58,12 +62,21 @@ class FakeBench:
         if route == ("GET", "trials", None):
             return httpx.Response(200, json=self.trial(parts[1]))
         if route == ("GET", "trials", "attempts"):
-            items = self.attempts[request.url.params["candidate_id"]]
-            if self.running_polls:
-                self.running_polls -= 1
-                items = [{**a, "status": "running"} for a in items]
+            params = request.url.params
+            if "candidate_id" in params:
+                items = self.attempts[params["candidate_id"]]
+                if self.running_polls:
+                    self.running_polls -= 1
+                    items = [{**a, "status": "running"} for a in items]
+            else:
+                items = [a for per_candidate in self.attempts.values() for a in per_candidate]
+            if "status" in params:
+                items = [a for a in items if a["status"] == params["status"]]
             return self.page(items, request)
         if route == ("PUT", "trials", "exclusions"):
+            for a in (a for per_candidate in self.attempts.values() for a in per_candidate):
+                if a["id"] in body["attempt_ids"]:
+                    a["excluded_reason"] = body["reason"]
             return httpx.Response(204)
         if route == ("GET", "trials", "results"):
             return httpx.Response(200, json={"rollups": [
@@ -75,7 +88,7 @@ class FakeBench:
         cid = f"cand_{len(self.candidates) + 1}"
         self.candidates.append({"id": cid, **body})
         self.attempts[cid] = [{"id": f"att_{cid}_{i}", "candidate_id": cid, "status": "completed",
-                               "failure_class": None} for i in range(3)]
+                               "failure_class": None, "excluded_reason": None} for i in range(3)]
         if self.failure_class:
             self.attempts[cid][0].update(status="failed", failure_class=self.failure_class)
         return {"id": cid}
@@ -136,6 +149,14 @@ def test_outdated_trial_refuses_before_creating_a_candidate():
     assert bench.candidates == []
 
 
+@pytest.mark.parametrize("field, value", [("edited_task_ids", "tsk_2"), ("stale_persona_ids", "pers_1")])
+def test_trial_with_edited_tasks_or_personas_refuses_before_creating_a_candidate(field, value):
+    bench = FakeBench(trials=[make_trial(**{field: [value]})])
+    with bench.client() as client, pytest.raises(SystemExit, match=rf"edited since it ran \({value}\).*change --trial"):
+        nightly.register(client, "b", "nightly", TEMPLATE, "n", IMAGE, CREATE)
+    assert bench.candidates == []
+
+
 def test_two_trials_with_the_name_refuse():
     bench = FakeBench(trials=[make_trial(id="trl_a"), make_trial(id="trl_b")])
     with bench.client() as client, pytest.raises(SystemExit, match="2 trials are named 'nightly'"):
@@ -163,25 +184,25 @@ def test_wait_gives_up_after_the_limit():
     assert {a["status"] for a in attempts} == {"running"}
 
 
-def test_only_platform_failures_are_excluded():
-    attempts = [
-        {"id": "a1", "status": "failed", "failure_class": "platform"},
-        {"id": "a2", "status": "failed", "failure_class": "candidate"},
-        {"id": "a3", "status": "failed", "failure_class": "unknown"},
-        {"id": "a4", "status": "completed", "failure_class": None},
-    ]
-    bench = FakeBench()
+def test_platform_failures_anywhere_in_the_trial_are_excluded_once():
+    bench = FakeBench(failure_class="platform")
+    bench.add_candidate({"name": "an earlier night"})
+    bench.add_candidate({"name": "tonight"})
+    bench.attempts["cand_1"][1].update(status="failed", failure_class="candidate")
+    bench.attempts["cand_1"][2].update(status="failed", failure_class="unknown")
+    bench.attempts["cand_2"][1].update(status="failed", failure_class="platform", excluded_reason="platform failure")
     with bench.client() as client:
-        assert nightly.exclude_platform_failures(client, "trl_1", attempts) == ["a1"]
-    assert bench.posted("PUT", "/trials/trl_1/exclusions") == [{"attempt_ids": ["a1"], "reason": "platform failure"}]
+        assert nightly.exclude_platform_failures(client, "trl_1") == ["att_cand_1_0", "att_cand_2_0"]
+    assert bench.posted("PUT", "/trials/trl_1/exclusions") == [
+        {"attempt_ids": ["att_cand_1_0", "att_cand_2_0"], "reason": "platform failure"}]
 
 
 def test_no_exclusion_call_without_platform_failures():
     bench = FakeBench()
+    bench.add_candidate({"name": "n"})
     with bench.client() as client:
-        assert nightly.exclude_platform_failures(
-            client, "trl_1", [{"id": "a", "status": "completed", "failure_class": None}]) == []
-    assert bench.calls == []
+        assert nightly.exclude_platform_failures(client, "trl_1") == []
+    assert bench.posted("PUT", "/trials/trl_1/exclusions") == []
 
 
 def rollup(cid, name, n=25, passes=18, pass_rate=72.0):
@@ -201,6 +222,14 @@ def test_rows_keep_nightly_candidates_in_roster_order():
     assert [r["candidate_id"] for r in data] == ["c3", "c1", "c2"]
     assert data[1] == {"date": "2026-09-30", "sha": "abc1234", "candidate_id": "c1", "pass_rate": 72.0,
                        "ci_low": 52.4, "ci_high": 85.7, "n": 25, "passes": 18, "expected": 25}
+
+
+@pytest.mark.parametrize("casting, persona_ids, expected", [
+    ("every", ["pers_1", "pers_2"], 6), ("split", ["pers_1", "pers_2"], 3), ("every", [], 3)])
+def test_rows_expect_one_attempt_per_cast_archetype(casting, persona_ids, expected):
+    trial = make_trial(candidate_ids=["c1"], casting=casting, persona_ids=persona_ids)
+    results = {"rollups": [rollup("c1", "cr 2026-09-30 (abc1234)", n=3)]}
+    assert nightly.rows(results, trial, "cr")[0]["expected"] == expected
 
 
 def test_rows_treat_zero_judged_attempts_as_missing():

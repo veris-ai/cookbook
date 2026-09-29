@@ -77,6 +77,10 @@ def register(client: httpx.Client, bench: str, trial_name: str, template: dict, 
         reasons = ", ".join(matches[0]["outdated_reasons"])
         raise fail(f"trial {matches[0]['id']} is outdated ({reasons}): the bench changed; "
                    "change --trial to start a new series")
+    # An edit never outdates a trial on its own: new attempts would silently run the new text.
+    if matches and (edited := matches[0]["edited_task_ids"] + matches[0]["stale_persona_ids"]):
+        raise fail(f"trial {matches[0]['id']} has tasks or archetypes edited since it ran "
+                   f"({', '.join(edited)}): change --trial to start a new series")
     body = {**template, "name": name, "image": {**template["image"], "ref": image}}
     candidate = client.post(f"/benches/{bench}/candidates", json=body).json()["id"]
     if matches:
@@ -106,9 +110,14 @@ def wait(client: httpx.Client, trial: str, candidate: str,
         sleep(POLL_S)
 
 
-def exclude_platform_failures(client: httpx.Client, trial: str, attempts: list[dict]) -> list[str]:
-    """Leave Veris-side failures out of the pass rate; the run still ends red for them."""
-    ids = [a["id"] for a in attempts if a["status"] == "failed" and a["failure_class"] == "platform"]
+def exclude_platform_failures(client: httpx.Client, trial: str) -> list[str]:
+    """Leave Veris-side failures out of the pass rate, across the whole trial.
+
+    Trial-wide, so attempts that settled after an earlier night's run gave up (or died)
+    are caught on the next night. The run still ends red for tonight's failures.
+    """
+    ids = [a["id"] for a in every(client, f"/trials/{trial}/attempts", status="failed")
+           if a["failure_class"] == "platform" and a["excluded_reason"] is None]
     if ids:
         client.put(f"/trials/{trial}/exclusions", json={"attempt_ids": ids, "reason": "platform failure"})
     return ids
@@ -117,7 +126,9 @@ def exclude_platform_failures(client: httpx.Client, trial: str, attempts: list[d
 def rows(results: dict, trial: dict, label: str) -> list[dict]:
     """One row per nightly candidate in the trial, in the order they joined it."""
     pattern = re.compile(rf"{re.escape(label)} (\d{{4}}-\d{{2}}-\d{{2}}) \(([0-9a-f]+)\)")
-    expected = len(trial["task_ids"]) * trial["repeats"]
+    # "every" casting runs each task once per archetype; "split" deals one archetype per task.
+    casts = len(trial["persona_ids"]) if trial["casting"] == "every" and trial["persona_ids"] else 1
+    expected = len(trial["task_ids"]) * trial["repeats"] * casts
     out = []
     for r in results["rollups"]:
         match = pattern.fullmatch(r["name"])
@@ -188,7 +199,8 @@ def render_svg(rows: list[dict], title: str, updated: str) -> str:
     return "\n".join(out) + "\n"
 
 
-def summary(row: dict | None, trial_url: str, failed: list[dict], excluded: list[str], finished: bool) -> str:
+def summary(row: dict | None, trial_url: str, failed: list[dict], finished: bool) -> str:
+    platform = sum(a["failure_class"] == "platform" for a in failed)
     lines = ["## Nightly bench run", ""]
     if row and row["pass_rate"] is not None:
         lines.append(f"**Tonight:** {row['pass_rate']:.0f}% ({row['passes']}/{row['n']} passed; "
@@ -198,7 +210,7 @@ def summary(row: dict | None, trial_url: str, failed: list[dict], excluded: list
     if not finished:
         lines.append(f"- Still running after {WAIT_LIMIT_S // 3600} h; the next run's chart picks up the rest.")
     if failed:
-        lines.append(f"- {len(failed)} attempt(s) failed ({len(excluded)} platform, excluded from the pass rate).")
+        lines.append(f"- {len(failed)} attempt(s) failed ({platform} platform, excluded from the pass rate).")
     lines.append(f"- [Trial on bench]({trial_url})")
     return "\n".join(lines) + "\n"
 
@@ -236,22 +248,28 @@ def main(argv: list[str] | None = None, transport: httpx.BaseTransport | None = 
         name = candidate_name(args.label, now.date().isoformat(), args.sha)
         candidate, trial_id = register(client, args.bench, args.trial, template, name, args.image, create)
         attempts, finished = wait(client, trial_id, candidate, clock, sleep)
-        excluded = exclude_platform_failures(client, trial_id, attempts)
-        trial = client.get(f"/trials/{trial_id}").json()
-        results = client.get(f"/trials/{trial_id}/results").json()
+        return report(client, trial_id, candidate, attempts, finished, args.label, args.out,
+                      f"{console.rstrip('/')}/benchmarks/{args.bench}?trial={trial_id}", now)
 
-    data = rows(results, trial, args.label)
-    args.out.mkdir(parents=True, exist_ok=True)
-    (args.out / "results.json").write_text(json.dumps(data, indent=2) + "\n")
+
+def report(client: httpx.Client, trial_id: str, candidate: str, attempts: list[dict], finished: bool,
+           label: str, out: Path, trial_url: str, now: datetime) -> int:
+    """Exclude platform failures, chart the whole trial, write the job summary. Returns the exit code."""
+    exclude_platform_failures(client, trial_id)
+    trial = client.get(f"/trials/{trial_id}").json()
+    results = client.get(f"/trials/{trial_id}/results").json()
+
+    data = rows(results, trial, label)
+    out.mkdir(parents=True, exist_ok=True)
+    (out / "results.json").write_text(json.dumps(data, indent=2) + "\n")
     repeats = trial["repeats"]
-    title = (f"{args.label} · {len(trial['task_ids'])} tasks × {repeats} repeat{'s' if repeats != 1 else ''}"
+    title = (f"{label} · {len(trial['task_ids'])} tasks × {repeats} repeat{'s' if repeats != 1 else ''}"
              " · bars = 95% interval")
-    (args.out / "chart.svg").write_text(render_svg(data, title, now.strftime("%Y-%m-%d %H:%M UTC")))
+    (out / "chart.svg").write_text(render_svg(data, title, now.strftime("%Y-%m-%d %H:%M UTC")))
 
     failed = [a for a in attempts if a["status"] == "failed"]
     tonight = next((r for r in data if r["candidate_id"] == candidate), None)
-    text = summary(tonight, f"{console.rstrip('/')}/benchmarks/{args.bench}?trial={trial_id}",
-                   failed, excluded, finished)
+    text = summary(tonight, trial_url, failed, finished)
     print(text)
     if path := os.environ.get("GITHUB_STEP_SUMMARY"):
         with open(path, "a") as f:
