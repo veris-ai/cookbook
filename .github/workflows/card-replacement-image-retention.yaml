@@ -3,10 +3,9 @@ name: "Bench: Card Replacement Image Retention"
 # Keeps the newest 30 versions of the nightly agent image in GHCR and deletes the
 # rest. Older nights keep their results on bench; only re-running one of them
 # needs its image. See card-replacement-agent/README.md, "Nightly benchmark".
+# Manual for now (Actions > Run workflow); add a schedule to run it weekly.
 
 on:
-  schedule:
-    - cron: '0 10 * * 0'   # Sundays, after that night's benchmark
   workflow_dispatch: {}
 
 permissions:
