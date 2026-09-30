@@ -213,34 +213,34 @@ def rollup(cid, name, n=25, passes=18, pass_rate=72.0):
 def test_rows_keep_nightly_candidates_in_roster_order():
     trial = make_trial(candidate_ids=["c3", "c1", "smoke", "c2"], task_ids=[f"t{i}" for i in range(25)])
     results = {"rollups": [
-        rollup("c1", "card-replacement 2026-09-30 (abc1234)"),
-        rollup("c2", "card-replacement 2026-10-01 (def5678)"),
+        rollup("c1", "card-replacement 2026-09-30 (abc1234, 52fdb88)"),
+        rollup("c2", "card-replacement 2026-10-01 (def5678, 1a2b3c4)"),
         rollup("smoke", "hand-made smoke test"),
-        rollup("c3", "card-replacement 2026-09-30 (0f0f0f0)"),
+        rollup("c3", "card-replacement 2026-09-30 (abc1234, befe2f8)"),
     ]}
     data = nightly.rows(results, trial, "card-replacement")
     assert [r["candidate_id"] for r in data] == ["c3", "c1", "c2"]
-    assert data[1] == {"date": "2026-09-30", "sha": "abc1234", "candidate_id": "c1", "pass_rate": 72.0,
-                       "ci_low": 52.4, "ci_high": 85.7, "n": 25, "passes": 18, "expected": 25}
+    assert data[1] == {"date": "2026-09-30", "sha": "abc1234", "image": "52fdb88", "candidate_id": "c1",
+                       "pass_rate": 72.0, "ci_low": 52.4, "ci_high": 85.7, "n": 25, "passes": 18, "expected": 25}
 
 
 @pytest.mark.parametrize("casting, persona_ids, expected", [
     ("every", ["pers_1", "pers_2"], 6), ("split", ["pers_1", "pers_2"], 3), ("every", [], 3)])
 def test_rows_expect_one_attempt_per_cast_archetype(casting, persona_ids, expected):
     trial = make_trial(candidate_ids=["c1"], casting=casting, persona_ids=persona_ids)
-    results = {"rollups": [rollup("c1", "cr 2026-09-30 (abc1234)", n=3)]}
+    results = {"rollups": [rollup("c1", "cr 2026-09-30 (abc1234, 52fdb88)", n=3)]}
     assert nightly.rows(results, trial, "cr")[0]["expected"] == expected
 
 
 def test_rows_treat_zero_judged_attempts_as_missing():
     trial = make_trial(candidate_ids=["c1"])
-    results = {"rollups": [rollup("c1", "cr 2026-09-30 (abc1234)", n=0, passes=0, pass_rate=0.0)]}
+    results = {"rollups": [rollup("c1", "cr 2026-09-30 (abc1234, 52fdb88)", n=0, passes=0, pass_rate=0.0)]}
     assert nightly.rows(results, trial, "cr")[0]["pass_rate"] is None
 
 
 def test_rows_match_labels_with_regex_characters_literally():
     trial = make_trial(candidate_ids=["c1", "c2"])
-    results = {"rollups": [rollup("c1", "a.b 2026-09-30 (abc1234)"), rollup("c2", "axb 2026-09-30 (abc1234)")]}
+    results = {"rollups": [rollup("c1", "a.b 2026-09-30 (abc1234, 52fdb88)"), rollup("c2", "axb 2026-09-30 (abc1234, 52fdb88)")]}
     assert [r["candidate_id"] for r in nightly.rows(results, trial, "a.b")] == ["c1"]
 
 
@@ -292,9 +292,11 @@ def run(bench, tmp, *extra, clock=lambda: 0.0):
 
 
 def test_green_night_writes_results_chart_and_summary(env):
-    assert run(FakeBench(), env) == 0
+    bench = FakeBench()
+    assert run(bench, env) == 0
+    assert bench.candidates[0]["name"] == "cr 2026-09-30 (abc1234, aaaaaaa)"
     data = json.loads((env / "out" / "results.json").read_text())
-    assert [(r["date"], r["sha"], r["expected"]) for r in data] == [("2026-09-30", "abc1234", 3)]
+    assert [(r["date"], r["sha"], r["image"], r["expected"]) for r in data] == [("2026-09-30", "abc1234", "aaaaaaa", 3)]
     ET.fromstring((env / "out" / "chart.svg").read_text())
     text = (env / "summary.md").read_text()
     assert "67%" in text

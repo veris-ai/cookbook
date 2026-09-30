@@ -59,8 +59,9 @@ def every(client: httpx.Client, path: str, **params: str) -> list[dict]:
             return items
 
 
-def candidate_name(label: str, day: str, sha: str) -> str:
-    return f"{label} {day} ({sha})"
+def candidate_name(label: str, day: str, sha: str, image: str) -> str:
+    """The date and commit say what was built; the image digest tells same-day re-runs apart."""
+    return f"{label} {day} ({sha}, {image})"
 
 
 def register(client: httpx.Client, bench: str, trial_name: str, template: dict, name: str,
@@ -125,7 +126,7 @@ def exclude_platform_failures(client: httpx.Client, trial: str) -> list[str]:
 
 def rows(results: dict, trial: dict, label: str) -> list[dict]:
     """One row per nightly candidate in the trial, in the order they joined it."""
-    pattern = re.compile(rf"{re.escape(label)} (\d{{4}}-\d{{2}}-\d{{2}}) \(([0-9a-f]+)\)")
+    pattern = re.compile(rf"{re.escape(label)} (\d{{4}}-\d{{2}}-\d{{2}}) \(([0-9a-f]+), ([0-9a-f]{{7}})\)")
     # "every" casting runs each task once per archetype; "split" deals one archetype per task.
     casts = len(trial["persona_ids"]) if trial["casting"] == "every" and trial["persona_ids"] else 1
     expected = len(trial["task_ids"]) * trial["repeats"] * casts
@@ -135,7 +136,7 @@ def rows(results: dict, trial: dict, label: str) -> list[dict]:
         if not match:
             continue
         out.append({
-            "date": match[1], "sha": match[2], "candidate_id": r["candidate_id"],
+            "date": match[1], "sha": match[2], "image": match[3], "candidate_id": r["candidate_id"],
             "pass_rate": r["pass_rate"] if r["n"] else None,
             "ci_low": r["ci_low"], "ci_high": r["ci_high"],
             "n": r["n"], "passes": r["passes"], "expected": expected,
@@ -245,7 +246,7 @@ def main(argv: list[str] | None = None, transport: httpx.BaseTransport | None = 
         create["persona_ids"] = []
 
     with connect(api, key, transport) as client:
-        name = candidate_name(args.label, now.date().isoformat(), args.sha)
+        name = candidate_name(args.label, now.date().isoformat(), args.sha, args.image.split("@sha256:")[1][:7])
         candidate, trial_id = register(client, args.bench, args.trial, template, name, args.image, create)
         attempts, finished = wait(client, trial_id, candidate, clock, sleep)
         return report(client, trial_id, candidate, attempts, finished, args.label, args.out,
