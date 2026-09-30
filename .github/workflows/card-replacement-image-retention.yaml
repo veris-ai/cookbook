@@ -8,6 +8,8 @@ on:
   schedule:
     - cron: '0 10 * * 0'   # Sundays, after that night's benchmark
   workflow_dispatch: {}
+  push:
+    branches: [sun/bench-nightly-ci]   # TEMPORARY: prove the delete permission
 
 permissions:
   packages: write
@@ -20,4 +22,4 @@ jobs:
         with:
           package-name: card-replacement-agent
           package-type: container
-          min-versions-to-keep: 30
+          min-versions-to-keep: 2
