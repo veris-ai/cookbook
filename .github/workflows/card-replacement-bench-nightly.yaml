@@ -8,7 +8,11 @@ name: "Bench: Card Replacement Nightly"
 on:
   schedule:
     - cron: '0 6 * * *'
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      trial:
+        description: "Trial to add this run's candidate to (a new name starts a separate trial)"
+        default: nightly
 
 permissions:
   contents: write   # push bench-results
@@ -21,8 +25,9 @@ concurrency:
 jobs:
   nightly:
     runs-on: ubuntu-latest
-    environment: bench-dev
-    timeout-minutes: 230   # build (~10 min uncached) + the script's 3 h wait + publish
+    # A GitHub environment holds the bench endpoint, bench id and API key: bench-dev or bench-prod.
+    environment: ${{ vars.CARD_REPLACEMENT_ENVIRONMENT || 'bench-dev' }}
+    timeout-minutes: 360   # GitHub's job limit; --wait-minutes bounds the bench step inside it
     env:
       IMAGE: ghcr.io/veris-ai/card-replacement-agent
       LABEL: card-replacement
@@ -54,10 +59,13 @@ jobs:
           BENCH_API: ${{ vars.BENCH_API }}
           BENCH_CONSOLE: ${{ vars.BENCH_CONSOLE }}
           BENCH_API_KEY: ${{ secrets.BENCH_API_KEY }}
+          TRIAL: ${{ inputs.trial || 'nightly' }}
+          WAIT_MINUTES: ${{ vars.CARD_REPLACEMENT_WAIT_MINUTES || 180 }}
         run: |
           uv run .github/bench/nightly.py \
             --bench "${{ vars.CARD_REPLACEMENT_BENCH_ID }}" \
-            --trial nightly \
+            --trial "$TRIAL" \
+            --wait-minutes "$WAIT_MINUTES" \
             --label "$LABEL" \
             --candidate card-replacement-agent/bench/candidate.json \
             --image "$IMAGE@${{ steps.build.outputs.digest }}" \

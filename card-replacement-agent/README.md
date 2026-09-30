@@ -113,8 +113,23 @@ show as a step up.
 - Never delete a candidate that is in the trial: bench then refuses every later addition to it.
 - Each candidate is named `card-replacement <date> (<commit>, <image digest>)`.
   [`card-replacement-image-retention.yaml`](../.github/workflows/card-replacement-image-retention.yaml)
-  keeps the newest 30 images in GHCR when run (by hand for now); an older night keeps its results on
+  keeps the newest images in GHCR when run (by hand for now); an older night keeps its results on
   bench but can no longer be re-run.
+
+### Settings
+
+Optional repository variables (Settings → Secrets and variables → Actions → Variables); each has a
+default, so none is required.
+
+| Variable | Default | What it sets |
+|---|---|---|
+| `CARD_REPLACEMENT_ENVIRONMENT` | `bench-dev` | Which GitHub environment the nightly uses — and so which bench endpoint, bench and API key |
+| `CARD_REPLACEMENT_WAIT_MINUTES` | `180` | How long the job waits for the night's attempts before charting what finished; keep it under 330 (GitHub stops a job at 6 h) |
+| `CARD_REPLACEMENT_IMAGES_TO_KEEP` | `30` | How many of the newest images the retention workflow keeps |
+
+A manual run (Actions → Run workflow) can also name a different trial, to try a change without
+adding a point to the `nightly` series. The schedule itself is the `cron` line in each workflow:
+GitHub does not read it from a variable.
 
 ### One-time setup (per environment)
 
