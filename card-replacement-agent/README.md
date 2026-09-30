@@ -117,21 +117,21 @@ show as a step up.
 
 ### One-time setup (per environment)
 
-1. Twin world (from this folder, `veris` CLI logged in to the matching plane):
-   ```bash
-   veris env create card-replacement-bench --services postgres --data bench/twin-data.json
-   veris up card-replacement-bench          # boots the Postgres twin and loads bench/seed.sql
-   veris snapshot create --name card-replacement-v1 --delete-source
-   ```
-   `--data` records the seed on the environment, so every `veris up` loads it.
-2. Bench: `BENCH_API=… BENCH_API_KEY=vbk_… OPENAI_API_KEY=… uv run bench/setup.py --name "card-replacement nightly" --env-id <env> --snapshot-id <snapshot>` prints the bench id.
-3. GitHub environment (`bench-dev` or `bench-prod`): variables `BENCH_API`, `BENCH_CONSOLE`,
-   `CARD_REPLACEMENT_BENCH_ID`; secret `BENCH_API_KEY` (a workspace key from the bench console).
-4. The image lands in GHCR as `card-replacement-agent`. A package pushed from a public repo is public,
-   which bench needs: it pulls without credentials. From a private repo, save a registry login in the
-   bench console instead.
+The nightly job needs a bench that already exists; it only adds candidates to it.
+
+1. **Twin world.** With the `veris` CLI, create an environment with the twins the agent uses (here a
+   Postgres twin), boot it, load the customers and cards the tasks talk about, and save it as a
+   snapshot (`veris env create`, `veris up`, `veris snapshot create`).
+2. **Bench.** In the bench console, create a bench with an exam of tasks, a world bound to that
+   snapshot, and the agent's secrets as candidate environment (here `OPENAI_API_KEY`).
+3. **GitHub.** In a GitHub environment (`bench-dev` or `bench-prod`), set the variables `BENCH_API`,
+   `BENCH_CONSOLE` and `CARD_REPLACEMENT_BENCH_ID`, and the secret `BENCH_API_KEY` (a workspace API
+   key from the bench console).
+4. **Image access.** The image lands in GHCR as `card-replacement-agent`. A package pushed from a
+   public repo is public, which bench needs: it pulls without credentials. From a private repo, save a
+   registry login in the bench console instead.
 
 ### Use it for your own agent
 
-Author a bench in the console, write a `candidate.json` for your agent, copy the workflow (change
-`IMAGE`, `LABEL`, the build `context`, `--candidate`, the bench variable), and set the four values above.
+Set up a bench as above, write a `candidate.json` for your agent, copy the workflow (change `IMAGE`,
+`LABEL`, the build `context`, `--candidate`, the bench variable), and set the four GitHub values.
