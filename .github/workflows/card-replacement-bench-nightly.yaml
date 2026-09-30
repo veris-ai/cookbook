@@ -29,6 +29,7 @@ jobs:
     environment: ${{ vars.CARD_REPLACEMENT_ENVIRONMENT || 'bench-dev' }}
     timeout-minutes: 360   # GitHub's job limit; --wait-minutes bounds the bench step inside it
     env:
+      SERIES: nightly   # the trial scheduled runs add to and the chart the README shows
       IMAGE: ghcr.io/veris-ai/card-replacement-agent
       LABEL: card-replacement
     steps:
@@ -59,7 +60,7 @@ jobs:
           BENCH_API: ${{ vars.BENCH_API }}
           BENCH_CONSOLE: ${{ vars.BENCH_CONSOLE }}
           BENCH_API_KEY: ${{ secrets.BENCH_API_KEY }}
-          TRIAL: ${{ inputs.trial || 'nightly' }}
+          TRIAL: ${{ inputs.trial || env.SERIES }}
           WAIT_MINUTES: ${{ vars.CARD_REPLACEMENT_WAIT_MINUTES || 180 }}
         run: |
           uv run .github/bench/nightly.py \
@@ -73,7 +74,8 @@ jobs:
             --out out
 
       - name: Publish chart
-        if: always() && hashFiles('out/chart.svg') != ''
+        # A manual run into another trial leaves the published chart alone; its numbers are in the job summary.
+        if: always() && hashFiles('out/chart.svg') != '' && (inputs.trial || env.SERIES) == env.SERIES
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

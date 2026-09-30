@@ -109,7 +109,7 @@ show as a step up.
   this agent (HTTP `POST /chat` on port 8008, health check `/health`).
 - The trial must stay unchanged while it runs. Editing the bench's world or judge, removing a task,
   or editing a task or archetype stops the job with a message. To start a new series on purpose,
-  change `--trial` in the workflow.
+  change `SERIES` in the workflow.
 - Never delete a candidate that is in the trial: bench then refuses every later addition to it.
 - Each candidate is named `card-replacement <date> (<commit>, <image digest>)`.
   [`card-replacement-image-retention.yaml`](../.github/workflows/card-replacement-image-retention.yaml)
@@ -128,7 +128,8 @@ default, so none is required.
 | `CARD_REPLACEMENT_IMAGES_TO_KEEP` | `30` | How many of the newest images the retention workflow keeps |
 
 A manual run (Actions → Run workflow) can also name a different trial, to try a change without
-adding a point to the `nightly` series. The schedule itself is the `cron` line in each workflow:
+adding a point to the `nightly` series; its result stays in the run's summary and on bench, and
+the published chart is left alone. The schedule itself is the `cron` line in each workflow:
 GitHub does not read it from a variable.
 
 ### One-time setup (per environment)
