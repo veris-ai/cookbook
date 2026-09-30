@@ -24,7 +24,6 @@ import httpx
 
 PAGE = 200
 POLL_S = 60
-WAIT_LIMIT_S = 3 * 60 * 60
 IN_FLIGHT = {"pending", "running"}
 
 
@@ -93,7 +92,7 @@ def register(client: httpx.Client, bench: str, trial_name: str, template: dict, 
     return candidate, created["id"]
 
 
-def wait(client: httpx.Client, trial: str, candidate: str,
+def wait(client: httpx.Client, trial: str, candidate: str, limit_s: float,
          clock: Callable[[], float] = time.monotonic,
          sleep: Callable[[float], None] = time.sleep) -> tuple[list[dict], bool]:
     """Poll the candidate's attempts until none is in flight. Returns (attempts, finished).
@@ -101,7 +100,7 @@ def wait(client: httpx.Client, trial: str, candidate: str,
     Polling is what moves the trial: bench-api has no scheduler, and these reads time
     out dead attempts and top up the dispatch queue.
     """
-    deadline = clock() + WAIT_LIMIT_S
+    deadline = clock() + limit_s
     while True:
         attempts = every(client, f"/trials/{trial}/attempts", candidate_id=candidate)
         if attempts and not any(a["status"] in IN_FLIGHT for a in attempts):
@@ -200,7 +199,8 @@ def render_svg(rows: list[dict], title: str, updated: str) -> str:
     return "\n".join(out) + "\n"
 
 
-def summary(row: dict | None, trial_url: str, failed: list[dict], finished: bool) -> str:
+def summary(row: dict | None, trial_url: str, failed: list[dict], finished: bool,
+            wait_minutes: int) -> str:
     platform = sum(a["failure_class"] == "platform" for a in failed)
     lines = ["## Nightly bench run", ""]
     if row and row["pass_rate"] is not None:
@@ -209,7 +209,7 @@ def summary(row: dict | None, trial_url: str, failed: list[dict], finished: bool
     else:
         lines.append("**Tonight:** no judged attempts")
     if not finished:
-        lines.append(f"- Still running after {WAIT_LIMIT_S // 3600} h; the next run's chart picks up the rest.")
+        lines.append(f"- Still running after {wait_minutes} min; the next run's chart picks up the rest.")
     if failed:
         lines.append(f"- {len(failed)} attempt(s) failed ({platform} platform, excluded from the pass rate).")
     lines.append(f"- [Trial on bench]({trial_url})")
@@ -229,6 +229,8 @@ def parse(argv: list[str] | None) -> argparse.Namespace:
     p.add_argument("--parallel", type=int, default=8, help="used only when the trial is created")
     p.add_argument("--personas", choices=["none", "all"], default="none",
                    help="used only when the trial is created: none runs the bare tasks")
+    p.add_argument("--wait-minutes", type=int, default=180,
+                   help="how long to wait for tonight's attempts before charting what finished")
     return p.parse_args(argv)
 
 
@@ -248,13 +250,14 @@ def main(argv: list[str] | None = None, transport: httpx.BaseTransport | None = 
     with connect(api, key, transport) as client:
         name = candidate_name(args.label, now.date().isoformat(), args.sha, args.image.split("@sha256:")[1][:7])
         candidate, trial_id = register(client, args.bench, args.trial, template, name, args.image, create)
-        attempts, finished = wait(client, trial_id, candidate, clock, sleep)
+        attempts, finished = wait(client, trial_id, candidate, args.wait_minutes * 60, clock, sleep)
         return report(client, trial_id, candidate, attempts, finished, args.label, args.out,
-                      f"{console.rstrip('/')}/benchmarks/{args.bench}?trial={trial_id}", now)
+                      f"{console.rstrip('/')}/benchmarks/{args.bench}?trial={trial_id}", now,
+                      args.wait_minutes)
 
 
 def report(client: httpx.Client, trial_id: str, candidate: str, attempts: list[dict], finished: bool,
-           label: str, out: Path, trial_url: str, now: datetime) -> int:
+           label: str, out: Path, trial_url: str, now: datetime, wait_minutes: int) -> int:
     """Exclude platform failures, chart the whole trial, write the job summary. Returns the exit code."""
     exclude_platform_failures(client, trial_id)
     trial = client.get(f"/trials/{trial_id}").json()
@@ -270,7 +273,7 @@ def report(client: httpx.Client, trial_id: str, candidate: str, attempts: list[d
 
     failed = [a for a in attempts if a["status"] == "failed"]
     tonight = next((r for r in data if r["candidate_id"] == candidate), None)
-    text = summary(tonight, trial_url, failed, finished)
+    text = summary(tonight, trial_url, failed, finished, wait_minutes)
     print(text)
     if path := os.environ.get("GITHUB_STEP_SUMMARY"):
         with open(path, "a") as f:

@@ -169,7 +169,7 @@ def test_wait_polls_until_nothing_is_in_flight():
     bench.add_candidate({"name": "n"})
     sleeps = []
     with bench.client() as client:
-        attempts, finished = nightly.wait(client, "trl_1", "cand_1", clock=lambda: 0.0, sleep=sleeps.append)
+        attempts, finished = nightly.wait(client, "trl_1", "cand_1", 600, clock=lambda: 0.0, sleep=sleeps.append)
     assert finished and len(attempts) == 3
     assert sleeps == [nightly.POLL_S, nightly.POLL_S]
 
@@ -177,9 +177,9 @@ def test_wait_polls_until_nothing_is_in_flight():
 def test_wait_gives_up_after_the_limit():
     bench = FakeBench(running_polls=10**6)
     bench.add_candidate({"name": "n"})
-    ticks = iter([0.0, nightly.WAIT_LIMIT_S + 1])
+    ticks = iter([0.0, 301.0])
     with bench.client() as client:
-        attempts, finished = nightly.wait(client, "trl_1", "cand_1", clock=lambda: next(ticks), sleep=lambda s: None)
+        attempts, finished = nightly.wait(client, "trl_1", "cand_1", 300, clock=lambda: next(ticks), sleep=lambda s: None)
     assert not finished
     assert {a["status"] for a in attempts} == {"running"}
 
@@ -313,10 +313,16 @@ def test_a_failed_attempt_turns_the_night_red_but_still_charts(env):
 
 
 def test_a_timed_out_night_still_charts_and_goes_red(env):
-    ticks = iter([0.0, nightly.WAIT_LIMIT_S + 1])
-    assert run(FakeBench(running_polls=10**6), env, clock=lambda: next(ticks)) == 1
+    ticks = iter([0.0, 5 * 60 + 1])
+    assert run(FakeBench(running_polls=10**6), env, "--wait-minutes", "5", clock=lambda: next(ticks)) == 1
     assert (env / "out" / "results.json").exists() and (env / "out" / "chart.svg").exists()
-    assert "Still running after 3 h" in (env / "summary.md").read_text()
+    assert "Still running after 5 min" in (env / "summary.md").read_text()
+
+
+def test_wait_defaults_to_three_hours():
+    args = nightly.parse(["--bench", "b", "--trial", "t", "--label", "l", "--candidate", "c.json",
+                          "--image", IMAGE, "--sha", "abc1234", "--out", "out"])
+    assert args.wait_minutes == 180
 
 
 def test_image_must_be_pinned_by_digest(env):
