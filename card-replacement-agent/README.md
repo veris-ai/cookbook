@@ -111,6 +111,9 @@ show as a step up.
   or editing a task or archetype stops the job with a message. To start a new series on purpose,
   change `--trial` in the workflow.
 - Never delete a candidate that is in the trial: bench then refuses every later addition to it.
+- Each candidate is named `card-replacement <date> (<commit>, <image digest>)`. The newest 30 images
+  stay in GHCR ([`card-replacement-image-retention.yaml`](../.github/workflows/card-replacement-image-retention.yaml),
+  weekly); an older night keeps its results on bench but can no longer be re-run.
 
 ### One-time setup (per environment)
 

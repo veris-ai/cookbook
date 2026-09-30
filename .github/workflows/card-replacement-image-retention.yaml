@@ -1,0 +1,23 @@
+name: "Bench: Card Replacement Image Retention"
+
+# Keeps the newest 30 versions of the nightly agent image in GHCR and deletes the
+# rest. Older nights keep their results on bench; only re-running one of them
+# needs its image. See card-replacement-agent/README.md, "Nightly benchmark".
+
+on:
+  schedule:
+    - cron: '0 10 * * 0'   # Sundays, after that night's benchmark
+  workflow_dispatch: {}
+
+permissions:
+  packages: write
+
+jobs:
+  prune:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/delete-package-versions@v5
+        with:
+          package-name: card-replacement-agent
+          package-type: container
+          min-versions-to-keep: 30
