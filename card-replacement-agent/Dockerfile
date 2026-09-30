@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl && \
     rm -rf /var/lib/apt/lists/*
 
 # Install uv for faster dependency installation
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.9 /uv /usr/local/bin/uv
 
 # Copy dependency files
 COPY pyproject.toml uv.lock ./
@@ -18,7 +18,7 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
 # Build UI
-COPY ui/ ui/
+COPY ui/ui/ ui/
 RUN cd ui && npm install && npm run build
 
 # Copy application code

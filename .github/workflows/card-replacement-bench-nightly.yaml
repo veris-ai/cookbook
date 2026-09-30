@@ -1,0 +1,91 @@
+name: "Bench: Card Replacement Nightly"
+
+# Builds the agent from main every night, adds it as a new candidate to the
+# long-lived bench trial named below, waits for its attempts, and publishes the
+# trial's pass rate over time to the bench-results branch.
+# Setup and reuse: card-replacement-agent/README.md, "Nightly benchmark".
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      trial:
+        description: "Trial to add this run's candidate to (a new name starts a separate trial)"
+        default: nightly
+
+permissions:
+  contents: write   # push bench-results
+  packages: write   # push the image to GHCR
+
+concurrency:
+  group: card-replacement-bench-nightly
+  cancel-in-progress: false
+
+jobs:
+  nightly:
+    runs-on: ubuntu-latest
+    # A GitHub environment holds the bench endpoint, bench id and API key: bench-dev or bench-prod.
+    environment: ${{ vars.CARD_REPLACEMENT_ENVIRONMENT || 'bench-dev' }}
+    timeout-minutes: 360   # GitHub's job limit; --wait-minutes bounds the bench step inside it
+    env:
+      SERIES: nightly   # the trial scheduled runs add to and the chart the README shows
+      IMAGE: ghcr.io/veris-ai/card-replacement-agent
+      LABEL: card-replacement
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Date tag
+        run: echo "TAG=$(date -u +%Y%m%d)" >> "$GITHUB_ENV"
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: card-replacement-agent
+          push: true
+          tags: ${{ env.IMAGE }}:${{ env.TAG }}
+          labels: org.opencontainers.image.source=https://github.com/${{ github.repository }}
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: Run on bench
+        env:
+          BENCH_API: ${{ vars.BENCH_API }}
+          BENCH_CONSOLE: ${{ vars.BENCH_CONSOLE }}
+          BENCH_API_KEY: ${{ secrets.BENCH_API_KEY }}
+          TRIAL: ${{ inputs.trial || env.SERIES }}
+          WAIT_MINUTES: ${{ vars.CARD_REPLACEMENT_WAIT_MINUTES || 180 }}
+        run: |
+          uv run .github/bench/nightly.py \
+            --bench "${{ vars.CARD_REPLACEMENT_BENCH_ID }}" \
+            --trial "$TRIAL" \
+            --wait-minutes "$WAIT_MINUTES" \
+            --label "$LABEL" \
+            --candidate card-replacement-agent/bench/candidate.json \
+            --image "$IMAGE@${{ steps.build.outputs.digest }}" \
+            --sha "${GITHUB_SHA::7}" \
+            --out out
+
+      - name: Publish chart
+        # A manual run into another trial leaves the published chart alone; its numbers are in the job summary.
+        if: always() && hashFiles('out/chart.svg') != '' && (inputs.trial || env.SERIES) == env.SERIES
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git fetch --depth 1 origin bench-results:refs/remotes/origin/bench-results; then
+            git worktree add -B bench-results results origin/bench-results
+          else
+            git worktree add --orphan -b bench-results results
+          fi
+          mkdir -p "results/$LABEL"
+          cp out/chart.svg out/results.json "results/$LABEL/"
+          git -C results add "$LABEL"
+          git -C results commit -m "chart: $LABEL $(date -u +%Y-%m-%d)"
+          git -C results push origin bench-results

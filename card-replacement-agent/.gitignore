@@ -6,3 +6,5 @@ upload_scenarios.py
 ui/node_modules/
 ui/.next/
 ui/out/
+# The repo-root .gitignore ignores lib/ (Python); the UI keeps its shadcn helpers there.
+!ui/ui/lib/
