@@ -1,23 +1,13 @@
 [
   {
-    "date": "2026-09-29",
-    "sha": "f368ff1",
-    "candidate_id": "cand_myru8hszrdlus7zds902t",
-    "pass_rate": 36.0,
-    "ci_low": 20.247880678156655,
-    "ci_high": 55.4815023991343,
-    "n": 25,
-    "passes": 9,
-    "expected": 25
-  },
-  {
-    "date": "2026-09-29",
-    "sha": "f368ff1",
-    "candidate_id": "cand_q6hr408quag2s1anpcxsw",
-    "pass_rate": 44.0,
-    "ci_low": 26.665638767770883,
-    "ci_high": 62.9326682653538,
-    "n": 25,
+    "date": "2026-10-01",
+    "sha": "5f74e82",
+    "image": "3d78560",
+    "candidate_id": "cand_3nqml0o5ijye5r06ktrmg",
+    "pass_rate": 45.833333333333336,
+    "ci_low": 27.891333613001446,
+    "ci_high": 64.92513477492628,
+    "n": 24,
     "passes": 11,
     "expected": 25
   }
