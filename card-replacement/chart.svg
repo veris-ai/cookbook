@@ -8,15 +8,20 @@
   .band,.line{stroke:#3fb68b} .dot{fill:#3fb68b} .hollow{fill:#0d1117;stroke:#3fb68b}
 }</style>
 <text class="title" x="48" y="24">card-replacement · 25 tasks × 1 repeat · bars = 95% interval</text>
-<text class="sub" x="48" y="42">updated 2026-10-01 06:15 UTC</text>
+<text class="sub" x="48" y="42">updated 2026-10-02 06:14 UTC</text>
 <line class="grid" x1="48" x2="736" y1="280.0" y2="280.0"/>
 <text class="axis" x="40" y="284.0" text-anchor="end">0</text>
 <line class="grid" x1="48" x2="736" y1="170.0" y2="170.0"/>
 <text class="axis" x="40" y="174.0" text-anchor="end">50</text>
 <line class="grid" x1="48" x2="736" y1="60.0" y2="60.0"/>
 <text class="axis" x="40" y="64.0" text-anchor="end">100</text>
-<line class="band" x1="392.0" x2="392.0" y1="218.6" y2="137.2"/>
-<circle class="hollow" cx="392.0" cy="179.2" r="4.5"><title>2026-10-01 (5f74e82): 11/24 passed, 46%</title></circle>
-<text class="axis" x="399.0" y="172.2">24/25</text>
-<text class="axis" x="392.0" y="304" text-anchor="middle">10-01</text>
+<polyline class="line" points="220.0,179.2 564.0,197.5"/>
+<line class="band" x1="220.0" x2="220.0" y1="218.6" y2="137.2"/>
+<circle class="hollow" cx="220.0" cy="179.2" r="4.5"><title>2026-10-01 (5f74e82): 11/24 passed, 46%</title></circle>
+<text class="axis" x="227.0" y="172.2">24/25</text>
+<line class="band" x1="564.0" x2="564.0" y1="233.4" y2="154.0"/>
+<circle class="hollow" cx="564.0" cy="197.5" r="4.5"><title>2026-10-02 (5f74e82): 9/24 passed, 38%</title></circle>
+<text class="axis" x="571.0" y="190.5">24/25</text>
+<text class="axis" x="220.0" y="304" text-anchor="middle">10-01</text>
+<text class="axis" x="564.0" y="304" text-anchor="middle">10-02</text>
 </svg>
