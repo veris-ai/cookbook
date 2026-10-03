@@ -50,10 +50,10 @@ uv run uvicorn app.main:app --host 0.0.0.0 --port 8008
 
 ## Running Veris simulations
 
-Install the [Veris CLI](https://github.com/veris-ai/veris-cli) and log in:
+Install the [Veris Sim CLI](https://docs.veris.ai/reference/cli/installation) and log in:
 
 ```bash
-uv tool install veris-cli
+uv tool install veris-sim-cli
 veris login
 ```
 

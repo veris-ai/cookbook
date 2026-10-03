@@ -20,7 +20,7 @@ An autonomous **IT procurement agent** that manages the complete procurement lif
 
 - Python 3.11+
 - [uv](https://docs.astral.sh/uv/) package manager
-- [Veris CLI](https://docs.veris.ai) (`uv tool install veris-cli`)
+- [Veris Sim CLI](https://docs.veris.ai/reference/cli/installation) (`uv tool install veris-sim-cli`)
 - API key: [OpenAI](https://platform.openai.com/api-keys)
 
 ## Quick Start (Local)
@@ -34,10 +34,10 @@ uv run uvicorn app.main:app --host 0.0.0.0 --port 8008
 
 ## Deploy on Veris
 
-### 1. Install Veris CLI & login
+### 1. Install Veris Sim CLI & login
 
 ```bash
-uv tool install veris-cli
+uv tool install veris-sim-cli
 veris login
 ```
 
