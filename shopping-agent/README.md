@@ -88,7 +88,7 @@ The Catalog Agent gets all its tools from Stripe's MCP server. The Account Agent
 
 ### Veris simulations (retired)
 
-These examples used to run on the Veris simulation platform. That platform retires on **2026-10-31** (writes close **2026-10-05**). The example agents live on as public benches at [benchmark.veris.ai](https://benchmark.veris.ai); service mocking for your own code is now [Veris Twins](https://studio.veris.ai). Dates and export steps: https://docs.veris.ai/deprecation
+These examples used to run on the Veris simulation platform, which retired on **2026-10-15** and is replaced by [Veris Bench](https://benchmark.veris.ai). Environment images and data are kept until **2026-11-14**, then deleted. Questions or data requests: hello@veris.ai. Details: https://docs.veris.ai/deprecation
 
 ## Veris Sandbox Configuration
 
