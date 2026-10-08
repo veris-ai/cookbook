@@ -32,56 +32,9 @@ cp .env.example .env
 uv run uvicorn app.main:app --host 0.0.0.0 --port 8008
 ```
 
-## Deploy on Veris
+### Veris simulations (retired)
 
-### 1. Install Veris CLI & login
-
-```bash
-uv tool install veris-cli
-veris login
-```
-
-### 2. Clone the repo
-
-```bash
-git clone <repo-url>
-cd procurement-agent
-```
-
-### 3. Install dependencies
-
-```bash
-uv sync
-```
-
-> **Note:** `veris env push` requires `uv.lock` to exist. The Dockerfile uses `uv sync --frozen`. Run `uv sync` or `uv lock` first if the lockfile is missing.
-
-### 4. Create a Veris environment
-
-```bash
-veris env create
-```
-
-### 5. Configure environment variables
-
-Set your OpenAI API key as a secret (not in `veris.yaml`):
-
-```bash
-veris env vars set OPENAI_API_KEY=sk-... --secret
-```
-
-### 6. Push and run
-
-```bash
-veris env push
-```
-
-### 7. Run simulations
-
-```bash
-veris scenarios create --num 25
-veris run
-```
+These examples used to run on the Veris simulation platform, which retired on **2026-10-15** and is replaced by [Veris Bench](https://benchmark.veris.ai). Environment images and data are kept until **2026-11-14**, then deleted. Questions or data requests: hello@veris.ai. Details: https://docs.veris.ai/deprecation
 
 ## Veris Sandbox Configuration
 

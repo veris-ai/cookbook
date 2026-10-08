@@ -64,63 +64,9 @@ curl -X POST http://localhost:8000/api/v1/conversations/{id}/confirm \
   -d '{"action_id": "...", "confirmed": true}'
 ```
 
-## Deploy on Veris
+### Veris simulations (retired)
 
-### Prerequisites
-
-- A GCP project with **Vertex AI** enabled
-- A GCP service account key (JSON) with Vertex AI permissions
-- A **Vertex AI RAG corpus** set up with the procedure document
-
-### 1. Install Veris CLI & login
-
-```bash
-uv tool install veris-cli
-veris login
-```
-
-### 2. Clone the repo
-
-```bash
-git clone <repo-url>
-cd bca-agent
-```
-
-### 3. Create a Veris environment
-
-```bash
-veris env create
-```
-
-### 4. Configure environment variables
-
-Open `.veris/veris.yaml` and update the `agent.environment` section with your values:
-
-```yaml
-agent:
-  environment:
-    HOGAN_API_BASE_URL: https://api.hogan.dxc.com
-    ADK_MODEL: gemini-2.5-flash
-    GCP_PROJECT: <your-gcp-project-id>
-    GCP_LOCATION: global
-    RAG_CORPUS_ID: <your-rag-corpus-id>
-    RAG_LOCATION: europe-west4
-```
-
-### 5. Add the GCP service account key in Veris console
-
-The agent needs GCP credentials to call Vertex AI. Since the key is sensitive, add it as a secret through the Veris console — not in `veris.yaml`.
-
-1. Go to the [Veris console](https://console.veris.ai)
-2. Navigate to your environment's **Secrets** section
-3. Add a new secret with key name: `GCP_SERVICE_ACCOUNT_JSON`
-4. Paste the full contents of your GCP service account JSON key file as the value
-
-### 6. Push and run
-
-```bash
-veris env push
-```
+These examples used to run on the Veris simulation platform, which retired on **2026-10-15** and is replaced by [Veris Bench](https://benchmark.veris.ai). Environment images and data are kept until **2026-11-14**, then deleted. Questions or data requests: hello@veris.ai. Details: https://docs.veris.ai/deprecation
 
 ## POC Scope
 

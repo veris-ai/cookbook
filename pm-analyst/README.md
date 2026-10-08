@@ -103,44 +103,6 @@ To enable creating/managing work items in ADO:
 3. Re-authenticate to consent to the new scope
 4. Ask the agent to create work items — it will push Epics, Features, and User Stories with proper hierarchy
 
-## Deploy on Veris
+### Veris simulations (retired)
 
-### Prerequisites
-
-- A Microsoft Entra ID app registration with the required API permissions
-- An Azure DevOps organization and project
-
-### 1. Install Veris CLI & login
-
-```bash
-uv tool install veris-cli
-veris login
-```
-
-### 2. Clone the repo
-
-```bash
-git clone <repo-url>
-cd pm-analyst
-```
-
-### 3. Create a Veris environment
-
-```bash
-veris env create
-```
-
-### 4. Configure environment variables
-
-Set your Google API key as a secret (not in `veris.yaml`):
-
-```bash
-veris env vars set GOOGLE_API_KEY=sk-... --secret
-```
-
-
-### 5. Push and run
-
-```bash
-veris env push
-```
+These examples used to run on the Veris simulation platform, which retired on **2026-10-15** and is replaced by [Veris Bench](https://benchmark.veris.ai). Environment images and data are kept until **2026-11-14**, then deleted. Questions or data requests: hello@veris.ai. Details: https://docs.veris.ai/deprecation

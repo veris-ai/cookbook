@@ -48,39 +48,9 @@ uv run uvicorn app.main:app --host 0.0.0.0 --port 8008
 
 > **Note:** You'll need a running PostgreSQL instance and `DATABASE_URL` set in `.env`.
 
-## Running Veris simulations
+### Veris simulations (retired)
 
-Install the [Veris CLI](https://github.com/veris-ai/veris-cli) and log in:
-
-```bash
-uv tool install veris-cli
-veris login
-```
-
-Create an environment and set your API key:
-
-```bash
-veris env create --name card-replacement-agent
-veris env vars set OPENAI_API_KEY=sk-... --secret
-```
-
-Build and push the sandbox image:
-
-```bash
-veris env push
-```
-
-Generate test scenarios:
-
-```bash
-veris scenarios create --num 25
-```
-
-Run the simulations:
-
-```bash
-veris run
-```
+These examples used to run on the Veris simulation platform, which retired on **2026-10-15** and is replaced by [Veris Bench](https://benchmark.veris.ai). Environment images and data are kept until **2026-11-14**, then deleted. Questions or data requests: hello@veris.ai. Details: https://docs.veris.ai/deprecation
 
 ## Nightly benchmark
 

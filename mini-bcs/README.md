@@ -59,45 +59,6 @@ Mini BCS supports multiple LLM providers via the `LLM_PROVIDER` environment vari
 | `DATABASE_URL` | PostgreSQL connection string (default to Posgres in `docker-compose.yml`) |
 
 
-# Veris Setup
-a. Install Veris CLI and login:
+### Veris simulations (retired)
 
-```bash
-uv tool install veris-cli
-veris login # If personal
-veris login --org <your org-id> # if part of an org
-```
-
-b. In mini-bcs folder, start a new Veris environment:
-
-```bas
-veris env create
-```
-
-Give your environment a name.
-
-c. `veris.yaml` and `Dockerfile.sandbox` are configured for this agent. Only change them if you change agent's dependencies. 
-
-d. Push you environment:
-
-```bash
-veris env push
-```
-
-e. Add required environment variables to Veris:
-
-```bash
-veris env vars set OPENAI_API_KEY=<your-oai-key> --secret # change this if using a different LLM provider
-veris env vars set POSTGRES_PASSWORD=postgres
-```
-
-e. Login to [Veris Console](https://console.veris.ai) to generate scenarios, run simulations, evaluations and reports.
-
-OR
-
-```
-veris scenarios create
-veris run --scenario-set-id <from-last-step>
-veris evaluations create --sim-run-id <from-last-step>
-veris reports create --eval-run-id <from-last-step>
-```
+These examples used to run on the Veris simulation platform, which retired on **2026-10-15** and is replaced by [Veris Bench](https://benchmark.veris.ai). Environment images and data are kept until **2026-11-14**, then deleted. Questions or data requests: hello@veris.ai. Details: https://docs.veris.ai/deprecation

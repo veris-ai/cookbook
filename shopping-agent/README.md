@@ -86,51 +86,9 @@ The `prompt` field on each agent in `src/agent.js` controls its behavior. Modify
 
 The Catalog Agent gets all its tools from Stripe's MCP server. The Account Agent uses custom PostgreSQL tools defined in `src/db.js`. Add new tools to either agent by extending the `tools` array in `src/agent.js`.
 
-## Deploy on Veris
+### Veris simulations (retired)
 
-### 1. Install Veris CLI & login
-
-```bash
-uv tool install veris-cli
-veris login
-```
-
-### 2. Clone the repo
-
-```bash
-git clone <repo-url>
-cd shopping-agent
-```
-
-### 3. Create a Veris environment
-
-```bash
-veris env create
-```
-
-### 4. Configure environment variables
-
-Set your API keys as secrets (not in `veris.yaml`):
-
-```bash
-veris env vars set OPENAI_API_KEY=sk-... --secret
-veris env vars set GOOGLE_API_KEY=... --secret
-```
-
-> **Note:** `STRIPE_SECRET_KEY` and `DATABASE_URL` are automatically configured by the Veris sandbox (see `.veris/veris.yaml`). You don't need to set them manually.
-
-### 5. Push and run
-
-```bash
-veris env push
-```
-
-### 6. Run simulations
-
-```bash
-veris scenarios create --num 25
-veris run
-```
+These examples used to run on the Veris simulation platform, which retired on **2026-10-15** and is replaced by [Veris Bench](https://benchmark.veris.ai). Environment images and data are kept until **2026-11-14**, then deleted. Questions or data requests: hello@veris.ai. Details: https://docs.veris.ai/deprecation
 
 ## Veris Sandbox Configuration
 
