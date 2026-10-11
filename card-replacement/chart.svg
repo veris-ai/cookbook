@@ -8,46 +8,44 @@
   .band,.line{stroke:#3fb68b} .dot{fill:#3fb68b} .hollow{fill:#0d1117;stroke:#3fb68b}
 }</style>
 <text class="title" x="48" y="24">card-replacement · 25 tasks × 1 repeat · bars = 95% interval</text>
-<text class="sub" x="48" y="42">updated 2026-10-10 06:13 UTC</text>
+<text class="sub" x="48" y="42">updated 2026-10-11 06:13 UTC</text>
 <line class="grid" x1="48" x2="736" y1="280.0" y2="280.0"/>
 <text class="axis" x="40" y="284.0" text-anchor="end">0</text>
 <line class="grid" x1="48" x2="736" y1="170.0" y2="170.0"/>
 <text class="axis" x="40" y="174.0" text-anchor="end">50</text>
 <line class="grid" x1="48" x2="736" y1="60.0" y2="60.0"/>
 <text class="axis" x="40" y="64.0" text-anchor="end">100</text>
-<polyline class="line" points="82.4,179.2 151.2,197.5 220.0,179.2 288.8,183.2 357.6,160.8 426.4,183.2 495.2,174.4 564.0,192.0 632.8,183.2 701.6,192.0"/>
-<line class="band" x1="82.4" x2="82.4" y1="218.6" y2="137.2"/>
-<circle class="hollow" cx="82.4" cy="179.2" r="4.5"><title>2026-10-01 (5f74e82): 11/24 passed, 46%</title></circle>
-<text class="axis" x="89.4" y="172.2">24/25</text>
-<line class="band" x1="151.2" x2="151.2" y1="233.4" y2="154.0"/>
-<circle class="hollow" cx="151.2" cy="197.5" r="4.5"><title>2026-10-02 (5f74e82): 9/24 passed, 38%</title></circle>
-<text class="axis" x="158.2" y="190.5">24/25</text>
-<line class="band" x1="220.0" x2="220.0" y1="218.6" y2="137.2"/>
-<circle class="hollow" cx="220.0" cy="179.2" r="4.5"><title>2026-10-03 (5f74e82): 11/24 passed, 46%</title></circle>
-<text class="axis" x="227.0" y="172.2">24/25</text>
-<line class="band" x1="288.8" x2="288.8" y1="221.3" y2="141.5"/>
-<circle class="dot" cx="288.8" cy="183.2" r="4.5"><title>2026-10-04 (5f74e82): 11/25 passed, 44%</title></circle>
-<line class="band" x1="357.6" x2="357.6" y1="202.8" y2="121.4"/>
-<circle class="hollow" cx="357.6" cy="160.8" r="4.5"><title>2026-10-05 (5f74e82): 13/24 passed, 54%</title></circle>
-<text class="axis" x="364.6" y="153.8">24/25</text>
-<line class="band" x1="426.4" x2="426.4" y1="221.3" y2="141.5"/>
-<circle class="dot" cx="426.4" cy="183.2" r="4.5"><title>2026-10-06 (5f74e82): 11/25 passed, 44%</title></circle>
-<line class="band" x1="495.2" x2="495.2" y1="213.9" y2="133.7"/>
-<circle class="dot" cx="495.2" cy="174.4" r="4.5"><title>2026-10-07 (5f74e82): 12/25 passed, 48%</title></circle>
-<line class="band" x1="564.0" x2="564.0" y1="228.5" y2="149.6"/>
-<circle class="dot" cx="564.0" cy="192.0" r="4.5"><title>2026-10-08 (5f74e82): 10/25 passed, 40%</title></circle>
-<line class="band" x1="632.8" x2="632.8" y1="221.3" y2="141.5"/>
-<circle class="dot" cx="632.8" cy="183.2" r="4.5"><title>2026-10-09 (e64bab2): 11/25 passed, 44%</title></circle>
-<line class="band" x1="701.6" x2="701.6" y1="228.5" y2="149.6"/>
-<circle class="dot" cx="701.6" cy="192.0" r="4.5"><title>2026-10-10 (e64bab2): 10/25 passed, 40%</title></circle>
-<text class="axis" x="82.4" y="304" text-anchor="middle">10-01</text>
-<text class="axis" x="151.2" y="304" text-anchor="middle">10-02</text>
-<text class="axis" x="220.0" y="304" text-anchor="middle">10-03</text>
-<text class="axis" x="288.8" y="304" text-anchor="middle">10-04</text>
-<text class="axis" x="357.6" y="304" text-anchor="middle">10-05</text>
-<text class="axis" x="426.4" y="304" text-anchor="middle">10-06</text>
-<text class="axis" x="495.2" y="304" text-anchor="middle">10-07</text>
-<text class="axis" x="564.0" y="304" text-anchor="middle">10-08</text>
-<text class="axis" x="632.8" y="304" text-anchor="middle">10-09</text>
-<text class="axis" x="701.6" y="304" text-anchor="middle">10-10</text>
+<polyline class="line" points="79.3,179.2 141.8,197.5 204.4,179.2 266.9,183.2 329.5,160.8 392.0,183.2 454.5,174.4 517.1,192.0 579.6,183.2 642.2,192.0 704.7,174.4"/>
+<line class="band" x1="79.3" x2="79.3" y1="218.6" y2="137.2"/>
+<circle class="hollow" cx="79.3" cy="179.2" r="4.5"><title>2026-10-01 (5f74e82): 11/24 passed, 46%</title></circle>
+<text class="axis" x="86.3" y="172.2">24/25</text>
+<line class="band" x1="141.8" x2="141.8" y1="233.4" y2="154.0"/>
+<circle class="hollow" cx="141.8" cy="197.5" r="4.5"><title>2026-10-02 (5f74e82): 9/24 passed, 38%</title></circle>
+<text class="axis" x="148.8" y="190.5">24/25</text>
+<line class="band" x1="204.4" x2="204.4" y1="218.6" y2="137.2"/>
+<circle class="hollow" cx="204.4" cy="179.2" r="4.5"><title>2026-10-03 (5f74e82): 11/24 passed, 46%</title></circle>
+<text class="axis" x="211.4" y="172.2">24/25</text>
+<line class="band" x1="266.9" x2="266.9" y1="221.3" y2="141.5"/>
+<circle class="dot" cx="266.9" cy="183.2" r="4.5"><title>2026-10-04 (5f74e82): 11/25 passed, 44%</title></circle>
+<line class="band" x1="329.5" x2="329.5" y1="202.8" y2="121.4"/>
+<circle class="hollow" cx="329.5" cy="160.8" r="4.5"><title>2026-10-05 (5f74e82): 13/24 passed, 54%</title></circle>
+<text class="axis" x="336.5" y="153.8">24/25</text>
+<line class="band" x1="392.0" x2="392.0" y1="221.3" y2="141.5"/>
+<circle class="dot" cx="392.0" cy="183.2" r="4.5"><title>2026-10-06 (5f74e82): 11/25 passed, 44%</title></circle>
+<line class="band" x1="454.5" x2="454.5" y1="213.9" y2="133.7"/>
+<circle class="dot" cx="454.5" cy="174.4" r="4.5"><title>2026-10-07 (5f74e82): 12/25 passed, 48%</title></circle>
+<line class="band" x1="517.1" x2="517.1" y1="228.5" y2="149.6"/>
+<circle class="dot" cx="517.1" cy="192.0" r="4.5"><title>2026-10-08 (5f74e82): 10/25 passed, 40%</title></circle>
+<line class="band" x1="579.6" x2="579.6" y1="221.3" y2="141.5"/>
+<circle class="dot" cx="579.6" cy="183.2" r="4.5"><title>2026-10-09 (e64bab2): 11/25 passed, 44%</title></circle>
+<line class="band" x1="642.2" x2="642.2" y1="228.5" y2="149.6"/>
+<circle class="dot" cx="642.2" cy="192.0" r="4.5"><title>2026-10-10 (e64bab2): 10/25 passed, 40%</title></circle>
+<line class="band" x1="704.7" x2="704.7" y1="213.9" y2="133.7"/>
+<circle class="dot" cx="704.7" cy="174.4" r="4.5"><title>2026-10-11 (e64bab2): 12/25 passed, 48%</title></circle>
+<text class="axis" x="79.3" y="304" text-anchor="middle">10-01</text>
+<text class="axis" x="204.4" y="304" text-anchor="middle">10-03</text>
+<text class="axis" x="329.5" y="304" text-anchor="middle">10-05</text>
+<text class="axis" x="454.5" y="304" text-anchor="middle">10-07</text>
+<text class="axis" x="579.6" y="304" text-anchor="middle">10-09</text>
+<text class="axis" x="704.7" y="304" text-anchor="middle">10-11</text>
 </svg>
