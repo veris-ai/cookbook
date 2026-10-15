@@ -63,7 +63,7 @@ rate; the bar is its 95% interval. A hollow dot is a night where some attempts d
 Veris-side failure, or still running after 3 hours).
 
 **What it measures.** The agent's code only changes when this repo does, so night-to-night movement
-is mostly the models drifting — the agent's (the openai-agents default), the simulated customer's,
+is mostly the models drifting — the agent's (gpt-4.1, set as `MODEL` in `app/agent_setup/subagents.py`), the simulated customer's,
 and the judge's. With 25 attempts a night the interval is about ±18 points: read trends, not single
 nights. Four tasks (the replacement-status inquiries) fail until
 the agent can read a card's replacement status (its `Card` model has no such field, and
