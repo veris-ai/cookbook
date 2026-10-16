@@ -52,6 +52,21 @@ uv run uvicorn app.main:app --host 0.0.0.0 --port 8008
 
 These examples used to run on the Veris simulation platform, which retired on **2026-10-15** and is replaced by [Veris Bench](https://benchmark.veris.ai). Environment images and data are kept until **2026-11-14**, then deleted. Questions or data requests: hello@veris.ai. Details: https://docs.veris.ai/deprecation
 
+## Topology and model switches
+
+Two environment variables select what the container runs; both default to the original behaviour.
+
+- `CARD_AGENT_TOPOLOGY`: `multi` (default) is the triage agent plus three specialists, every turn
+  re-entering at triage; `single` is one agent (`app/agent_setup/single_agent.py`) holding the union
+  of the specialists' tools and their routines merged into one instruction (`agent_desc.yaml`,
+  `single_agent`, routines kept verbatim with handoffs rewritten as routine switches).
+- `CARD_AGENT_MODEL`: pins every agent to one model (for example `gpt-5.6-sol`); unset keeps the
+  openai-agents default. `/health` reports both values.
+
+`card-replacement-topology-image.yaml` builds this directory into
+`ghcr.io/veris-ai/card-replacement-agent:topology-<sha>` so a bench can run the four topology x model
+candidates from one image, differing only in their `env`.
+
 ## Nightly benchmark
 
 ![Nightly pass rate](https://raw.githubusercontent.com/veris-ai/cookbook/bench-results/card-replacement/chart.svg)

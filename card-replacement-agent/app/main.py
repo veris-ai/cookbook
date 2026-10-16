@@ -1,3 +1,4 @@
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Optional, List, Dict, Any
@@ -8,12 +9,20 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from agents import Runner, RunContextWrapper, trace
 
-from .agent_setup.subagents import triage_agent
+from .agent_setup.subagents import MODEL, triage_agent
+from .agent_setup.single_agent import single_agent
 from .session_manager import SessionManager, BCSRunContext
 from dotenv import load_dotenv
 load_dotenv()
 
 UI_DIR = Path(__file__).resolve().parent.parent / "ui" / "out"
+
+# CARD_AGENT_TOPOLOGY: "multi" (default) routes every turn through the triage agent and its
+# three specialists; "single" runs one agent holding all their tools and routines.
+TOPOLOGY = os.environ.get("CARD_AGENT_TOPOLOGY", "multi").strip().lower()
+if TOPOLOGY not in ("multi", "single"):
+    raise RuntimeError(f"CARD_AGENT_TOPOLOGY must be 'multi' or 'single', got {TOPOLOGY!r}")
+ENTRY_AGENT = single_agent if TOPOLOGY == "single" else triage_agent
 
 
 class ChatRequest(BaseModel):
@@ -58,7 +67,7 @@ async def get_session_manager(request: Request) -> SessionManager:
 
 @app.get("/health")
 async def health() -> Dict[str, str]:
-    return {"status": "ok"}
+    return {"status": "ok", "topology": TOPOLOGY, "model": MODEL or "default"}
 
 
 @app.post("/chat", response_model=ChatResponse)
@@ -68,7 +77,7 @@ async def chat(req: ChatRequest, session_manager: SessionManager = Depends(get_s
         ctx = RunContextWrapper(BCSRunContext())
         with trace("Mini BCS workflow"):
             result = await Runner.run(
-                triage_agent,
+                ENTRY_AGENT,
                 input=req.message,
                 context=ctx.context,
                 session=session.agent_session,

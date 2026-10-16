@@ -1,0 +1,56 @@
+name: "Bench: Card Replacement Topology Image"
+
+# Builds card-replacement-agent from this branch and pushes it as
+# ghcr.io/veris-ai/card-replacement-agent:topology-<sha>. The image carries both agent
+# topologies (CARD_AGENT_TOPOLOGY) and takes its model from CARD_AGENT_MODEL, so one
+# build serves the multi/single x model candidates of a bench. The digest is printed in
+# the job summary; nothing is run on a bench here.
+
+on:
+  push:
+    branches: [card-replacement-topology]
+    paths:
+      - "card-replacement-agent/**"
+      - ".github/workflows/card-replacement-topology-image.yaml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      IMAGE: ghcr.io/veris-ai/card-replacement-agent
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tag
+        run: echo "TAG=topology-${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: card-replacement-agent
+          push: true
+          tags: ${{ env.IMAGE }}:${{ env.TAG }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+
+      - name: Summary
+        run: |
+          {
+            echo "image: ${IMAGE}:${TAG}"
+            echo "digest: ${{ steps.build.outputs.digest }}"
+            echo "ref: ${IMAGE}@${{ steps.build.outputs.digest }}"
+          } | tee -a "$GITHUB_STEP_SUMMARY"
