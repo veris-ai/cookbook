@@ -63,27 +63,28 @@ Two environment variables select what the container runs; both default to the or
 - `CARD_AGENT_MODEL`: pins every agent to one model (for example `gpt-5.6-sol`); unset keeps the
   openai-agents default. `/health` reports both values.
 
-`card-replacement-topology-image.yaml` builds this directory into
-`ghcr.io/veris-ai/card-replacement-agent:topology-<sha>` so a bench can run the four topology x model
-candidates from one image, differing only in their `env`.
+One image serves every topology x model candidate on a bench; each candidate's `env` picks one. The
+nightly below runs `single` on `gpt-5.6-sol`, set in [`bench/candidate.json`](bench/candidate.json).
 
 ## Nightly benchmark
 
-![Nightly pass rate](https://raw.githubusercontent.com/veris-ai/cookbook/bench-results/card-replacement/chart.svg)
+![Nightly pass rate](https://raw.githubusercontent.com/veris-ai/cookbook/bench-results/card-service-desk/chart.svg)
 
 Every night [`card-replacement-bench-nightly.yaml`](../.github/workflows/card-replacement-bench-nightly.yaml)
-builds this agent from `main`, adds it as a new candidate to one long-lived Veris bench trial, waits
-for its 25 tasks to finish, and redraws this chart from the whole trial. Each dot is one night's pass
+builds this agent from `main`, adds it as a new candidate to one long-lived trial on the Card Service
+Desk bench, waits for its 72 attempts (24 tasks x 3 repeats) to finish, and redraws this chart from the
+whole trial. Each dot is one night's pass
 rate; the bar is its 95% interval. A hollow dot is a night where some attempts did not count (a
 Veris-side failure, or still running after 3 hours).
 
-**What it measures.** The agent's code only changes when this repo does, so night-to-night movement
-is mostly the models drifting — the agent's (the openai-agents default), the simulated customer's,
-and the judge's. With 25 attempts a night the interval is about ±18 points: read trends, not single
-nights. Four tasks (the replacement-status inquiries) fail until
-the agent can read a card's replacement status (its `Card` model has no such field, and
-`update_card_replacement_status` calls a method `BCSAPI` does not define); that fix will
-show as a step up.
+**What it measures.** The bench's 24 tasks run against a Postgres twin of the bank's customers and
+cards; the judge grades on the tool trace, the SQL ledger and the transcript, never on what the agent
+says it did. The agent's code only changes when this repo does, so night-to-night movement is mostly
+the models drifting — the agent's (`gpt-5.6-sol`), the simulated customer's, and the judge's. With 72
+attempts a night the interval is about ±11 points: read trends, not single nights. Seven tasks fail
+until the agent can find a card by its owner: `display_card_info_by_last4` returns the first card with
+those digits, whoever holds it, and no agent has a tool to read a card by its id. That fix will show
+as a step up.
 
 ### How it works
 
@@ -96,7 +97,7 @@ show as a step up.
   or editing a task or archetype stops the job with a message. To start a new series on purpose,
   change `SERIES` in the workflow.
 - Never delete a candidate that is in the trial: bench then refuses every later addition to it.
-- Each candidate is named `card-replacement <date> (<commit>, <image digest>)`.
+- Each candidate is named `card-service-desk <date> (<commit>, <image digest>)`.
   [`card-replacement-image-retention.yaml`](../.github/workflows/card-replacement-image-retention.yaml)
   keeps the newest images in GHCR when run (by hand for now); an older night keeps its results on
   bench but can no longer be re-run.
