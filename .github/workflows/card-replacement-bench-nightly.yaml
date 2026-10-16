@@ -31,7 +31,7 @@ jobs:
     env:
       SERIES: nightly   # the trial scheduled runs add to and the chart the README shows
       IMAGE: ghcr.io/veris-ai/card-replacement-agent
-      LABEL: card-replacement
+      LABEL: card-service-desk
     steps:
       - uses: actions/checkout@v4
 
@@ -69,6 +69,8 @@ jobs:
             --wait-minutes "$WAIT_MINUTES" \
             --label "$LABEL" \
             --candidate card-replacement-agent/bench/candidate.json \
+            --personas all \
+            --repeats 3 \
             --image "$IMAGE@${{ steps.build.outputs.digest }}" \
             --sha "${GITHUB_SHA::7}" \
             --out out
