@@ -8,12 +8,12 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from agents import Runner, RunContextWrapper, trace
+from dotenv import load_dotenv
+load_dotenv()
 
 from .agent_setup.subagents import MODEL, triage_agent
 from .agent_setup.single_agent import single_agent
 from .session_manager import SessionManager, BCSRunContext
-from dotenv import load_dotenv
-load_dotenv()
 
 UI_DIR = Path(__file__).resolve().parent.parent / "ui" / "out"
 
