@@ -1,0 +1,38 @@
+[
+  {
+    "date": "2026-10-17",
+    "sha": "5c79f81",
+    "image": "c2eb9cc",
+    "candidate_id": "cand_r3k3ia4j12m4ufz2ycvpm",
+    "pass_rate": 61.111111111111114,
+    "ci_low": 49.5623549033041,
+    "ci_high": 71.53428568880604,
+    "n": 72,
+    "passes": 44,
+    "expected": 72
+  },
+  {
+    "date": "2026-10-18",
+    "sha": "5c79f81",
+    "image": "c2eb9cc",
+    "candidate_id": "cand_2zmpksptepg7rfpre7i5g",
+    "pass_rate": 62.5,
+    "ci_low": 50.952898935442114,
+    "ci_high": 72.78082173068178,
+    "n": 72,
+    "passes": 45,
+    "expected": 72
+  },
+  {
+    "date": "2026-10-19",
+    "sha": "13d6397",
+    "image": "a07732b",
+    "candidate_id": "cand_kn3h0rfm8j4ckof95zzyn",
+    "pass_rate": 59.72222222222222,
+    "ci_low": 48.18067159467256,
+    "ci_high": 70.27888892342379,
+    "n": 72,
+    "passes": 43,
+    "expected": 72
+  }
+]
