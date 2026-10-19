@@ -9,5 +9,8 @@
       "response": {"type": "json", "message_field": "response", "session_field": "session_id"}
     }
   },
-  "image": {"port": 8008, "path": "/chat", "health_path": "/health"}
+  "image": {
+    "port": 8008, "path": "/chat", "health_path": "/health",
+    "env": {"CARD_AGENT_TOPOLOGY": "single", "CARD_AGENT_MODEL": "gpt-5.6-sol"}
+  }
 }
