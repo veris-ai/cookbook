@@ -8,24 +8,27 @@
   .band,.line{stroke:#3fb68b} .dot{fill:#3fb68b} .hollow{fill:#0d1117;stroke:#3fb68b}
 }</style>
 <text class="title" x="48" y="24">card-service-desk · 24 tasks × 3 repeats · bars = 95% interval</text>
-<text class="sub" x="48" y="42">updated 2026-10-20 06:13 UTC</text>
+<text class="sub" x="48" y="42">updated 2026-10-21 06:13 UTC</text>
 <line class="grid" x1="48" x2="736" y1="280.0" y2="280.0"/>
 <text class="axis" x="40" y="284.0" text-anchor="end">0</text>
 <line class="grid" x1="48" x2="736" y1="170.0" y2="170.0"/>
 <text class="axis" x="40" y="174.0" text-anchor="end">50</text>
 <line class="grid" x1="48" x2="736" y1="60.0" y2="60.0"/>
 <text class="axis" x="40" y="64.0" text-anchor="end">100</text>
-<polyline class="line" points="134.0,145.6 306.0,142.5 478.0,148.6 650.0,142.5"/>
-<line class="band" x1="134.0" x2="134.0" y1="171.0" y2="122.6"/>
-<circle class="dot" cx="134.0" cy="145.6" r="4.5"><title>2026-10-17 (5c79f81): 44/72 passed, 61%</title></circle>
-<line class="band" x1="306.0" x2="306.0" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="306.0" cy="142.5" r="4.5"><title>2026-10-18 (5c79f81): 45/72 passed, 62%</title></circle>
-<line class="band" x1="478.0" x2="478.0" y1="174.0" y2="125.4"/>
-<circle class="dot" cx="478.0" cy="148.6" r="4.5"><title>2026-10-19 (13d6397): 43/72 passed, 60%</title></circle>
-<line class="band" x1="650.0" x2="650.0" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="650.0" cy="142.5" r="4.5"><title>2026-10-20 (13d6397): 45/72 passed, 62%</title></circle>
-<text class="axis" x="134.0" y="304" text-anchor="middle">10-17</text>
-<text class="axis" x="306.0" y="304" text-anchor="middle">10-18</text>
-<text class="axis" x="478.0" y="304" text-anchor="middle">10-19</text>
-<text class="axis" x="650.0" y="304" text-anchor="middle">10-20</text>
+<polyline class="line" points="116.8,145.6 254.4,142.5 392.0,148.6 529.6,142.5 667.2,139.4"/>
+<line class="band" x1="116.8" x2="116.8" y1="171.0" y2="122.6"/>
+<circle class="dot" cx="116.8" cy="145.6" r="4.5"><title>2026-10-17 (5c79f81): 44/72 passed, 61%</title></circle>
+<line class="band" x1="254.4" x2="254.4" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="254.4" cy="142.5" r="4.5"><title>2026-10-18 (5c79f81): 45/72 passed, 62%</title></circle>
+<line class="band" x1="392.0" x2="392.0" y1="174.0" y2="125.4"/>
+<circle class="dot" cx="392.0" cy="148.6" r="4.5"><title>2026-10-19 (13d6397): 43/72 passed, 60%</title></circle>
+<line class="band" x1="529.6" x2="529.6" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="529.6" cy="142.5" r="4.5"><title>2026-10-20 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="667.2" x2="667.2" y1="164.8" y2="117.2"/>
+<circle class="dot" cx="667.2" cy="139.4" r="4.5"><title>2026-10-21 (13d6397): 46/72 passed, 64%</title></circle>
+<text class="axis" x="116.8" y="304" text-anchor="middle">10-17</text>
+<text class="axis" x="254.4" y="304" text-anchor="middle">10-18</text>
+<text class="axis" x="392.0" y="304" text-anchor="middle">10-19</text>
+<text class="axis" x="529.6" y="304" text-anchor="middle">10-20</text>
+<text class="axis" x="667.2" y="304" text-anchor="middle">10-21</text>
 </svg>
