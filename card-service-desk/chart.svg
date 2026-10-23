@@ -8,30 +8,33 @@
   .band,.line{stroke:#3fb68b} .dot{fill:#3fb68b} .hollow{fill:#0d1117;stroke:#3fb68b}
 }</style>
 <text class="title" x="48" y="24">card-service-desk · 24 tasks × 3 repeats · bars = 95% interval</text>
-<text class="sub" x="48" y="42">updated 2026-10-22 06:13 UTC</text>
+<text class="sub" x="48" y="42">updated 2026-10-23 06:13 UTC</text>
 <line class="grid" x1="48" x2="736" y1="280.0" y2="280.0"/>
 <text class="axis" x="40" y="284.0" text-anchor="end">0</text>
 <line class="grid" x1="48" x2="736" y1="170.0" y2="170.0"/>
 <text class="axis" x="40" y="174.0" text-anchor="end">50</text>
 <line class="grid" x1="48" x2="736" y1="60.0" y2="60.0"/>
 <text class="axis" x="40" y="64.0" text-anchor="end">100</text>
-<polyline class="line" points="105.3,145.6 220.0,142.5 334.7,148.6 449.3,142.5 564.0,139.4 678.7,142.5"/>
-<line class="band" x1="105.3" x2="105.3" y1="171.0" y2="122.6"/>
-<circle class="dot" cx="105.3" cy="145.6" r="4.5"><title>2026-10-17 (5c79f81): 44/72 passed, 61%</title></circle>
-<line class="band" x1="220.0" x2="220.0" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="220.0" cy="142.5" r="4.5"><title>2026-10-18 (5c79f81): 45/72 passed, 62%</title></circle>
-<line class="band" x1="334.7" x2="334.7" y1="174.0" y2="125.4"/>
-<circle class="dot" cx="334.7" cy="148.6" r="4.5"><title>2026-10-19 (13d6397): 43/72 passed, 60%</title></circle>
-<line class="band" x1="449.3" x2="449.3" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="449.3" cy="142.5" r="4.5"><title>2026-10-20 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="564.0" x2="564.0" y1="164.8" y2="117.2"/>
-<circle class="dot" cx="564.0" cy="139.4" r="4.5"><title>2026-10-21 (13d6397): 46/72 passed, 64%</title></circle>
-<line class="band" x1="678.7" x2="678.7" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="678.7" cy="142.5" r="4.5"><title>2026-10-22 (13d6397): 45/72 passed, 62%</title></circle>
-<text class="axis" x="105.3" y="304" text-anchor="middle">10-17</text>
-<text class="axis" x="220.0" y="304" text-anchor="middle">10-18</text>
-<text class="axis" x="334.7" y="304" text-anchor="middle">10-19</text>
-<text class="axis" x="449.3" y="304" text-anchor="middle">10-20</text>
-<text class="axis" x="564.0" y="304" text-anchor="middle">10-21</text>
-<text class="axis" x="678.7" y="304" text-anchor="middle">10-22</text>
+<polyline class="line" points="97.1,145.6 195.4,142.5 293.7,148.6 392.0,142.5 490.3,139.4 588.6,142.5 686.9,142.5"/>
+<line class="band" x1="97.1" x2="97.1" y1="171.0" y2="122.6"/>
+<circle class="dot" cx="97.1" cy="145.6" r="4.5"><title>2026-10-17 (5c79f81): 44/72 passed, 61%</title></circle>
+<line class="band" x1="195.4" x2="195.4" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="195.4" cy="142.5" r="4.5"><title>2026-10-18 (5c79f81): 45/72 passed, 62%</title></circle>
+<line class="band" x1="293.7" x2="293.7" y1="174.0" y2="125.4"/>
+<circle class="dot" cx="293.7" cy="148.6" r="4.5"><title>2026-10-19 (13d6397): 43/72 passed, 60%</title></circle>
+<line class="band" x1="392.0" x2="392.0" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="392.0" cy="142.5" r="4.5"><title>2026-10-20 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="490.3" x2="490.3" y1="164.8" y2="117.2"/>
+<circle class="dot" cx="490.3" cy="139.4" r="4.5"><title>2026-10-21 (13d6397): 46/72 passed, 64%</title></circle>
+<line class="band" x1="588.6" x2="588.6" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="588.6" cy="142.5" r="4.5"><title>2026-10-22 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="686.9" x2="686.9" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="686.9" cy="142.5" r="4.5"><title>2026-10-23 (13d6397): 45/72 passed, 62%</title></circle>
+<text class="axis" x="97.1" y="304" text-anchor="middle">10-17</text>
+<text class="axis" x="195.4" y="304" text-anchor="middle">10-18</text>
+<text class="axis" x="293.7" y="304" text-anchor="middle">10-19</text>
+<text class="axis" x="392.0" y="304" text-anchor="middle">10-20</text>
+<text class="axis" x="490.3" y="304" text-anchor="middle">10-21</text>
+<text class="axis" x="588.6" y="304" text-anchor="middle">10-22</text>
+<text class="axis" x="686.9" y="304" text-anchor="middle">10-23</text>
 </svg>
