@@ -166,5 +166,17 @@
     "n": 72,
     "passes": 45,
     "expected": 72
+  },
+  {
+    "date": "2026-10-31",
+    "sha": "13d6397",
+    "image": "764e50f",
+    "candidate_id": "cand_odopvy74q23ig09ht3mje",
+    "pass_rate": 61.111111111111114,
+    "ci_low": 49.5623549033041,
+    "ci_high": 71.53428568880604,
+    "n": 72,
+    "passes": 44,
+    "expected": 72
   }
 ]
