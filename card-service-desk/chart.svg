@@ -8,85 +8,87 @@
   .band,.line{stroke:#3fb68b} .dot{fill:#3fb68b} .hollow{fill:#0d1117;stroke:#3fb68b}
 }</style>
 <text class="title" x="48" y="24">card-service-desk · 24 tasks × 3 repeats · bars = 95% interval</text>
-<text class="sub" x="48" y="42">updated 2026-11-16 06:13 UTC</text>
+<text class="sub" x="48" y="42">updated 2026-11-17 06:09 UTC</text>
 <line class="grid" x1="48" x2="736" y1="280.0" y2="280.0"/>
 <text class="axis" x="40" y="284.0" text-anchor="end">0</text>
 <line class="grid" x1="48" x2="736" y1="170.0" y2="170.0"/>
 <text class="axis" x="40" y="174.0" text-anchor="end">50</text>
 <line class="grid" x1="48" x2="736" y1="60.0" y2="60.0"/>
 <text class="axis" x="40" y="64.0" text-anchor="end">100</text>
-<polyline class="line" points="59.1,145.6 81.3,142.5 103.5,148.6 125.7,142.5 147.9,139.4 170.1,142.5 192.3,142.5 214.5,139.4 236.6,142.5 258.8,145.6 281.0,142.5 303.2,142.5 325.4,146.8 347.6,142.5 369.8,145.6 392.0,142.5 414.2,148.6 436.4,142.5 458.6,145.6 480.8,139.4 503.0,145.6 525.2,142.5 547.4,139.4 569.5,142.5 591.7,139.4 613.9,142.5 636.1,142.5 658.3,142.5 680.5,142.5 702.7,140.9 724.9,139.4"/>
-<line class="band" x1="59.1" x2="59.1" y1="171.0" y2="122.6"/>
-<circle class="dot" cx="59.1" cy="145.6" r="4.5"><title>2026-10-17 (5c79f81): 44/72 passed, 61%</title></circle>
-<line class="band" x1="81.3" x2="81.3" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="81.3" cy="142.5" r="4.5"><title>2026-10-18 (5c79f81): 45/72 passed, 62%</title></circle>
-<line class="band" x1="103.5" x2="103.5" y1="174.0" y2="125.4"/>
-<circle class="dot" cx="103.5" cy="148.6" r="4.5"><title>2026-10-19 (13d6397): 43/72 passed, 60%</title></circle>
-<line class="band" x1="125.7" x2="125.7" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="125.7" cy="142.5" r="4.5"><title>2026-10-20 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="147.9" x2="147.9" y1="164.8" y2="117.2"/>
-<circle class="dot" cx="147.9" cy="139.4" r="4.5"><title>2026-10-21 (13d6397): 46/72 passed, 64%</title></circle>
-<line class="band" x1="170.1" x2="170.1" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="170.1" cy="142.5" r="4.5"><title>2026-10-22 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="192.3" x2="192.3" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="192.3" cy="142.5" r="4.5"><title>2026-10-23 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="214.5" x2="214.5" y1="164.8" y2="117.2"/>
-<circle class="dot" cx="214.5" cy="139.4" r="4.5"><title>2026-10-24 (13d6397): 46/72 passed, 64%</title></circle>
-<line class="band" x1="236.6" x2="236.6" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="236.6" cy="142.5" r="4.5"><title>2026-10-25 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="258.8" x2="258.8" y1="171.0" y2="122.6"/>
-<circle class="dot" cx="258.8" cy="145.6" r="4.5"><title>2026-10-26 (13d6397): 44/72 passed, 61%</title></circle>
-<line class="band" x1="281.0" x2="281.0" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="281.0" cy="142.5" r="4.5"><title>2026-10-27 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="303.2" x2="303.2" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="303.2" cy="142.5" r="4.5"><title>2026-10-28 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="325.4" x2="325.4" y1="172.3" y2="123.6"/>
-<circle class="hollow" cx="325.4" cy="146.8" r="4.5"><title>2026-10-29 (13d6397): 43/71 passed, 61%</title></circle>
-<text class="axis" x="332.4" y="139.8">71/72</text>
-<line class="band" x1="347.6" x2="347.6" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="347.6" cy="142.5" r="4.5"><title>2026-10-30 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="369.8" x2="369.8" y1="171.0" y2="122.6"/>
-<circle class="dot" cx="369.8" cy="145.6" r="4.5"><title>2026-10-31 (13d6397): 44/72 passed, 61%</title></circle>
-<line class="band" x1="392.0" x2="392.0" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="392.0" cy="142.5" r="4.5"><title>2026-11-01 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="414.2" x2="414.2" y1="174.0" y2="125.4"/>
-<circle class="dot" cx="414.2" cy="148.6" r="4.5"><title>2026-11-02 (13d6397): 43/72 passed, 60%</title></circle>
-<line class="band" x1="436.4" x2="436.4" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="436.4" cy="142.5" r="4.5"><title>2026-11-03 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="458.6" x2="458.6" y1="171.0" y2="122.6"/>
-<circle class="dot" cx="458.6" cy="145.6" r="4.5"><title>2026-11-04 (13d6397): 44/72 passed, 61%</title></circle>
-<line class="band" x1="480.8" x2="480.8" y1="164.8" y2="117.2"/>
-<circle class="dot" cx="480.8" cy="139.4" r="4.5"><title>2026-11-05 (13d6397): 46/72 passed, 64%</title></circle>
-<line class="band" x1="503.0" x2="503.0" y1="171.0" y2="122.6"/>
-<circle class="dot" cx="503.0" cy="145.6" r="4.5"><title>2026-11-06 (13d6397): 44/72 passed, 61%</title></circle>
-<line class="band" x1="525.2" x2="525.2" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="525.2" cy="142.5" r="4.5"><title>2026-11-07 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="547.4" x2="547.4" y1="164.8" y2="117.2"/>
-<circle class="dot" cx="547.4" cy="139.4" r="4.5"><title>2026-11-08 (13d6397): 46/72 passed, 64%</title></circle>
-<line class="band" x1="569.5" x2="569.5" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="569.5" cy="142.5" r="4.5"><title>2026-11-09 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="591.7" x2="591.7" y1="164.8" y2="117.2"/>
-<circle class="dot" cx="591.7" cy="139.4" r="4.5"><title>2026-11-10 (13d6397): 46/72 passed, 64%</title></circle>
-<line class="band" x1="613.9" x2="613.9" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="613.9" cy="142.5" r="4.5"><title>2026-11-11 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="636.1" x2="636.1" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="636.1" cy="142.5" r="4.5"><title>2026-11-12 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="658.3" x2="658.3" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="658.3" cy="142.5" r="4.5"><title>2026-11-13 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="680.5" x2="680.5" y1="167.9" y2="119.9"/>
-<circle class="dot" cx="680.5" cy="142.5" r="4.5"><title>2026-11-14 (13d6397): 45/72 passed, 62%</title></circle>
-<line class="band" x1="702.7" x2="702.7" y1="167.0" y2="117.9"/>
-<circle class="hollow" cx="702.7" cy="140.9" r="4.5"><title>2026-11-15 (13d6397): 43/68 passed, 63%</title></circle>
-<text class="axis" x="709.7" y="133.9">68/72</text>
-<line class="band" x1="724.9" x2="724.9" y1="164.8" y2="117.2"/>
-<circle class="dot" cx="724.9" cy="139.4" r="4.5"><title>2026-11-16 (13d6397): 46/72 passed, 64%</title></circle>
-<text class="axis" x="59.1" y="304" text-anchor="middle">10-17</text>
-<text class="axis" x="147.9" y="304" text-anchor="middle">10-21</text>
-<text class="axis" x="236.6" y="304" text-anchor="middle">10-25</text>
-<text class="axis" x="325.4" y="304" text-anchor="middle">10-29</text>
-<text class="axis" x="414.2" y="304" text-anchor="middle">11-02</text>
-<text class="axis" x="503.0" y="304" text-anchor="middle">11-06</text>
-<text class="axis" x="591.7" y="304" text-anchor="middle">11-10</text>
-<text class="axis" x="680.5" y="304" text-anchor="middle">11-14</text>
-<text class="axis" x="724.9" y="304" text-anchor="middle">11-16</text>
+<polyline class="line" points="58.8,145.6 80.2,142.5 101.8,148.6 123.2,142.5 144.8,139.4 166.2,142.5 187.8,142.5 209.2,139.4 230.8,142.5 252.2,145.6 273.8,142.5 295.2,142.5 316.8,146.8 338.2,142.5 359.8,145.6 381.2,142.5 402.8,148.6 424.2,142.5 445.8,145.6 467.2,139.4 488.8,145.6 510.2,142.5 531.8,139.4 553.2,142.5 574.8,139.4 596.2,142.5 617.8,142.5 639.2,142.5 660.8,142.5 682.2,140.9 703.8,139.4 725.2,139.4"/>
+<line class="band" x1="58.8" x2="58.8" y1="171.0" y2="122.6"/>
+<circle class="dot" cx="58.8" cy="145.6" r="4.5"><title>2026-10-17 (5c79f81): 44/72 passed, 61%</title></circle>
+<line class="band" x1="80.2" x2="80.2" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="80.2" cy="142.5" r="4.5"><title>2026-10-18 (5c79f81): 45/72 passed, 62%</title></circle>
+<line class="band" x1="101.8" x2="101.8" y1="174.0" y2="125.4"/>
+<circle class="dot" cx="101.8" cy="148.6" r="4.5"><title>2026-10-19 (13d6397): 43/72 passed, 60%</title></circle>
+<line class="band" x1="123.2" x2="123.2" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="123.2" cy="142.5" r="4.5"><title>2026-10-20 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="144.8" x2="144.8" y1="164.8" y2="117.2"/>
+<circle class="dot" cx="144.8" cy="139.4" r="4.5"><title>2026-10-21 (13d6397): 46/72 passed, 64%</title></circle>
+<line class="band" x1="166.2" x2="166.2" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="166.2" cy="142.5" r="4.5"><title>2026-10-22 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="187.8" x2="187.8" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="187.8" cy="142.5" r="4.5"><title>2026-10-23 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="209.2" x2="209.2" y1="164.8" y2="117.2"/>
+<circle class="dot" cx="209.2" cy="139.4" r="4.5"><title>2026-10-24 (13d6397): 46/72 passed, 64%</title></circle>
+<line class="band" x1="230.8" x2="230.8" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="230.8" cy="142.5" r="4.5"><title>2026-10-25 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="252.2" x2="252.2" y1="171.0" y2="122.6"/>
+<circle class="dot" cx="252.2" cy="145.6" r="4.5"><title>2026-10-26 (13d6397): 44/72 passed, 61%</title></circle>
+<line class="band" x1="273.8" x2="273.8" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="273.8" cy="142.5" r="4.5"><title>2026-10-27 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="295.2" x2="295.2" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="295.2" cy="142.5" r="4.5"><title>2026-10-28 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="316.8" x2="316.8" y1="172.3" y2="123.6"/>
+<circle class="hollow" cx="316.8" cy="146.8" r="4.5"><title>2026-10-29 (13d6397): 43/71 passed, 61%</title></circle>
+<text class="axis" x="323.8" y="139.8">71/72</text>
+<line class="band" x1="338.2" x2="338.2" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="338.2" cy="142.5" r="4.5"><title>2026-10-30 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="359.8" x2="359.8" y1="171.0" y2="122.6"/>
+<circle class="dot" cx="359.8" cy="145.6" r="4.5"><title>2026-10-31 (13d6397): 44/72 passed, 61%</title></circle>
+<line class="band" x1="381.2" x2="381.2" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="381.2" cy="142.5" r="4.5"><title>2026-11-01 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="402.8" x2="402.8" y1="174.0" y2="125.4"/>
+<circle class="dot" cx="402.8" cy="148.6" r="4.5"><title>2026-11-02 (13d6397): 43/72 passed, 60%</title></circle>
+<line class="band" x1="424.2" x2="424.2" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="424.2" cy="142.5" r="4.5"><title>2026-11-03 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="445.8" x2="445.8" y1="171.0" y2="122.6"/>
+<circle class="dot" cx="445.8" cy="145.6" r="4.5"><title>2026-11-04 (13d6397): 44/72 passed, 61%</title></circle>
+<line class="band" x1="467.2" x2="467.2" y1="164.8" y2="117.2"/>
+<circle class="dot" cx="467.2" cy="139.4" r="4.5"><title>2026-11-05 (13d6397): 46/72 passed, 64%</title></circle>
+<line class="band" x1="488.8" x2="488.8" y1="171.0" y2="122.6"/>
+<circle class="dot" cx="488.8" cy="145.6" r="4.5"><title>2026-11-06 (13d6397): 44/72 passed, 61%</title></circle>
+<line class="band" x1="510.2" x2="510.2" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="510.2" cy="142.5" r="4.5"><title>2026-11-07 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="531.8" x2="531.8" y1="164.8" y2="117.2"/>
+<circle class="dot" cx="531.8" cy="139.4" r="4.5"><title>2026-11-08 (13d6397): 46/72 passed, 64%</title></circle>
+<line class="band" x1="553.2" x2="553.2" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="553.2" cy="142.5" r="4.5"><title>2026-11-09 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="574.8" x2="574.8" y1="164.8" y2="117.2"/>
+<circle class="dot" cx="574.8" cy="139.4" r="4.5"><title>2026-11-10 (13d6397): 46/72 passed, 64%</title></circle>
+<line class="band" x1="596.2" x2="596.2" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="596.2" cy="142.5" r="4.5"><title>2026-11-11 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="617.8" x2="617.8" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="617.8" cy="142.5" r="4.5"><title>2026-11-12 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="639.2" x2="639.2" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="639.2" cy="142.5" r="4.5"><title>2026-11-13 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="660.8" x2="660.8" y1="167.9" y2="119.9"/>
+<circle class="dot" cx="660.8" cy="142.5" r="4.5"><title>2026-11-14 (13d6397): 45/72 passed, 62%</title></circle>
+<line class="band" x1="682.2" x2="682.2" y1="167.0" y2="117.9"/>
+<circle class="hollow" cx="682.2" cy="140.9" r="4.5"><title>2026-11-15 (13d6397): 43/68 passed, 63%</title></circle>
+<text class="axis" x="689.2" y="133.9">68/72</text>
+<line class="band" x1="703.8" x2="703.8" y1="164.8" y2="117.2"/>
+<circle class="dot" cx="703.8" cy="139.4" r="4.5"><title>2026-11-16 (13d6397): 46/72 passed, 64%</title></circle>
+<line class="band" x1="725.2" x2="725.2" y1="164.8" y2="117.2"/>
+<circle class="dot" cx="725.2" cy="139.4" r="4.5"><title>2026-11-17 (13d6397): 46/72 passed, 64%</title></circle>
+<text class="axis" x="58.8" y="304" text-anchor="middle">10-17</text>
+<text class="axis" x="144.8" y="304" text-anchor="middle">10-21</text>
+<text class="axis" x="230.8" y="304" text-anchor="middle">10-25</text>
+<text class="axis" x="316.8" y="304" text-anchor="middle">10-29</text>
+<text class="axis" x="402.8" y="304" text-anchor="middle">11-02</text>
+<text class="axis" x="488.8" y="304" text-anchor="middle">11-06</text>
+<text class="axis" x="574.8" y="304" text-anchor="middle">11-10</text>
+<text class="axis" x="660.8" y="304" text-anchor="middle">11-14</text>
+<text class="axis" x="725.2" y="304" text-anchor="middle">11-17</text>
 </svg>
