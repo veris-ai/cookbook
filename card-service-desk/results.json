@@ -442,5 +442,17 @@
     "n": 72,
     "passes": 0,
     "expected": 72
+  },
+  {
+    "date": "2026-11-23",
+    "sha": "13d6397",
+    "image": "f5c0491",
+    "candidate_id": "cand_taz4nkqcm1dabum6sadl8",
+    "pass_rate": 0.0,
+    "ci_low": 0.0,
+    "ci_high": 5.065117335504446,
+    "n": 72,
+    "passes": 0,
+    "expected": 72
   }
 ]
